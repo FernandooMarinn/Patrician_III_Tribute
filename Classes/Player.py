@@ -1,4 +1,7 @@
-import Functionalities
+import Functionalities.Utilities
+from Functionalities import *
+
+
 
 class Player:
     def __init__(self, name, coins, city):
@@ -13,7 +16,7 @@ class Player:
         self.convoys = []
 
     def check_player(self):
-        print("You have {} coins, {} boats and {} convoys. Your level is {}"
+        print("You have {} coins, {} boats and {} convoys. Your level is {}\n"
               .format(self.coins, len(self.boats), len(self.convoys), self.level))
 
 
@@ -36,13 +39,62 @@ class Player:
 
 
     def check_boats(self):
-        boat_number = 1
-        for boat in self.boats:
-            print("{}- {}. ({})\n".format(boat_number, boat.name, boat.city.name))
-            boat_number += 1
+        if len(self.boats) == 0:
+            print("You dont have any boats to select.\n")
+        else:
+            boat_number = 1
+            for boat in self.boats:
+                print("{}- {}. ({})\n".format(boat_number, boat.name, boat.city.name))
+                boat_number += 1
+
+            choose_boat = self.select_boat_or_convoy(self.boats)
+            choose_boat.show_options()
+
 
     def check_convoys(self):
-        convoy_number = 1
+        if len(self.convoys) == 0:
+            print("You dont have any convoys to select.\n")
+        else:
+            convoy_number = 1
+            for convoy in self.convoys:
+                print("{}- {}. ({})\n".format(convoy_number, convoy. name, convoy.city.name))
+                convoy_number += 1
+            current = self.select_boat_or_convoy(self.convoys)
+            self.boat_or_convoy_options(current)
+
+    def select_boat_or_convoy(self, type):
+        option = input()
+        option = Functionalities.Utilities.correct_values(1, len(type), option)
+        return type[option - 1]
+
+    def boat_or_convoy_options(self, choosen):
+        prueba = choosen.show_options
+
+
+    def list_cities(self, cities):
+        print("Where do you want to move?\n"
+              "1- Lubeck.\n"
+              "2- Rostock. \n"
+              "3- Malmo. \n"
+              "4- Stettin.\n")
+        option = input("\n")
+        option = Functionalities.Utilities.correct_values(1, 4, option)
+        return cities[option - 1]
+
+    def is_possible_to_change_cities(self, cities):
+        selected_city = self.list_cities(cities)
+        for boat in self.boats:
+            if boat.city == selected_city:
+                return True, selected_city
         for convoy in self.convoys:
-            print("{}- {}. ({})\n".format(convoy_number, convoy.name, convoy.city.name))
-            convoy_number += 1
+            if convoy.city == selected_city:
+                return True, selected_city
+        return False
+
+
+    def change_city(self, cities):
+        selected_city = self.is_possible_to_change_cities(cities)
+        if selected_city == False:
+            print("You can't move to a city if you don't have a boat in it.")
+        else:
+            self.city = selected_city[1]

@@ -1,4 +1,4 @@
-import Functionalities
+import Functionalities.Utilities
 
 class City:
     def __init__(self, name, skins_consumption_ratio, tools_consumption_ratio, beer_consumption_ratio,
@@ -135,9 +135,9 @@ class City:
         self.cloth += self.cloth_factories * 4
 
     def create_factories(self, type, money):
+        Functionalities.Utilities.how_many_can_afford(30000, money)
         quantity = input("How many factories do you want to create?\n")
         quantity = Functionalities.Utilities.correct_values(0, 10000, quantity)
-        Functionalities.Utilities.how_many_can_afford(30000, money)
         if not Functionalities.Utilities.check_if_affordable(30000, quantity, money):
             print("You cannot afford to build this number of factories.")
             return False
@@ -148,21 +148,24 @@ class City:
 
 
 
-
     def create_factories_menu(self, money):
         print("Wich type of factory do you want to create?\n"
               "1- Skins.\n"
               "2- Tools.\n"
               "3- Beer.\n"
               "4- Wine.\n"
-              "5- Cloth.\n")
+              "5- Cloth.\n"
+              "6- Exit.\n")
         election = input()
-        election = Functionalities.Utilities.correct_values(1, 5, election)
-        self.check_if_can_build_factory(election, money)
+        election = Functionalities.Utilities.correct_values(1, 6, election)
+        if election == 6:
+            pass
+        else:
+            self.check_if_can_build_factory(election, money)
 
 
 
-    def check_if_can_build_factory(self, election, money, type):
+    def check_if_can_build_factory(self, election, money):
         if election == 1:
             if self.can_produce_skins:
                 self.create_factories(1, money)

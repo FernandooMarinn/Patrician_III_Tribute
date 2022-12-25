@@ -1,5 +1,5 @@
 import Classes.Cities
-from Classes import Player
+import Classes.Player
 
 
 # For check every value, in order to avoid errors.
@@ -56,7 +56,7 @@ def ask_initial_money():
           "2- 10000 (few).\n"
           "3- 25000 (normal).\n"
           "4- 50000 (too much).\n")
-    option = input()
+    option = input("\n")
     return correct_values(1, 4, option)
 
 
@@ -71,13 +71,11 @@ def return_coins_quantity(option):
         return 50000
 
 
-def ask_initial_city():
-    cities = ["Lubeck", "Stettin", "Malmo", "Rostock"]
-    print("\n")
+def ask_initial_city(cities):
     for i in range(len(cities)):
-        print("{}- {}.".format(i + 1, cities[i]))
-    option = input("Wich city do you choose as your birthplace?\n")
-    option = correct_values(1, 4, option)
+        print("{}- {}.".format(i + 1, cities[i].name))
+    option = input("Wich city do you choose as your birthplace?\n\n")
+    option = correct_values(1, len(cities), option)
     return cities[option - 1]
 
 
@@ -87,13 +85,20 @@ def create_player():
     :return:
     """
     name = input("What is your name?\n")
-    coins = return_coins_quantity(ask_initial_money())
-    city = ask_initial_city()
-    player = Player.Player(name, coins, city)
+    coins = return_coins_quantity(ask_initial_money()) # Cambiar esta puta mierda.
+    city = ask_initial_city(create_cities("Lubeck", "Rostock", "Malmo", "Stettin"))
+    player = Classes.Player.Player(name, coins, city)
     return player
 
 
-def create_cities():
-    Lubeck = Classes.Cities.City("Lubeck", 3, 4, 6, 3, 3, 40, 60, 50, 50, 30, 0, 15, 0, 9, 0, False, True, False, True,
+def create_cities(name1, name2, name3, name4):
+    # Puta mierda
+    Lubeck = Classes.Cities.City(name1, 3, 4, 6, 3, 3, 40, 60, 50, 50, 30, 0, 15, 0, 9, 0, False, True, False, True,
                                  False, False)
-    return Lubeck
+    Rostock = Classes.Cities.City(name2, 3, 4, 6, 3, 3, 40, 60, 50, 50, 30, 0, 15, 0, 9, 0, False, True, False, True,
+                                 False, False)
+    Malmo = Classes.Cities.City(name3, 3, 4, 6, 3, 3, 40, 60, 50, 50, 30, 0, 15, 0, 9, 0, False, True, False, True,
+                                 False, False)
+    Stettin = Classes.Cities.City(name4, 3, 4, 6, 3, 3, 40, 60, 50, 50, 30, 0, 15, 0, 9, 0, False, True, False, True,
+                                 False, False)
+    return Lubeck, Rostock, Malmo, Stettin

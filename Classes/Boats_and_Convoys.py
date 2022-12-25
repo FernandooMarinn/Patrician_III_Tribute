@@ -69,6 +69,15 @@ class Boat:
         else:
             return True
 
+    def check_cargo(self):
+        print("You have {} skins, {} tools, {} beer, {} wine, {} cloth.\n"
+              .format(self.skins, self.tools, self.beer, self.wine, self.cloth))
+        if self.captain:
+            print("This boat has a captain.")
+        else:
+            print("This boat doesn't have a captain")
+
+
     def check_if_can_become_convoy(self):
         if self.captain:
             if self.sailors > 19:
@@ -87,6 +96,41 @@ class Boat:
                 print("Your boat has less than 20 sailors.")
         else:
             print("In order to create a convoy, you need a captain.")
+
+
+    def show_options(self):
+        while True:
+            print("What do you want to do whith your boat {}.?\n"
+                  "1- Buy from city.\n"
+                  "2- Sell to city.\n"
+                  "3- Check cargo.\n"
+                  "4- Exit.\n"
+                  .format(self.name))
+            self.choose_options()
+
+
+    def choose_options(self):
+        option = input("")
+        option = Functionalities.Utilities.correct_values(1, 4, option)
+        if option == 1:
+            self.buy_from_city()
+        elif option == 2:
+            self.sell_to_city()
+        elif option == 3:
+            self.check_cargo()
+        elif option == 4:
+            pass
+
+
+
+
+    def buy_from_city(self):
+        current_city = self.city
+        current_city.calculate_prices()
+        current_city.show_prices()
+
+    def sell_to_city(self):
+        pass
 
 
 # Convoys, to control ships together.
