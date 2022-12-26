@@ -76,9 +76,10 @@ class Player:
               "1- Lubeck.\n"
               "2- Rostock. \n"
               "3- Malmo. \n"
-              "4- Stettin.\n")
+              "4- Stettin.\n"
+              "5- Gdanks.\n")
         option = input("\n")
-        option = Functionalities.Utilities.correct_values(1, 4, option)
+        option = Functionalities.Utilities.correct_values(1, 5, option)
         return cities[option - 1]
 
     def is_possible_to_change_cities(self, cities):
@@ -98,3 +99,4 @@ class Player:
             print("You can't move to a city if you don't have a boat in it.")
         else:
             self.city = selected_city[1]
+            print("You have moved to another city.")

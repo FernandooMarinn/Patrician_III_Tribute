@@ -5,7 +5,7 @@ class City:
                  wine_consumption_ratio, cloth_consumption_ratio, initial_skins, initial_tools, initial_beer,
                  initial_wine, initial_cloth, skins_production, tools_production, beer_production, wine_production,
                  cloth_production, can_produce_skins, can_produce_tools, can_produce_beer, can_produce_wine,
-                 can_produce_cloth, commercial_office):
+                 can_produce_cloth, commercial_office, possition):
 
         self.coins = 10000
         # Products quantity.
@@ -73,6 +73,7 @@ class City:
         self.population = 1000
 
         self.commercial_office = commercial_office
+        self.possition = possition
 
         self.boats = []
         self.convoys = []
@@ -98,10 +99,28 @@ class City:
         self.cloth_consumption = round((self.population * self.cloth_consumption_ratio) / 1000)
 
     def calculate_individual_price(self, max_value, min_value, quantity):
-        # Set individual price of a product.
-        range_prices = max_value - min_value
-        current_price = round((quantity * range_prices) / 100) + min_value
-        return current_price
+        """
+        Set individual price of a product.
+        :param max_value:
+        :param min_value:
+        :param quantity:
+        :return:
+        """
+        if quantity == 0:
+            return max_value
+        elif quantity >= 100:
+            return min_value
+        else:
+            current_price = round(max_value - ((max_value - min_value) * (quantity / 100)))
+            return current_price
+
+    def calculate_sell_and_buy_prices(self, max_value, min_value, quantity):
+        how_much = input("How many do you want to trade?\n")
+        how_much = Functionalities.Utilities.correct_values(0, quantity, how_much)
+        start_price = self.calculate_individual_price(max_value, min_value, quantity)
+        finish_price = self.calculate_individual_price(max_value, min_value, quantity - how_much)
+        mean = (start_price + finish_price) / 2
+        # Retocar, crear una formula para contemplar cosas por encima de 100.
 
     def calculate_prices(self):
         # Calculate every price, depending of available quantity.
@@ -112,7 +131,10 @@ class City:
         self.price_cloth = self.calculate_individual_price(self.max_price_cloth, self.min_price_cloth, self.cloth)
 
     def city_consumption(self):
-        # T
+        """
+        Calculate City consumption.
+        :return:
+        """
         self.skins -= self.skins_consumption
         self.tools -= self.tools_consumption
         self.beer -= self.beer_consumption
@@ -194,6 +216,10 @@ class City:
 
 
     def avoid_minus_zero_items(self):
+        """
+        Doesn't let city consumption leave item quantity below zero.
+        :return:
+        """
         if self.skins < 0:
             self.skins = 0
         if self.tools < 0:
@@ -206,7 +232,10 @@ class City:
             self.cloth = 0
 
     def change_turn(self):
-
+        """
+        Everything that have to happen everytime a turn passes.
+        :return:
+        """
         self.create_houses()
         self.get_taxes()
         self.city_consumption()

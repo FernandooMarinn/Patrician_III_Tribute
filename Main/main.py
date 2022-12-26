@@ -4,28 +4,18 @@ import Classes.Boats_and_Convoys
 
 # Inicializamos tutto a ver si rula
 player = Functionalities.Utilities.create_player()
-Cities = Functionalities.Utilities.create_cities("Lubeck", "Rostock", "Malmo", "Stettin")
+Cities = Functionalities.Utilities.create_cities()
 Lubeck = Cities[0]
 Rostock = Cities[1]
 Malmo = Cities[2]
 Stettin = Cities[3]
-boat1 = Classes.Boats_and_Convoys.Boat(100, 1, [0, 0, 0, 0, 0], 8, False, 0, "Leire", player.city)
+Gdanks = Cities[4]
+boat1 = Classes.Boats_and_Convoys.Boat(100, 1, [0, 0, 0, 0, 0], 8, False, 0, "Prueba", player.city)
 player.boats.append(boat1)
+boat2 = Classes.Boats_and_Convoys.Boat(100, 1, [0, 0, 0, 0, 0], 8, False, 0, "Adios", Malmo)
+player.boats.append(boat2)
 turn = 1
 
-
-def check_boats():
-    boat_number = 1
-    for boat in player.boats:
-        print("{}- {}. ({})\n".format(boat_number, boat.name, boat.city.name))
-        boat_number += 1
-    option = input()
-    option = Functionalities.Utilities.correct_values(1, len(player.boats), option)
-    prueba = player.boats
-    prueba1 = prueba[0]
-    print(prueba1)
-    prueba1.show_options()
-    player.check_player()
 
 
 def welcome():
@@ -46,7 +36,7 @@ def game_loop():
                   "6- Check player stats.\n"
                   "7- Exit game.\n".format(turn))
             option = input()
-            option = Functionalities.Utilities.correct_values(1, 6, option)
+            option = Functionalities.Utilities.correct_values(1, 7, option)
             if option == 5:
                 break
             else:
