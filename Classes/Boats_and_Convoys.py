@@ -2,7 +2,7 @@ import Functionalities.Utilities
 
 
 class Boat:
-    def __init__(self, health, level, load, sailors, captain, cannons, name, city):
+    def __init__(self, health, level, load, sailors, captain, cannons, name, city, player):
 
         self.name = name
 
@@ -15,6 +15,7 @@ class Boat:
         self.max_cannons = 0
         self.cannons = cannons
         self.city = city
+        self.player = player
 
         # List with inicial cargo.
         self.skins = load[0]
@@ -105,7 +106,7 @@ class Boat:
             print("What do you want to do whith your boat {}?\n"
                   "1- Buy from city.\n"
                   "2- Sell to city.\n"
-                  "3- Check cargo."
+                  "3- Check cargo.\n"
                   "4- Move to another city.\n"
                   "5- Exit.\n"
                   .format(self.name))

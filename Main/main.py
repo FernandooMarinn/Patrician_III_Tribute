@@ -3,16 +3,16 @@ import Classes.Boats_and_Convoys
 
 
 # Inicializamos tutto a ver si rula
-player = Functionalities.Utilities.create_player()
 Cities = Functionalities.Utilities.create_cities()
+player = Cities[5]
 Lubeck = Cities[0]
 Rostock = Cities[1]
 Malmo = Cities[2]
 Stettin = Cities[3]
 Gdanks = Cities[4]
-boat1 = Classes.Boats_and_Convoys.Boat(100, 1, [0, 0, 0, 0, 0], 8, False, 0, "Prueba", player.city)
+boat1 = Classes.Boats_and_Convoys.Boat(100, 1, [0, 0, 0, 0, 0], 8, False, 0, "Prueba", player.city, player)
 player.boats.append(boat1)
-boat2 = Classes.Boats_and_Convoys.Boat(100, 1, [0, 0, 0, 0, 0], 8, False, 0, "Adios", Malmo)
+boat2 = Classes.Boats_and_Convoys.Boat(100, 1, [0, 0, 0, 0, 0], 8, False, 0, "Adios", Malmo, player)
 player.boats.append(boat2)
 turn = 1
 

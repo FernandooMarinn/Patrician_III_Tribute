@@ -82,16 +82,16 @@ def create_player():
     return player
 
 
-def create_cities():
+def create_cities(player):
     # Puta mierda
     Lubeck = Classes.Cities.City("Lubeck", 3, 4, 6, 3, 3, 40, 60, 50, 50, 30, 0, 15, 0, 9, 0, False, True, False, True,
-                                 False, False, 1)
+                                 False, False, 1, player)
     Rostock = Classes.Cities.City("Rostock", 3, 4, 6, 3, 3, 40, 60, 50, 50, 30, 0, 0, 0, 0, 0, False, False, False, False,
-                                 False, False, 1)
+                                 False, False, 1, player)
     Malmo = Classes.Cities.City("Malmo", 3, 4, 6, 3, 3, 60, 60, 50, 50, 30, 0, 15, 0, 9, 0, True, False, False, False,
-                                 True, False, 1)
+                                 True, False, 1, player)
     Stettin = Classes.Cities.City("Stettin", 3, 4, 6, 3, 3, 40, 60, 50, 50, 30, 0, 15, 0, 9, 0, False, False, True, True,
-                                 False, False, 1)
+                                 False, False, 1, player)
     Gdanks = Classes.Cities.City("Gdanks", 3, 4, 4, 3, 3, 30, 40, 60, 40, 40, 0, 0, 10, 0, 0, False, False, True, False,
-                                 False, False, 1)
-    return Lubeck, Rostock, Malmo, Stettin, Gdanks
+                                 False, False, 1, player)
+    return Lubeck, Rostock, Malmo, Stettin, Gdanks, player
