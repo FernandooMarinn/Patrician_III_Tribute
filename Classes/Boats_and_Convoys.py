@@ -2,7 +2,7 @@ import Functionalities.Utilities
 
 
 class Boat:
-    def __init__(self, health, level, load, sailors, captain, cannons, name, city, player):
+    def __init__(self, health, level, load, sailors, captain, cannons, name, city, player, cities_list):
 
         self.name = name
 
@@ -29,6 +29,13 @@ class Boat:
         self.destination = 0
         self.traveling = False
         self.travel_turns = 0
+        self.cities_list = cities_list
+
+        self.price_skins = 0
+        self.price_tools = 0
+        self.price_beer = 0
+        self.price_wine = 0
+        self.price_cloth = 0
 
     def check_level(self):
         if self.level == 1:
@@ -52,9 +59,11 @@ class Boat:
     def boat_deterioration(self):
         self.health -= 1
         if self.health < 11:
-            print("Atention! Your ship {} is sinking.".format(self.name))
+            print("Atention! Your ship {} is sinking."
+                  .format(self.name))
         if self.health < 1:
-            print("Your ship {} has sinked.".format(self.name))
+            print("Your ship {} has sinked."
+                  .format(self.name))
             return False
 
     def check_stats_level(self):
@@ -75,12 +84,24 @@ class Boat:
             return True
 
     def check_cargo(self):
-        print("You have {} skins, {} tools, {} beer, {} wine, {} cloth.\n"
-              .format(self.skins, self.tools, self.beer, self.wine, self.cloth))
+        print("-" * 60)
+        print("Your boat {} have:\n"
+              "{} skins at {} coins.\n"
+              "{} tools at {} coins.\n"
+              "{} beer at {} coins.\n"
+              "{} wine at {} coins.\n"
+              "{} cloth at {} coins.\n"
+              .format(self.name, self.skins, self.price_skins, self.tools, self.price_tools, self.beer,
+                      self.price_beer, self.wine, self.price_wine, self.cloth, self.price_cloth))
         if self.captain:
-            print("\nThis boat has a captain.")
+            print("This boat has a captain. There are {} sailors.\n"
+                  .format(self.sailors))
         else:
-            print("\nThis boat doesn't have a captain")
+            print("This boat doesn't have a captain. There are {} sailors.\n"
+                  .format(self.sailors))
+        print("You are in {}."
+              .format(self.city.name))
+        print("-" * 60, "\n")
 
     def check_if_can_become_convoy(self):
         if self.captain:
@@ -88,7 +109,8 @@ class Boat:
                 if self.cannons > 7:
                     election = input("Do you want to create a new convoy, named {}?\n"
                                      "1- Yes.\n"
-                                     "2- No.\n".format(self.name))
+                                     "2- No.\n"
+                                     .format(self.name))
                     election = Functionalities.Utilities.correct_values(1, 2, election)
                     if election == 1:
                         return True
@@ -102,8 +124,8 @@ class Boat:
             print("In order to create a convoy, you need a captain.")
 
     def show_options(self):
-        while True:
-            print("What do you want to do whith your boat {}?\n"
+        while not self.check_if_traveling():
+            print("What do you want to do with your boat {}?\n"
                   "1- Buy from city.\n"
                   "2- Sell to city.\n"
                   "3- Check cargo.\n"
@@ -131,9 +153,95 @@ class Boat:
         current_city = self.city
         current_city.calculate_prices()
         current_city.show_prices()
+        choosen_product = current_city.choose_product()
+        new_products = current_city.how_many_buy(choosen_product)
+        product_prices = self.choose_prices(new_products[1])
+        product = self.choose_products(new_products[1])
+        new_price = new_products[2]
+        average_price = Functionalities.Utilities.calculate_average_price\
+            (product_prices, product, new_price, product + new_products[0])
+        self.add_products(new_products)
+        self.change_prices(new_products[1], average_price)
 
     def sell_to_city(self):
-        pass
+        # Select current city, update prices and choose a product.
+        current_city = self.city
+        current_city.calculate_prices()
+        current_city.show_prices()
+        choosen_product = current_city.choose_product()
+        # Selecting how many we want to sell, and returning it`s price.
+        new_products = current_city.how_many_sell(choosen_product)
+        product_prices = self.choose_prices(new_products[1])
+        product = self.choose_products(new_products[1])
+        new_price = new_products[2]
+        average_price = Functionalities.Utilities.calculate_average_price \
+            (product_prices, product, new_price, product + new_products[0])
+        self.decrease_products(new_products)
+        self.change_prices(new_products[1], average_price)
+
+    def change_prices(self, name, new_price):
+        if name == "skins":
+            self.price_skins = new_price
+        elif name == "tools":
+            self.price_tools = new_price
+        elif name == "beer":
+            self.price_beer = new_price
+        elif name == "wine":
+            self.price_wine = new_price
+        elif name == "cloth":
+            self.price_cloth = new_price
+
+
+    def choose_products(self, name):
+        if name == "skins":
+            return self.skins
+        elif name == "tools":
+            return self.tools
+        elif name == "beer":
+            return self.beer
+        elif name == "wine":
+            return self.wine
+        elif name == "cloth":
+            return self.cloth
+
+    def choose_prices(self, name):
+        if name == "skins":
+            return self.price_skins
+        elif name == "tools":
+            return self.price_tools
+        elif name == "beer":
+            return self.price_beer
+        elif name == "wine":
+            return self.price_wine
+        elif name == "cloth":
+            return self.price_cloth
+
+    def add_products(self, products):
+        quantity = products[0]
+        if products[1] == "skins":
+            self.skins += quantity
+        elif products[1] == "tools":
+            self.tools += quantity
+        elif products[1] == "beer":
+            self.beer += quantity
+        elif products[1] == "wine":
+            self.wine += quantity
+        elif products[1] == "cloth":
+            self.cloth += quantity
+
+    def decrease_products(self, products):
+        quantity = products[0]
+        if products[1] == "skins":
+            self.skins -= quantity
+        elif products[1] == "tools":
+            self.tools -= quantity
+        elif products[1] == "beer":
+            self.beer -= quantity
+        elif products[1] == "wine":
+            self.wine -= quantity
+        elif products[1] == "cloth":
+            self.cloth -= quantity
+
 
     def choose_city_to_travel(self):
         print("Where do you want to go?\n"
@@ -147,38 +255,42 @@ class Boat:
         self.check_distance_between_cities(option - 1)
 
     def check_distance_between_cities(self, option):
-        cities = Functionalities.Utilities.create_cities()
+        #Terminar esto
+        cities = self.cities_list
         distance = self.city.possition + cities[option].possition
         if self.city == cities[option]:
-            print("You alredy are in {}".format(self.city.name))
+            print("You are already in {}".format(self.city.name))
         else:
-            self.set_travel(distance, option)
+            print("{} is now moving to {}. Will take {} turns."
+                  .format(self.name, cities[option].name, distance))
+            self.set_travel(distance, cities[option])
 
     def set_travel(self, distance, destination):
-            self.travel_turns = distance
-            self.traveling = True
-            self.destination = destination
+        self.travel_turns = distance
+        self.traveling = True
+        self.destination = destination
 
     def while_traveling(self):
         if self.travel_turns > 0:
             self.travel_turns -= 1
-            if self.travel_turns == 0:
-                self.city = self.destination
-                self.traveling = False
-                self.destination = 0
-        else:
-            pass
+        elif self.travel_turns == 0:
+            self.city = self.destination
+            self.traveling = False
+            self.destination = 0
 
+    def check_if_traveling(self):
+        if self.traveling == True:
+            return True
+        else:
+            return False
     def turn_change(self):
         self.while_traveling()
-
-
-
+        self.boat_deterioration()
 
 
 # Convoys, to control ships together.
 class Convoy:
-    def __init__(self, name, city):
+    def __init__(self, name, city, boats):
         self.boats = []
         self.min_level = 0
         self.name = name

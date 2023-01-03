@@ -1,5 +1,6 @@
-import Classes.Cities
-import Classes.Player
+import Classes.Cities, Classes.Tavern, Classes.Player
+import random
+
 
 
 # For check every value, in order to avoid errors.
@@ -77,12 +78,15 @@ def create_player():
     """
     name = input("What is your name?\n")
     coins = ask_initial_money()
-    city = ask_initial_city(create_cities())
-    player = Classes.Player.Player(name, coins, city)
+    player = Classes.Player.Player(name, coins)
     return player
 
 
-def create_cities(player):
+def create_taverns(ciudades):
+    taverns = [Classes.Tavern.Tavern(ciudades[0])]
+
+
+def create_cities(*player):
     # Puta mierda
     Lubeck = Classes.Cities.City("Lubeck", 3, 4, 6, 3, 3, 40, 60, 50, 50, 30, 0, 15, 0, 9, 0, False, True, False, True,
                                  False, False, 1, player)
@@ -94,4 +98,33 @@ def create_cities(player):
                                  False, False, 1, player)
     Gdanks = Classes.Cities.City("Gdanks", 3, 4, 4, 3, 3, 30, 40, 60, 40, 40, 0, 0, 10, 0, 0, False, False, True, False,
                                  False, False, 1, player)
-    return Lubeck, Rostock, Malmo, Stettin, Gdanks, player
+    return Lubeck, Rostock, Malmo, Stettin, Gdanks
+
+def calculate_list_mean(list):
+    if sum(list) == 0:
+        return 0
+    else:
+        mean = round(sum(list) / len(list))
+        return mean
+
+def calculate_average_price(old_price, old_items, new_price, new_items):
+    # Calculate the average price of the old and new items
+    if old_price == 0:
+        return new_price
+    else:
+        old_items_average_price = old_price * old_items
+        new_items_average_price = new_price * new_items
+
+        # Calculate the final average price
+        average_price = ((old_items_average_price + new_items_average_price)) / (new_items + old_items)
+
+        return round(average_price)
+
+
+def set_new_captain(taverns):
+    random_tavern = random.randint(0, len(taverns))
+    new_captain = taverns[random_tavern]
+    new_captain.captain = True
+
+def text_separation():
+    print("-" * 60)

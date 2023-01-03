@@ -1,5 +1,6 @@
 import Functionalities.Utilities
 
+
 class City:
     def __init__(self, name, skins_consumption_ratio, tools_consumption_ratio, beer_consumption_ratio,
                  wine_consumption_ratio, cloth_consumption_ratio, initial_skins, initial_tools, initial_beer,
@@ -78,6 +79,7 @@ class City:
         self.boats = []
         self.convoys = []
         self.player = player
+        self.tavern = 0
 
     def create_houses(self):
         # Automatically create houses when needed.
@@ -89,9 +91,8 @@ class City:
         # Get taxes from every house.
         self.coins += 10 * self.houses
 
-
     def set_consumption(self):
-        # Set the city consumption depending of population growth.
+        # Set the city consumption depending on population growth.
         self.skins_consumption = round((self.population * self.skins_consumption_ratio) / 1000)
         self.tools_consumption = round((self.population * self.tools_consumption_ratio) / 1000)
         self.beer_consumption = round((self.population * self.beer_consumption_ratio) / 1000)
@@ -116,7 +117,6 @@ class City:
 
     def calculate_average_price(self, minimum_price, maximum_price, num_products, num_bought):
         """
-        Made with GTP Chat
         :param minimum_price:
         :param maximum_price:
         :param num_products:
@@ -126,20 +126,39 @@ class City:
         if num_bought <= 0:
             return 0
         proportional_price = minimum_price + (maximum_price - minimum_price) * (100 - num_products) / 100
-        if num_bought > num_products:
-            return (num_products * proportional_price + (num_bought - num_products) * minimum_price) / num_bought
+        if num_bought >= num_products:
+            return round((num_products * proportional_price + (num_bought - num_products) * minimum_price) / num_bought)
         else:
-            return (num_bought * proportional_price) / num_bought
+            return round((num_bought * proportional_price) / num_bought)
+
+    def prueba_grupos(self, min, max, num, bou):
+        initial_price = self.calculate_individual_price(max, min, num)
+        final_price = self.calculate_individual_price(max, min, num + bou)
+        medium_price = (initial_price + final_price) / 2
+        return medium_price
+
+    def calculate_group_trade(self, minimum_price, maximum_price, items_number, traded_number):
+        """
+        Calculate average price for trading more than an item. If traded number is positive, we are selling, if it is
+        positive, we are buying.
+        :param minimum_price:
+        :param maximum_price:
+        :param items_number:
+        :param traded_number:
+        :return:
+        """
+        initial_price = self.calculate_individual_price(maximum_price, minimum_price, items_number)
+        final_price = self.calculate_individual_price(maximum_price, minimum_price, items_number + traded_number)
+        medium_price = (initial_price + final_price) / 2
+        return round(medium_price)
 
     def calculate_prices(self):
-        # Calculate every price, depending of available quantity.
+        # Calculate every price, depending on available quantity.
         self.price_skins = self.calculate_individual_price(self.max_price_skins, self.min_price_skins, self.skins)
         self.price_tools = self.calculate_individual_price(self.max_price_tools, self.min_price_tools, self.tools)
         self.price_beer = self.calculate_individual_price(self.max_price_beer, self.min_price_beer, self.beer)
         self.price_wine = self.calculate_individual_price(self.max_price_wine, self.min_price_wine, self.wine)
         self.price_cloth = self.calculate_individual_price(self.max_price_cloth, self.min_price_cloth, self.cloth)
-
-
 
     def city_consumption(self):
         """
@@ -179,8 +198,6 @@ class City:
             total_cost = quantity * 30000
             return total_cost, type
 
-
-
     def create_factories_menu(self, money):
         print("Wich type of factory do you want to create?\n"
               "1- Skins.\n"
@@ -195,8 +212,6 @@ class City:
             pass
         else:
             self.check_if_can_build_factory(election, money)
-
-
 
     def check_if_can_build_factory(self, election, money):
         if election == 1:
@@ -224,7 +239,6 @@ class City:
                 self.create_factories(5, money)
             else:
                 print("You can not build cloth factories in {}".format(self.name))
-
 
     def avoid_minus_zero_items(self):
         """
@@ -255,42 +269,97 @@ class City:
         self.avoid_minus_zero_items()
         self.calculate_prices()
 
-
-
-
-
     def show_prices(self):
         """
         Check prices of everything.
         :return:
         """
-        print("""Current prices are:
-        1- Skins: {} coins, {} units.\n
-        2- Tools: {} coins, {} units.\n
-        3- Beer: {} coins, {} units.\n
-        4- Wine: {} coins, {} units.\n
-        5- Cloth: {}, coins, {} units.\n
+        print("-" * 60)
+        self.calculate_prices()
+        print("""\nCurrent prices are:
+        1- Skins: {} coins, {} units.
+        2- Tools: {} coins, {} units.
+        3- Beer: {} coins, {} units.
+        4- Wine: {} coins, {} units.
+        5- Cloth: {}, coins, {} units.
         """.format(self.price_skins, self.skins, self.price_tools, self.tools,
                    self.price_beer, self.beer, self.price_wine, self.wine, self.price_cloth, self.cloth))
+        print("-" * 60)
 
     def choose_product(self):
         """
         Return max and min values for each product.
         :return:
         """
-        option = input("\n")
+        option = input("What do you want to buy?\n")
         option = Functionalities.Utilities.correct_values(1, 5, option)
         if option == 1:
-            return [self.max_price_skins, self.min_price_skins, self.skins]
+            return [self.max_price_skins, self.min_price_skins, self.skins, "skins"]
         elif option == 2:
-            return [self.max_price_tools, self.min_price_tools, self.tools]
+            return [self.max_price_tools, self.min_price_tools, self.tools, "tools"]
         elif option == 3:
-            return [self.max_price_beer, self.min_price_beer, self.beer]
+            return [self.max_price_beer, self.min_price_beer, self.beer, "beer"]
         elif option == 4:
-            return [self.max_price_wine, self.min_price_wine, self.wine]
+            return [self.max_price_wine, self.min_price_wine, self.wine, "wine"]
         elif option == 5:
-            return [self.max_price_cloth, self.min_price_cloth, self.cloth]
+            return [self.max_price_cloth, self.min_price_cloth, self.cloth, "cloth"]
 
-    def how_many_want_to_buy(self, choosen_product):
-        option = input("How many do you want to buy? With your money you can purchase {}\n")
+    def how_many_buy(self, choosen_product):
+        option = input("How many do you want to buy?\n")
+        option = Functionalities.Utilities.correct_values(0, 99_999, option)
+        if option < choosen_product[2]:
+            medium_price = self.calculate_group_trade(choosen_product[1], choosen_product[0], choosen_product[2],
+                                                      -option)
+            total_price = medium_price * option
+            if self.player.coins > total_price:
+                self.decrease_product_number([option, choosen_product[3]])
+                self.coins += total_price
+                self.player.coins -= total_price
+                print("You have bought {} items at {} coins each."
+                      .format(option, medium_price))
+                print("-" * 60)
+                return option, choosen_product[3], medium_price
+            else:
+                print("You cannot afford to buy {} {}".format(option, choosen_product[3]))
+        else:
+            print("There are less than {} {} in {}".format(option, choosen_product[3], self.name))
+
+    def how_many_sell(self, choosen_product):
+        # Seguir con esto
+        option = input("How many do you want to sell? You have {}.\n")
         option = Functionalities.Utilities.correct_values(0, choosen_product[2], option)
+        medium_price = self.calculate_group_trade(choosen_product[1], choosen_product[0], choosen_product[2],
+                                                  option)
+        total_price = medium_price * option
+        self.increase_product_number([option, choosen_product[3]])
+        self.coins -= total_price
+        self.player.coins += total_price
+        print("You have sold {} items at {} coins each."
+              .format(option, medium_price))
+        return option, choosen_product[3], medium_price
+
+    def decrease_product_number(self, products):
+        quantity = products[0]
+        if products[1] == "skins":
+            self.skins -= quantity
+        elif products[1] == "tools":
+            self.tools -= quantity
+        elif products[1] == "beer":
+            self.beer -= quantity
+        elif products[1] == "wine":
+            self.wine -= quantity
+        elif products[1] == "cloth":
+            self.cloth -= quantity
+
+    def increase_product_number(self, products):
+        quantity = products[0]
+        if products[1] == "skins":
+            self.skins += quantity
+        elif products[1] == "tools":
+            self.tools += quantity
+        elif products[1] == "beer":
+            self.beer += quantity
+        elif products[1] == "wine":
+            self.wine += quantity
+        elif products[1] == "cloth":
+            self.cloth += quantity
