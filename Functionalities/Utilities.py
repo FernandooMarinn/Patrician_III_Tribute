@@ -86,7 +86,7 @@ def create_taverns(ciudades):
     taverns = [Classes.Tavern.Tavern(ciudades[0])]
 
 
-def create_cities(*player):
+def create_cities(player):
     # Puta mierda
     Lubeck = Classes.Cities.City("Lubeck", 3, 4, 6, 3, 3, 40, 60, 50, 50, 30, 0, 15, 0, 9, 0, False, True, False, True,
                                  False, False, 1, player)
@@ -128,3 +128,7 @@ def set_new_captain(taverns):
 
 def text_separation():
     print("-" * 60)
+
+def all_cities_change_turn(cities):
+    for city in cities:
+        city.change_turn()

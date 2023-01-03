@@ -57,14 +57,15 @@ class Boat:
             self.max_load = 180
 
     def boat_deterioration(self):
-        self.health -= 1
-        if self.health < 11:
-            print("Atention! Your ship {} is sinking."
-                  .format(self.name))
-        if self.health < 1:
-            print("Your ship {} has sinked."
-                  .format(self.name))
-            return False
+        if self.traveling == True:
+            self.health -= 1
+            if self.health < 11:
+                print("Atention! Your ship {} is sinking."
+                      .format(self.name))
+            if self.health < 1:
+                print("Your ship {} has sinked."
+                      .format(self.name))
+                return False
 
     def check_stats_level(self):
         if self.level == 1:
@@ -150,16 +151,19 @@ class Boat:
             self.choose_city_to_travel()
 
     def buy_from_city(self):
+        # Select current city, update prices and choose a product.
         current_city = self.city
         current_city.calculate_prices()
         current_city.show_prices()
         choosen_product = current_city.choose_product()
+        # Selecting how many we want to buy, and returning it`s price.
         new_products = current_city.how_many_buy(choosen_product)
         product_prices = self.choose_prices(new_products[1])
         product = self.choose_products(new_products[1])
         new_price = new_products[2]
-        average_price = Functionalities.Utilities.calculate_average_price\
-            (product_prices, product, new_price, product + new_products[0])
+        average_price = Functionalities.Utilities.calculate_average_price(product_prices,
+                                                                          product, new_price, product + new_products[0])
+        # Adding bought products and changing it`s mean price.
         self.add_products(new_products)
         self.change_prices(new_products[1], average_price)
 
@@ -176,8 +180,9 @@ class Boat:
         new_price = new_products[2]
         average_price = Functionalities.Utilities.calculate_average_price \
             (product_prices, product, new_price, product + new_products[0])
+        # deleting selled products.
         self.decrease_products(new_products)
-        self.change_prices(new_products[1], average_price)
+
 
     def change_prices(self, name, new_price):
         if name == "skins":
@@ -190,7 +195,6 @@ class Boat:
             self.price_wine = new_price
         elif name == "cloth":
             self.price_cloth = new_price
-
 
     def choose_products(self, name):
         if name == "skins":
@@ -242,7 +246,6 @@ class Boat:
         elif products[1] == "cloth":
             self.cloth -= quantity
 
-
     def choose_city_to_travel(self):
         print("Where do you want to go?\n"
               "1- Lubeck.\n"
@@ -255,7 +258,7 @@ class Boat:
         self.check_distance_between_cities(option - 1)
 
     def check_distance_between_cities(self, option):
-        #Terminar esto
+        # Terminar esto
         cities = self.cities_list
         distance = self.city.possition + cities[option].possition
         if self.city == cities[option]:
@@ -269,23 +272,28 @@ class Boat:
         self.travel_turns = distance
         self.traveling = True
         self.destination = destination
+        self.boat_deterioration()
 
     def while_traveling(self):
-        if self.travel_turns > 0:
+        if self.travel_turns > 1:
             self.travel_turns -= 1
-        elif self.travel_turns == 0:
+        elif self.travel_turns == 1:
             self.city = self.destination
             self.traveling = False
             self.destination = 0
+            print("Your boat {} has arrived at {}."
+                  .format(self.name, self.city.name))
 
     def check_if_traveling(self):
-        if self.traveling == True:
+        if self.traveling:
             return True
         else:
             return False
-    def turn_change(self):
-        self.while_traveling()
-        self.boat_deterioration()
+
+    def change_turn(self):
+        if self.check_if_traveling():
+            self.while_traveling()
+            self.boat_deterioration()
 
 
 # Convoys, to control ships together.
@@ -295,6 +303,12 @@ class Convoy:
         self.min_level = 0
         self.name = name
         self.city = city
+        self.traveling = False
+        self.travel_duration = 0
+        self.destination = 0
+        self.all_healths = []
+        self.medium_health = 0
+        self.min_health = 0
 
     def check_min_lvl(self):
         all_levels = []
@@ -302,3 +316,47 @@ class Convoy:
             all_levels.append(boat.level)
         self.min_level = min(all_levels)
 
+    def set_travel(self, distance, destination):
+        self.travel_turns = distance
+        self.traveling = True
+        self.destination = destination
+        for boat in self.boats:
+            boat.traveling = True
+
+    def while_traveling(self):
+        if self.travel_turns > 0:
+            self.travel_turns -= 1
+        elif self.travel_turns == 0:
+            self.city = self.destination
+            self.traveling = False
+            self.destination = 0
+            for boat in self.boats:
+                boat.traveling = False
+
+    def check_if_traveling(self):
+        if self.traveling == True:
+            return True
+        else:
+            return False
+
+    def convoy_deterioration(self):
+        for boat in self.boats:
+            boat.boat_deterioration()
+
+    def set_all_health(self):
+        self.all_healths = [boat.health for boat in self.boats]
+
+    def set_medium_health(self):
+        self.medium_health = Functionalities.Utilities.calculate_list_mean(self.all_healths)
+
+    def set_minimum_health(self):
+        self.min_health = min(self.all_healths)
+
+    def calculate_all_healths(self):
+        self.set_minimum_health()
+        self.set_medium_health()
+        self.set_all_health()
+
+    def change_turn(self):
+        self.convoy_deterioration()
+        self.calculate_all_healths()

@@ -1,4 +1,4 @@
-class ComercialOffice:
+class CommercialOffice:
     def __init__(self, city):
         self.city = city
         self.inventory = [0, 0, 0, 0, 0]
@@ -12,3 +12,6 @@ class ComercialOffice:
 
     def set_inventory_size(self):
         self.inventory_size = sum(self.inventory)
+
+    def show_menu(self):
+        print("Under construction")

@@ -6,7 +6,7 @@ class City:
                  wine_consumption_ratio, cloth_consumption_ratio, initial_skins, initial_tools, initial_beer,
                  initial_wine, initial_cloth, skins_production, tools_production, beer_production, wine_production,
                  cloth_production, can_produce_skins, can_produce_tools, can_produce_beer, can_produce_wine,
-                 can_produce_cloth, commercial_office, possition, player):
+                 can_produce_cloth, commercial_office, money_lender, shipyard, tavern, weapon_master, position, player):
 
         self.coins = 10000
         # Products quantity.
@@ -74,7 +74,11 @@ class City:
         self.population = 1000
 
         self.commercial_office = commercial_office
-        self.possition = possition
+        self.prestamist = money_lender
+        self.shipyard = shipyard
+        self.tavern = tavern
+        self.weapon_master = weapon_master
+        self.possition = position
 
         self.boats = []
         self.convoys = []
@@ -363,3 +367,33 @@ class City:
             self.wine += quantity
         elif products[1] == "cloth":
             self.cloth += quantity
+
+    def menu_city_buildings(self):
+        print("What do you want to do?:\n"
+              "1- Go to your comercial office.\n"
+              "2- Go to prestamist.\n"
+              "3- Go to shipyard.\n"
+              "4- Go to tavern.\n"
+              "5- Go to weapon master.\n"
+              "6- Construct buildings.\n"
+              "7- Exit\n")
+        option = input()
+        option = Functionalities.Utilities.correct_values(1, 7, option)
+        if option == 7:
+            pass
+        else:
+            self.choose_city_building
+
+    def choose_city_building(self, option):
+        if option == 1:
+            self.commercial_office.show_menu()
+        elif option == 2:
+            self.prestamist.show_menu()
+        elif option == 3:
+            self.shipyard.show_menu()
+        elif option == 4:
+            self.tavern.show_menu()
+        elif option == 5:
+            self.weapon_master.show_menu()
+        elif option == 6:
+            self.menu_city_buildings()

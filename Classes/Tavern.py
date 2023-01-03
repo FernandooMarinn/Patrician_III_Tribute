@@ -17,6 +17,6 @@ class Tavern:
     def add_captain(self):
         self.captain = True
 
-
-
+    def show_menu(self):
+        print("Under construction")
 

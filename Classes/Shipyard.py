@@ -18,3 +18,8 @@ class Shipyard:
     def repair_convoy(self):
         pass
 
+    def repair_boat(self):
+        pass
+
+    def show_menu(self):
+        print("Under construction")

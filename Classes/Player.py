@@ -13,12 +13,14 @@ class Player:
         self.loans = []
         self.boats = []
         self.convoys = []
-        self.turn = 1
+        self.turn = 0
+
     def check_player(self):
         print("-" * 60)
         print("You have {} coins, {} boats and {} convoys. Your level is {}."
               .format(self.coins, len(self.boats), len(self.convoys), self.level))
         print("-" * 60, "\n")
+
     def gain_experience(self, exp):
         self.experience += exp
 
@@ -53,7 +55,7 @@ class Player:
                 if not boat.check_if_traveling():
                     boats_not_traveling.append(boat)
             for boat in boats_not_traveling:
-                print("{}- {}. ({})\n".format(boat_number, boat.name, boat.city.name))
+                print("{}- {}. ({}) {}% health.\n".format(boat_number, boat.name, boat.city.name, boat.health))
                 boat_number += 1
             if len(boats_not_traveling) == 0:
                 print("All your boats are traveling.\n")
@@ -62,20 +64,40 @@ class Player:
                 choose_boat = self.select_boat_or_convoy(boats_not_traveling)
                 choose_boat.show_options()
 
+    def select_traveling_units(self, unit_list):
+        traveling_list = []
+        for unit in unit_list:
+            if unit.check_if_traveling():
+                traveling_list.append(unit)
+        return traveling_list
+
+    def view_all_traveling_units(self):
+        traveling_boats = self.select_traveling_units(self.boats)
+        traveling_convoys = self.select_traveling_units(self.convoys)
+        print("Your moving boats are:\n")
+        self.where_are_traveling(traveling_boats)
+        print("Your moving convoys are:\n")
+        self.where_are_traveling(traveling_convoys)
+
     def where_are_traveling(self, moving_list):
         Functionalities.Utilities.text_separation()
-        for moving_item in moving_list:
-            print("{} moving from {} to {}. ({} turns remain)."
-                  .format(moving_item.name, moving_item.city.name,
-                          moving_item.destination.name, moving_item.travel_turns))
+        if len(moving_list) == 0:
+            print("You have no units traveling currently.")
+        else:
+            for moving_item in moving_list:
+                print("-{} moving from {} to {}. ({} turns remain) {}% health."
+                      .format(moving_item.name, moving_item.city.name,
+                              moving_item.destination.name, moving_item.travel_turns, moving_item.health))
         Functionalities.Utilities.text_separation()
+        print("\n")
+
     def check_convoys(self):
         if len(self.convoys) == 0:
             print("You dont have any convoys to select.\n")
         else:
             convoy_number = 1
             for convoy in self.convoys:
-                print("{}- {}. ({})\n".format(convoy_number, convoy. name, convoy.city.name))
+                print("{}- {}. ({})\n".format(convoy_number, convoy.name, convoy.city.name))
                 convoy_number += 1
             current = self.select_boat_or_convoy(self.convoys)
             self.boat_or_convoy_options(current)
@@ -84,9 +106,6 @@ class Player:
         option = input()
         option = Functionalities.Utilities.correct_values(1, len(type), option)
         return type[option - 1]
-
-    def boat_or_convoy_options(self, choosen):
-        prueba = choosen.show_options
 
 
     def list_cities(self, cities):
@@ -110,11 +129,20 @@ class Player:
                 return True, selected_city
         return False
 
-
     def change_city(self, cities):
         selected_city = self.is_possible_to_change_cities(cities)
-        if selected_city == False:
+        if not selected_city:
             print("You can't move to a city if you don't have a boat in it.")
         else:
             self.city = selected_city[1]
             print("You have moved to another city.")
+
+    def change_turns_boats_and_convoys(self):
+        for boat in self.boats:
+            boat.change_turn()
+        for convoy in self.convoys:
+            convoy.change_turn()
+
+    def change_turn(self):
+        self.turn += 1
+        self.change_turns_boats_and_convoys()

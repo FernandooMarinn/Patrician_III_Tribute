@@ -1,5 +1,8 @@
 import random
-class Prestamist():
+
+import Functionalities.Utilities
+from Functionalities import *
+class MoneyLender():
     def __init__(self, name):
         self.level = 1
         self.experience = 0
@@ -43,7 +46,7 @@ class Prestamist():
 
     def choose_option(self):
         number = int(input())
-        number = Funtionalities.correct_values(1, 2, number)
+        number = Functionalities.Utilities.correct_values(1, 2)
         if number == 1:
             self.print_loans(self.generate_loans())
         elif number == 2:

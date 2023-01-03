@@ -10,7 +10,7 @@ class Weapon_master:
         self.cannon = 2
         self.bombarda = 0
 
-    def sell_products(self, money):
+    def show_menu(self, money):
         option = input("What do you want to buy?\n"
                        "1- Dagger. (100 coins)\n"
                        "2- Ship cannon. (800 coins)\n"
