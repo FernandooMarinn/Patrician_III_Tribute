@@ -6,7 +6,7 @@ class City:
                  wine_consumption_ratio, cloth_consumption_ratio, initial_skins, initial_tools, initial_beer,
                  initial_wine, initial_cloth, skins_production, tools_production, beer_production, wine_production,
                  cloth_production, can_produce_skins, can_produce_tools, can_produce_beer, can_produce_wine,
-                 can_produce_cloth, commercial_office, money_lender, shipyard, tavern, weapon_master, position, player):
+                 can_produce_cloth, commercial_office, position, player):
 
         self.coins = 10000
         # Products quantity.
@@ -74,10 +74,11 @@ class City:
         self.population = 1000
 
         self.commercial_office = commercial_office
-        self.prestamist = money_lender
-        self.shipyard = shipyard
-        self.tavern = tavern
-        self.weapon_master = weapon_master
+        self.have_commercial_office = False
+        self.money_lender = 0
+        self.shipyard = 0
+        self.tavern = 0
+        self.weapon_master = 0
         self.possition = position
 
         self.boats = []
@@ -135,11 +136,6 @@ class City:
         else:
             return round((num_bought * proportional_price) / num_bought)
 
-    def prueba_grupos(self, min, max, num, bou):
-        initial_price = self.calculate_individual_price(max, min, num)
-        final_price = self.calculate_individual_price(max, min, num + bou)
-        medium_price = (initial_price + final_price) / 2
-        return medium_price
 
     def calculate_group_trade(self, minimum_price, maximum_price, items_number, traded_number):
         """
@@ -267,11 +263,14 @@ class City:
         """
         self.create_houses()
         self.get_taxes()
+        self.set_consumption()
         self.city_consumption()
         self.city_production()
         self.factories_production()
         self.avoid_minus_zero_items()
         self.calculate_prices()
+        self.tavern.change_turn()
+        self.shipyard.change_turn()
 
     def show_prices(self):
         """
@@ -295,7 +294,7 @@ class City:
         Return max and min values for each product.
         :return:
         """
-        option = input("What do you want to buy?\n")
+        option = input("What do you want to trade?\n")
         option = Functionalities.Utilities.correct_values(1, 5, option)
         if option == 1:
             return [self.max_price_skins, self.min_price_skins, self.skins, "skins"]
@@ -308,9 +307,11 @@ class City:
         elif option == 5:
             return [self.max_price_cloth, self.min_price_cloth, self.cloth, "cloth"]
 
-    def how_many_buy(self, choosen_product):
+    def how_many_buy(self, choosen_product, empty_space):
         option = input("How many do you want to buy?\n")
-        option = Functionalities.Utilities.correct_values(0, 99_999, option)
+        option = Functionalities.Utilities.correct_values(0, empty_space, option)
+        if option == 0:
+            return 0, choosen_product[3], 0
         if option < choosen_product[2]:
             medium_price = self.calculate_group_trade(choosen_product[1], choosen_product[0], choosen_product[2],
                                                       -option)
@@ -327,20 +328,21 @@ class City:
                 print("You cannot afford to buy {} {}".format(option, choosen_product[3]))
         else:
             print("There are less than {} {} in {}".format(option, choosen_product[3], self.name))
-
-    def how_many_sell(self, choosen_product):
+        return 0, choosen_product[3], 0
+    def how_many_sell(self, choosen_product, boat_products):
         # Seguir con esto
-        option = input("How many do you want to sell? You have {}.\n")
-        option = Functionalities.Utilities.correct_values(0, choosen_product[2], option)
+        option = input("How many do you want to sell. You have {}\n".format(boat_products))
+        option = Functionalities.Utilities.correct_values(0, boat_products, option)
         medium_price = self.calculate_group_trade(choosen_product[1], choosen_product[0], choosen_product[2],
                                                   option)
         total_price = medium_price * option
         self.increase_product_number([option, choosen_product[3]])
         self.coins -= total_price
         self.player.coins += total_price
-        print("You have sold {} items at {} coins each."
+        print("You have sold {} items at {} coins each.\n"
               .format(option, medium_price))
         return option, choosen_product[3], medium_price
+
 
     def decrease_product_number(self, products):
         quantity = products[0]
@@ -369,31 +371,42 @@ class City:
             self.cloth += quantity
 
     def menu_city_buildings(self):
-        print("What do you want to do?:\n"
-              "1- Go to your comercial office.\n"
-              "2- Go to prestamist.\n"
-              "3- Go to shipyard.\n"
-              "4- Go to tavern.\n"
-              "5- Go to weapon master.\n"
-              "6- Construct buildings.\n"
-              "7- Exit\n")
-        option = input()
-        option = Functionalities.Utilities.correct_values(1, 7, option)
-        if option == 7:
-            pass
-        else:
-            self.choose_city_building
+        while True:
+            print("What do you want to do?\n\n"
+                  "1- Go to your comercial office.\n"
+                  "2- Go to prestamist.\n"
+                  "3- Go to shipyard.\n"
+                  "4- Go to tavern.\n"
+                  "5- Go to weapon master.\n"
+                  "6- Build buildings.\n"
+                  "7- Exit\n")
+            option = input()
+            option = Functionalities.Utilities.correct_values(1, 7, option)
+            if option == 7:
+                break
+            else:
+                self.choose_city_building(option)
 
     def choose_city_building(self, option):
         if option == 1:
-            self.commercial_office.show_menu()
+            #self.commercial_office.show_menu()
+            pass
         elif option == 2:
-            self.prestamist.show_menu()
+            #self.prestamist.show_menu()
+            pass
         elif option == 3:
             self.shipyard.show_menu()
         elif option == 4:
-            self.tavern.show_menu()
+            print("To enter the tavern, you must state which ship is yours.")
+            my_ship = Functionalities.Utilities.choose_boat_from_city(self)
+            self.tavern.show_menu(my_ship)
         elif option == 5:
-            self.weapon_master.show_menu()
+            #self.weapon_master.show_menu()
+            pass
         elif option == 6:
-            self.menu_city_buildings()
+            #self.menu_city_buildings()
+            pass
+        if option == 7:
+            pass
+        else:
+            print("\n\n\n Not ready yet.\n\n\n")

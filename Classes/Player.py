@@ -14,7 +14,7 @@ class Player:
         self.boats = []
         self.convoys = []
         self.turn = 0
-
+        self.all_cities_list = 0
     def check_player(self):
         print("-" * 60)
         print("You have {} coins, {} boats and {} convoys. Your level is {}."
@@ -86,7 +86,7 @@ class Player:
         else:
             for moving_item in moving_list:
                 print("-{} moving from {} to {}. ({} turns remain) {}% health."
-                      .format(moving_item.name, moving_item.city.name,
+                      .format(moving_item.name, moving_item.city_before_travel.name,
                               moving_item.destination.name, moving_item.travel_turns, moving_item.health))
         Functionalities.Utilities.text_separation()
         print("\n")
@@ -109,14 +109,13 @@ class Player:
 
 
     def list_cities(self, cities):
-        print("Where do you want to move?\n"
-              "1- Lubeck.\n"
-              "2- Rostock. \n"
-              "3- Malmo. \n"
-              "4- Stettin.\n"
-              "5- Gdanks.\n")
+        counter = 1
+        print("Where do you want to move?\n")
+        for city in cities:
+            print("{}- {}.".format(counter, city.name))
+            counter += 1
         option = input("\n")
-        option = Functionalities.Utilities.correct_values(1, 5, option)
+        option = Functionalities.Utilities.correct_values(1, len(cities), option)
         return cities[option - 1]
 
     def is_possible_to_change_cities(self, cities):
@@ -143,6 +142,38 @@ class Player:
         for convoy in self.convoys:
             convoy.change_turn()
 
+    def check_if_have_to_move_city(self):
+        if not self.not_remain_city_without_boats():
+            self.move_city()
+
+    def not_remain_city_without_boats(self):
+        if self.city.have_commercial_office:
+            return True
+        else:
+            for boat in self.boats:
+                if boat.city == self.city:
+                    return True
+            for convoy in self.convoys:
+                if convoy.city == self.city:
+                    return True
+
+            return False
+
+    def move_city(self):
+        for city in self.all_cities_list:
+            if city.have_commercial_office:
+                print("\n\nYou have been moved to {}\n\n".format(city.name))
+                self.city = city
+
+    def calculate_bill(self):
+        sailors = 0
+        for boat in self.boats:
+            sailors += boat.sailors
+        print("\n{} have been paid to your sailors.\n".format(sailors * 10))
+        self.coins -= sailors * 10
+
     def change_turn(self):
         self.turn += 1
         self.change_turns_boats_and_convoys()
+        self.check_if_have_to_move_city()
+        self.calculate_bill()

@@ -2,19 +2,22 @@ import Functionalities.Utilities
 
 
 class Boat:
-    def __init__(self, health, level, load, sailors, captain, cannons, name, city, player, cities_list):
+    def __init__(self, health, level, load, sailors, captain, catapult, name, city, player):
 
         self.name = name
 
         self.max_health = 0
         self.health = health
         self.level = level
-        self.max_load = 150
+        self.max_load = 0
+        self.current_load = 0
         self.max_sailors = 0
         self.sailors = sailors
-        self.max_cannons = 0
-        self.cannons = cannons
+        self.artillery_space = 0
+        self.catapult = catapult
+        self.cannon = 0
         self.city = city
+        self.city_before_travel = 0
         self.player = player
 
         # List with inicial cargo.
@@ -29,7 +32,7 @@ class Boat:
         self.destination = 0
         self.traveling = False
         self.travel_turns = 0
-        self.cities_list = cities_list
+        self.cities_list = self.player.all_cities_list
 
         self.price_skins = 0
         self.price_tools = 0
@@ -37,27 +40,39 @@ class Boat:
         self.price_wine = 0
         self.price_cloth = 0
 
+        self.is_convoy = False
+        self.enough_sailors = False
+
+        self.firepower = 0
+
+        self.check_level()
+        self.check_current_load()
+        self.city.boats.append(self)
+        self.check_if_enough_sailors()
     def check_level(self):
         if self.level == 1:
             self.max_sailors = 20
-            self.max_cannons = 7
+            self.artillery_space = 7
             self.max_health = 100
             self.max_load = 120
 
         elif self.level == 2:
             self.max_sailors = 30
-            self.max_cannons = 9
+            self.artillery_space = 9
             self.max_health = 110
             self.max_load = 150
 
         elif self.level == 3:
             self.max_sailors = 40
-            self.max_cannons = 12
+            self.artillery_space = 12
             self.max_health = 125
             self.max_load = 180
 
+    def check_current_load(self):
+        self.current_load = self.skins + self.tools + self.beer + self.wine + self.cloth
+
     def boat_deterioration(self):
-        if self.traveling == True:
+        if self.traveling:
             self.health -= 1
             if self.health < 11:
                 print("Atention! Your ship {} is sinking."
@@ -67,25 +82,68 @@ class Boat:
                       .format(self.name))
                 return False
 
-    def check_stats_level(self):
-        if self.level == 1:
-            self.max_sailors = 20
-            self.max_load = 150
-        elif self.level == 2:
-            self.max_sailors = 25
-            self.max_load = 175
-        elif self.level == 3:
-            self.max_sailors = 30
-            self.max_load = 200
 
     def check_if_enough_sailors(self):
         if self.sailors < 8:
-            return False
+            self.enough_sailors = False
         else:
+            self.enough_sailors = True
+
+    def choose_city_to_travel(self, cities):
+        if self.enough_sailors:
+            counter = 1
+            print("Where do you want to move?\n")
+            for city in cities:
+                print("{}- {}.".format(counter, city.name))
+                counter += 1
+            option = input("\n")
+            option = Functionalities.Utilities.correct_values(1, len(cities), option)
+            self.check_distance_between_cities(option - 1)
+        else:
+            print("You can´t move with less than 8 sailors.\n")
+
+    def check_distance_between_cities(self, option):
+        # Terminar esto
+        cities = self.cities_list
+        distance = self.city.possition + cities[option].possition
+        if self.city == cities[option]:
+            print("You are already in {}".format(self.city.name))
+        else:
+            print("{} is now moving to {}. Will take {} turns."
+                  .format(self.name, cities[option].name, distance))
+            self.set_travel(distance, cities[option])
+
+    def set_travel(self, distance, destination):
+        self.travel_turns = distance
+        self.traveling = True
+        self.destination = destination
+        self.boat_deterioration()
+        self.city_before_travel = self.city
+        if self in self.city.boats:
+            self.city.boats.remove(self)
+        self.city = False
+
+
+    def while_traveling(self):
+        if self.travel_turns > 1:
+            self.travel_turns -= 1
+        elif self.travel_turns == 1:
+            self.city = self.destination
+            self.city.boats.append(self)
+            self.traveling = False
+            self.destination = 0
+            print("Your boat {} has arrived at {}."
+                  .format(self.name, self.city.name))
+
+    def check_if_traveling(self):
+        if self.traveling:
             return True
+        else:
+            return False
 
     def check_cargo(self):
         print("-" * 60)
+        self.check_current_load()
         print("Your boat {} have:\n"
               "{} skins at {} coins.\n"
               "{} tools at {} coins.\n"
@@ -94,20 +152,22 @@ class Boat:
               "{} cloth at {} coins.\n"
               .format(self.name, self.skins, self.price_skins, self.tools, self.price_tools, self.beer,
                       self.price_beer, self.wine, self.price_wine, self.cloth, self.price_cloth))
+        print("\nThis ship have a maximum cargo of {} units. Is currently loaded with {}. {} empty spaces remain.\n"
+              .format(self.max_load, self.current_load, self.max_load - self.current_load))
         if self.captain:
-            print("This boat has a captain. There are {} sailors.\n"
+            print("This ship has a captain. There are {} sailors.\n"
                   .format(self.sailors))
         else:
-            print("This boat doesn't have a captain. There are {} sailors.\n"
-                  .format(self.sailors))
-        print("You are in {}."
-              .format(self.city.name))
+            print("This ship doesn't have a captain. There are {} sailors, and total space for {}.\n"
+                  .format(self.sailors, self.max_sailors))
+        print("You are in {}. This ship's level is {}."
+              .format(self.city.name, self.level))
         print("-" * 60, "\n")
 
     def check_if_can_become_convoy(self):
         if self.captain:
             if self.sailors > 19:
-                if self.cannons > 7:
+                if self.catapult > 7:
                     election = input("Do you want to create a new convoy, named {}?\n"
                                      "1- Yes.\n"
                                      "2- No.\n"
@@ -148,7 +208,7 @@ class Boat:
         elif option == 3:
             self.check_cargo()
         elif option == 4:
-            self.choose_city_to_travel()
+            self.choose_city_to_travel(self.player.all_cities_list)
 
     def buy_from_city(self):
         # Select current city, update prices and choose a product.
@@ -156,8 +216,11 @@ class Boat:
         current_city.calculate_prices()
         current_city.show_prices()
         choosen_product = current_city.choose_product()
+        # Finding out how many empty space we have.
+        self.check_current_load()
+        empty_space = self.max_load - self.current_load
         # Selecting how many we want to buy, and returning it`s price.
-        new_products = current_city.how_many_buy(choosen_product)
+        new_products = current_city.how_many_buy(choosen_product, empty_space)
         product_prices = self.choose_prices(new_products[1])
         product = self.choose_products(new_products[1])
         new_price = new_products[2]
@@ -173,15 +236,27 @@ class Boat:
         current_city.calculate_prices()
         current_city.show_prices()
         choosen_product = current_city.choose_product()
+        boat_product = self.boat_products(choosen_product)
         # Selecting how many we want to sell, and returning it`s price.
-        new_products = current_city.how_many_sell(choosen_product)
-        product_prices = self.choose_prices(new_products[1])
-        product = self.choose_products(new_products[1])
-        new_price = new_products[2]
-        average_price = Functionalities.Utilities.calculate_average_price \
-            (product_prices, product, new_price, product + new_products[0])
-        # deleting selled products.
+        new_products = current_city.how_many_sell(choosen_product, boat_product)
+        # deleting sold products.
         self.decrease_products(new_products)
+        if self.boat_products(choosen_product) == 0:
+            self.change_prices(choosen_product[3], 0)
+
+
+    def boat_products(self, choosen_products):
+        name = choosen_products[3]
+        if name == "skins":
+            return self.skins
+        elif name == "tools":
+            return self.tools
+        elif name == "beer":
+            return self.beer
+        elif name == "wine":
+            return self.wine
+        elif name == "cloth":
+            return self.cloth
 
 
     def change_prices(self, name, new_price):
@@ -246,69 +321,37 @@ class Boat:
         elif products[1] == "cloth":
             self.cloth -= quantity
 
-    def choose_city_to_travel(self):
-        print("Where do you want to go?\n"
-              "1- Lubeck.\n"
-              "2- Rostock. \n"
-              "3- Malmo. \n"
-              "4- Stettin.\n"
-              "5- Gdanks.\n")
-        option = input("\n")
-        option = Functionalities.Utilities.correct_values(1, 5, option)
-        self.check_distance_between_cities(option - 1)
 
-    def check_distance_between_cities(self, option):
-        # Terminar esto
-        cities = self.cities_list
-        distance = self.city.possition + cities[option].possition
-        if self.city == cities[option]:
-            print("You are already in {}".format(self.city.name))
-        else:
-            print("{} is now moving to {}. Will take {} turns."
-                  .format(self.name, cities[option].name, distance))
-            self.set_travel(distance, cities[option])
 
-    def set_travel(self, distance, destination):
-        self.travel_turns = distance
-        self.traveling = True
-        self.destination = destination
-        self.boat_deterioration()
-
-    def while_traveling(self):
-        if self.travel_turns > 1:
-            self.travel_turns -= 1
-        elif self.travel_turns == 1:
-            self.city = self.destination
-            self.traveling = False
-            self.destination = 0
-            print("Your boat {} has arrived at {}."
-                  .format(self.name, self.city.name))
-
-    def check_if_traveling(self):
-        if self.traveling:
-            return True
-        else:
-            return False
+    def set_firepower(self):
+        self.firepower = self.catapult + (self.cannon * 2)
 
     def change_turn(self):
         if self.check_if_traveling():
             self.while_traveling()
             self.boat_deterioration()
+        self.check_level()
+        self.set_firepower()
 
 
 # Convoys, to control ships together.
 class Convoy:
     def __init__(self, name, city, boats):
-        self.boats = []
+        self.boats = boats
         self.min_level = 0
         self.name = name
         self.city = city
+
         self.traveling = False
         self.travel_duration = 0
         self.destination = 0
+        self.travel_turns = 0
+
         self.all_healths = []
         self.medium_health = 0
         self.min_health = 0
+
+        self.is_convoy = True
 
     def check_min_lvl(self):
         all_levels = []
@@ -334,7 +377,7 @@ class Convoy:
                 boat.traveling = False
 
     def check_if_traveling(self):
-        if self.traveling == True:
+        if self.traveling:
             return True
         else:
             return False
