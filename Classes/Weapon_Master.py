@@ -1,16 +1,19 @@
 import Functionalities.Utilities
 
 class Weapon_master:
-    def __init__(self):
+    def __init__(self, city):
         self.level = 1
         self.experience = 0
         self.coins = 100
+
+        self.city = city
 
         self.dagger = 3
         self.cannon = 2
         self.bombarda = 0
 
-    def show_menu(self, money):
+    def show_menu(self):
+        money = self.city.player.coins
         option = input("What do you want to buy?\n"
                        "1- Dagger. (100 coins)\n"
                        "2- Ship cannon. (800 coins)\n"
@@ -21,11 +24,11 @@ class Weapon_master:
         elif option == 2:
             self.sell_ship_cannnon(money)
         elif option == 3:
-            self.sell_bombarda(money, 1600)
+            self.sell_bombard(money, 1600)
 
-    def sell_bombarda(self, money, price):
+    def sell_bombard(self, money, price):
         max_purchable_objets = Functionalities.Utilities.how_many_can_afford(price, money)
-        cannon_number = input("How many cannons you want to buy?")
+        cannon_number = input("How many bombards you want to buy?\n")
         cannon_number = Functionalities.Utilities.correct_values(0, max_purchable_objets, cannon_number)
         if Functionalities.Utilities.check_if_affordable(price, cannon_number, money):
             total_money = cannon_number * price

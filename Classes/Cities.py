@@ -87,17 +87,27 @@ class City:
         self.tavern = 0
 
     def create_houses(self):
-        # Automatically create houses when needed.
+        """
+        Automatically create houses when needed.
+        :return:
+        """
+
         while self.population > (self.houses - 10) * 4:
-            self.houses += 1
-            self.coins -= 100
+            self.houses += 2
+            self.coins -= 200
 
     def get_taxes(self):
-        # Get taxes from every house.
+        """
+        Get taxes from every house.
+        :return:
+        """
         self.coins += 10 * self.houses
 
     def set_consumption(self):
-        # Set the city consumption depending on population growth.
+        """
+        Set the city consumption depending on population growth
+        :return:
+        """
         self.skins_consumption = round((self.population * self.skins_consumption_ratio) / 1000)
         self.tools_consumption = round((self.population * self.tools_consumption_ratio) / 1000)
         self.beer_consumption = round((self.population * self.beer_consumption_ratio) / 1000)
@@ -107,6 +117,7 @@ class City:
     def calculate_individual_price(self, max_value, min_value, quantity):
         """
         Set individual price of a product.
+
         :param max_value:
         :param min_value:
         :param quantity:
@@ -122,6 +133,7 @@ class City:
 
     def calculate_average_price(self, minimum_price, maximum_price, num_products, num_bought):
         """
+        Calculates mean price depending on max and min values, number of products and number of item that are we buying.
         :param minimum_price:
         :param maximum_price:
         :param num_products:
@@ -141,6 +153,7 @@ class City:
         """
         Calculate average price for trading more than an item. If traded number is positive, we are selling, if it is
         positive, we are buying.
+
         :param minimum_price:
         :param maximum_price:
         :param items_number:
@@ -153,6 +166,12 @@ class City:
         return round(medium_price)
 
     def calculate_prices(self):
+        """
+        Calculate every price that will be displayed in the menu everytime that we want to trade an item.
+
+        It uses the same function to calculate every price, depending on max and min values, as well as item number.
+        :return:
+        """
         # Calculate every price, depending on available quantity.
         self.price_skins = self.calculate_individual_price(self.max_price_skins, self.min_price_skins, self.skins)
         self.price_tools = self.calculate_individual_price(self.max_price_tools, self.min_price_tools, self.tools)
@@ -172,6 +191,10 @@ class City:
         self.cloth -= self.cloth_consumption
 
     def city_production(self):
+        """
+        Adds city production of every item.
+        :return:
+        """
         # Add products, depending on city production.
         self.skins += self.skins_production
         self.tools += self.tools_production
@@ -180,6 +203,10 @@ class City:
         self.cloth += self.cloth_production
 
     def factories_production(self):
+        """
+        Calculate factory production for each item.
+        :return:
+        """
         self.skins += self.skins_factories * 3
         self.tools += self.tools_factories * 5
         self.beer += self.beer_factories * 10
@@ -187,6 +214,12 @@ class City:
         self.cloth += self.cloth_factories * 4
 
     def create_factories(self, type, money):
+        """
+        Creates factories for a city.
+        :param type:
+        :param money:
+        :return:
+        """
         Functionalities.Utilities.how_many_can_afford(30000, money)
         quantity = input("How many factories do you want to create?\n")
         quantity = Functionalities.Utilities.correct_values(0, 10000, quantity)
@@ -199,6 +232,11 @@ class City:
             return total_cost, type
 
     def create_factories_menu(self, money):
+        """
+        Print menu and take input.
+        :param money:
+        :return:
+        """
         print("Wich type of factory do you want to create?\n"
               "1- Skins.\n"
               "2- Tools.\n"
@@ -214,6 +252,12 @@ class City:
             self.check_if_can_build_factory(election, money)
 
     def check_if_can_build_factory(self, election, money):
+        """
+        Check if it is possible to build a certain factory in a city.
+        :param election:
+        :param money:
+        :return:
+        """
         if election == 1:
             if self.can_produce_skins:
                 self.create_factories(1, money)
@@ -294,6 +338,8 @@ class City:
         Return max and min values for each product.
         :return:
         """
+        self.calculate_prices()
+        self.show_prices()
         option = input("What do you want to trade?\n")
         option = Functionalities.Utilities.correct_values(1, 5, option)
         if option == 1:
@@ -308,16 +354,34 @@ class City:
             return [self.max_price_cloth, self.min_price_cloth, self.cloth, "cloth"]
 
     def how_many_buy(self, choosen_product, empty_space):
+        """
+        Like in Class boat, this one is the most unreadable function.
+
+        It starts asking how many products you want to buy.
+
+        Check if everything is fine, and then calculate average and total price.
+
+        Finally, it returns the data to the Boat class.
+        :param choosen_product:
+        :param empty_space:
+        :return:
+        """
+        # Ask how many we want to buy, if it is 0, finish the function.
         option = input("How many do you want to buy?\n")
         option = Functionalities.Utilities.correct_values(0, empty_space, option)
         if option == 0:
             return 0, choosen_product[3], 0
+
+        # Check if enough items in city.
         if option < choosen_product[2]:
+            # Calculate mean and total price.
             medium_price = self.calculate_group_trade(choosen_product[1], choosen_product[0], choosen_product[2],
                                                       -option)
             total_price = medium_price * option
+
+            #Check if player has enough money. If it does, takes the money and return to boat all the info.
             if self.player.coins > total_price:
-                self.decrease_product_number([option, choosen_product[3]])
+                Functionalities.Utilities.decrease_product_number(self, choosen_product[3])
                 self.coins += total_price
                 self.player.coins -= total_price
                 print("You have bought {} items at {} coins each."
@@ -329,14 +393,21 @@ class City:
         else:
             print("There are less than {} {} in {}".format(option, choosen_product[3], self.name))
         return 0, choosen_product[3], 0
+
     def how_many_sell(self, choosen_product, boat_products):
-        # Seguir con esto
+        """
+        Same as above, but no need to check anything.
+
+        :param choosen_product:
+        :param boat_products:
+        :return:
+        """
         option = input("How many do you want to sell. You have {}\n".format(boat_products))
         option = Functionalities.Utilities.correct_values(0, boat_products, option)
         medium_price = self.calculate_group_trade(choosen_product[1], choosen_product[0], choosen_product[2],
                                                   option)
         total_price = medium_price * option
-        self.increase_product_number([option, choosen_product[3]])
+        Functionalities.Utilities.increase_product_number(self, choosen_product[3])
         self.coins -= total_price
         self.player.coins += total_price
         print("You have sold {} items at {} coins each.\n"
@@ -344,33 +415,11 @@ class City:
         return option, choosen_product[3], medium_price
 
 
-    def decrease_product_number(self, products):
-        quantity = products[0]
-        if products[1] == "skins":
-            self.skins -= quantity
-        elif products[1] == "tools":
-            self.tools -= quantity
-        elif products[1] == "beer":
-            self.beer -= quantity
-        elif products[1] == "wine":
-            self.wine -= quantity
-        elif products[1] == "cloth":
-            self.cloth -= quantity
-
-    def increase_product_number(self, products):
-        quantity = products[0]
-        if products[1] == "skins":
-            self.skins += quantity
-        elif products[1] == "tools":
-            self.tools += quantity
-        elif products[1] == "beer":
-            self.beer += quantity
-        elif products[1] == "wine":
-            self.wine += quantity
-        elif products[1] == "cloth":
-            self.cloth += quantity
-
     def menu_city_buildings(self):
+        """
+        Loop that prints city menu.
+        :return:
+        """
         while True:
             print("What do you want to do?\n\n"
                   "1- Go to your comercial office.\n"
@@ -388,6 +437,11 @@ class City:
                 self.choose_city_building(option)
 
     def choose_city_building(self, option):
+        """
+        Depending on choosen option, uses it´s function.
+        :param option:
+        :return:
+        """
         if option == 1:
             #self.commercial_office.show_menu()
             pass
@@ -401,8 +455,7 @@ class City:
             my_ship = Functionalities.Utilities.choose_boat_from_city(self)
             self.tavern.show_menu(my_ship)
         elif option == 5:
-            #self.weapon_master.show_menu()
-            pass
+            self.weapon_master.show_menu()
         elif option == 6:
             #self.menu_city_buildings()
             pass

@@ -16,6 +16,10 @@ class Player:
         self.turn = 0
         self.all_cities_list = 0
     def check_player(self):
+        """
+        Prints out any important data.
+        :return:
+        """
         print("-" * 60)
         print("You have {} coins, {} boats and {} convoys. Your level is {}."
               .format(self.coins, len(self.boats), len(self.convoys), self.level))
@@ -62,9 +66,14 @@ class Player:
                 self.where_are_traveling(self.boats)
             else:
                 choose_boat = self.select_boat_or_convoy(boats_not_traveling)
-                choose_boat.show_options()
+                choose_boat.show_menu()
 
     def select_traveling_units(self, unit_list):
+        """
+        Select every traveling boat, and return them.
+        :param unit_list:
+        :return:
+        """
         traveling_list = []
         for unit in unit_list:
             if unit.check_if_traveling():
@@ -72,6 +81,10 @@ class Player:
         return traveling_list
 
     def view_all_traveling_units(self):
+        """
+        Differences between convoys and ships.
+        :return:
+        """
         traveling_boats = self.select_traveling_units(self.boats)
         traveling_convoys = self.select_traveling_units(self.convoys)
         print("Your moving boats are:\n")
@@ -80,6 +93,11 @@ class Player:
         self.where_are_traveling(traveling_convoys)
 
     def where_are_traveling(self, moving_list):
+        """
+        Print out every traveling unit.
+        :param moving_list:
+        :return:
+        """
         Functionalities.Utilities.text_separation()
         if len(moving_list) == 0:
             print("You have no units traveling currently.")
@@ -92,6 +110,10 @@ class Player:
         print("\n")
 
     def check_convoys(self):
+        """
+        Print and let you decide every convoy.
+        :return:
+        """
         if len(self.convoys) == 0:
             print("You dont have any convoys to select.\n")
         else:
@@ -103,22 +125,35 @@ class Player:
             self.boat_or_convoy_options(current)
 
     def select_boat_or_convoy(self, type):
+        """
+        Select and return an unit.
+        :param type:
+        :return:
+        """
         option = input()
         option = Functionalities.Utilities.correct_values(1, len(type), option)
         return type[option - 1]
 
 
     def list_cities(self, cities):
-        counter = 1
+        """
+        Print out list of cities, and let you choose one of them.
+        :param cities:
+        :return:
+        """
         print("Where do you want to move?\n")
-        for city in cities:
-            print("{}- {}.".format(counter, city.name))
-            counter += 1
+        for i, x in enumerate(cities):
+            print("{}- {}.".format(i + 1, x.name))
         option = input("\n")
         option = Functionalities.Utilities.correct_values(1, len(cities), option)
         return cities[option - 1]
 
     def is_possible_to_change_cities(self, cities):
+        """
+        Check whether is possible to change to another city.
+        :param cities:
+        :return:
+        """
         selected_city = self.list_cities(cities)
         for boat in self.boats:
             if boat.city == selected_city:
@@ -129,6 +164,11 @@ class Player:
         return False
 
     def change_city(self, cities):
+        """
+        If possible, changes city.
+        :param cities:
+        :return:
+        """
         selected_city = self.is_possible_to_change_cities(cities)
         if not selected_city:
             print("You can't move to a city if you don't have a boat in it.")

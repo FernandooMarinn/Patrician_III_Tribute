@@ -26,6 +26,7 @@ class Boat:
         self.beer = load[2]
         self.wine = load[3]
         self.cloth = load[4]
+        self.empty_space = 0
 
         self.captain = captain
 
@@ -69,9 +70,17 @@ class Boat:
             self.max_load = 180
 
     def check_current_load(self):
-        self.current_load = self.skins + self.tools + self.beer + self.wine + self.cloth
-
+        """
+        Calculate current ship load by adding every item and sailors.
+        :return:
+        """
+        self.current_load = self.skins + self.tools + self.beer + self.wine + self.cloth + self.sailors
+        self.empty_space = self.max_load - self.current_load
     def boat_deterioration(self):
+        """
+        When moving, change ship health, so it have to be repaired.
+        :return:
+        """
         if self.traveling:
             self.health -= 1
             if self.health < 11:
@@ -84,18 +93,25 @@ class Boat:
 
 
     def check_if_enough_sailors(self):
+        """
+        Can´t travel with less than 8 sailors.
+        :return:
+        """
         if self.sailors < 8:
             self.enough_sailors = False
         else:
             self.enough_sailors = True
 
     def choose_city_to_travel(self, cities):
+        """
+        Enumerate and choose a city from a list.
+        :param cities:
+        :return:
+        """
         if self.enough_sailors:
-            counter = 1
             print("Where do you want to move?\n")
-            for city in cities:
-                print("{}- {}.".format(counter, city.name))
-                counter += 1
+            for i, x in enumerate(cities):
+                print("{}- {}.".format(i + 1, x))
             option = input("\n")
             option = Functionalities.Utilities.correct_values(1, len(cities), option)
             self.check_distance_between_cities(option - 1)
@@ -103,6 +119,11 @@ class Boat:
             print("You can´t move with less than 8 sailors.\n")
 
     def check_distance_between_cities(self, option):
+        """
+        Check distance between cities. If they are close, will take less turns to move.
+        :param option:
+        :return:
+        """
         # Terminar esto
         cities = self.cities_list
         distance = self.city.possition + cities[option].possition
@@ -114,6 +135,12 @@ class Boat:
             self.set_travel(distance, cities[option])
 
     def set_travel(self, distance, destination):
+        """
+        Start moving to another city.
+        :param distance:
+        :param destination:
+        :return:
+        """
         self.travel_turns = distance
         self.traveling = True
         self.destination = destination
@@ -125,6 +152,10 @@ class Boat:
 
 
     def while_traveling(self):
+        """
+        Works every turn until arrival. Check if has arrived and calculate how many turns remain.
+        :return:
+        """
         if self.travel_turns > 1:
             self.travel_turns -= 1
         elif self.travel_turns == 1:
@@ -136,12 +167,20 @@ class Boat:
                   .format(self.name, self.city.name))
 
     def check_if_traveling(self):
+        """
+        Return True if in open sea.
+        :return:
+        """
         if self.traveling:
             return True
         else:
             return False
 
-    def check_cargo(self):
+    def check_boat(self):
+        """
+        Check everything that is important in a boat object. Load, empty space, captain, sailors and level.
+        :return:
+        """
         print("-" * 60)
         self.check_current_load()
         print("Your boat {} have:\n"
@@ -165,9 +204,14 @@ class Boat:
         print("-" * 60, "\n")
 
     def check_if_can_become_convoy(self):
+        """
+        Check if ship has everything to become a convoy.
+        :return:
+        """
         if self.captain:
             if self.sailors > 19:
-                if self.catapult > 7:
+                self.set_firepower()
+                if self.firepower > 7:
                     election = input("Do you want to create a new convoy, named {}?\n"
                                      "1- Yes.\n"
                                      "2- No.\n"
@@ -178,13 +222,17 @@ class Boat:
                     else:
                         return False
                 else:
-                    print("Your boat has less than 8 cannons.")
+                    print("Your boat has less than 8 firepower.")
             else:
                 print("Your boat has less than 20 sailors.")
         else:
             print("In order to create a convoy, you need a captain.")
 
-    def show_options(self):
+    def show_menu(self):
+        """
+        Print ship menu and takes choosen option.
+        :return:
+        """
         while not self.check_if_traveling():
             print("What do you want to do with your boat {}?\n"
                   "1- Buy from city.\n"
@@ -201,63 +249,75 @@ class Boat:
                 self.choose_options(option)
 
     def choose_options(self, option):
+        """
+        Depending on choosen option, uses it´s function.
+        :param option:
+        :return:
+        """
         if option == 1:
             self.buy_from_city()
         elif option == 2:
             self.sell_to_city()
         elif option == 3:
-            self.check_cargo()
+            self.check_boat()
         elif option == 4:
             self.choose_city_to_travel(self.player.all_cities_list)
 
     def buy_from_city(self):
+        """
+        Trading is not easy, and it is probably the most difficult function to read in the whole game,
+        especially buying.
+
+        It starts with selecting the current city, updating its prices and printing them out.
+
+        Then choose the product we want to buy, and calculate how much free space we have on the ship.
+
+        After that, it asks how many products we want to buy, the city class calculates if we have enough money,
+        and finally returns the products.
+
+        It calculates the average price, which is updated to have a better reference when we trade.
+
+        :return:
+        """
         # Select current city, update prices and choose a product.
-        current_city = self.city
-        current_city.calculate_prices()
-        current_city.show_prices()
-        choosen_product = current_city.choose_product()
+        choosen_product = self.city.choose_product()
+
         # Finding out how many empty space we have.
         self.check_current_load()
-        empty_space = self.max_load - self.current_load
+
         # Selecting how many we want to buy, and returning it`s price.
-        new_products = current_city.how_many_buy(choosen_product, empty_space)
+        new_products = self.city.how_many_buy(choosen_product, self.empty_space)
         product_prices = self.choose_prices(new_products[1])
         product = self.choose_products(new_products[1])
         new_price = new_products[2]
         average_price = Functionalities.Utilities.calculate_average_price(product_prices,
                                                                           product, new_price, product + new_products[0])
         # Adding bought products and changing it`s mean price.
-        self.add_products(new_products)
+        Functionalities.Utilities.increase_product_number(self, new_products)
         self.change_prices(new_products[1], average_price)
 
     def sell_to_city(self):
+        """
+        Selling is easier, as the city will always take everything.
+
+        It choose a product, calculate its price and then delete it from the boat.
+        :return:
+        """
         # Select current city, update prices and choose a product.
-        current_city = self.city
-        current_city.calculate_prices()
-        current_city.show_prices()
-        choosen_product = current_city.choose_product()
-        boat_product = self.boat_products(choosen_product)
+        choosen_product = self.city.choose_product()
+        boat_product = self.choose_products(choosen_product[3])
+
         # Selecting how many we want to sell, and returning it`s price.
-        new_products = current_city.how_many_sell(choosen_product, boat_product)
+        new_products = self.city.how_many_sell(choosen_product, boat_product)
+
         # deleting sold products.
-        self.decrease_products(new_products)
-        if self.boat_products(choosen_product) == 0:
+        Functionalities.Utilities.decrease_product_number(self, new_products)
+        if self.choose_products(choosen_product[3]) == 0:
             self.change_prices(choosen_product[3], 0)
 
 
-    def boat_products(self, choosen_products):
-        name = choosen_products[3]
-        if name == "skins":
-            return self.skins
-        elif name == "tools":
-            return self.tools
-        elif name == "beer":
-            return self.beer
-        elif name == "wine":
-            return self.wine
-        elif name == "cloth":
-            return self.cloth
 
+# Cambiar esto por comprensiones de diccionario.
 
     def change_prices(self, name, new_price):
         if name == "skins":
@@ -295,38 +355,19 @@ class Boat:
         elif name == "cloth":
             return self.price_cloth
 
-    def add_products(self, products):
-        quantity = products[0]
-        if products[1] == "skins":
-            self.skins += quantity
-        elif products[1] == "tools":
-            self.tools += quantity
-        elif products[1] == "beer":
-            self.beer += quantity
-        elif products[1] == "wine":
-            self.wine += quantity
-        elif products[1] == "cloth":
-            self.cloth += quantity
-
-    def decrease_products(self, products):
-        quantity = products[0]
-        if products[1] == "skins":
-            self.skins -= quantity
-        elif products[1] == "tools":
-            self.tools -= quantity
-        elif products[1] == "beer":
-            self.beer -= quantity
-        elif products[1] == "wine":
-            self.wine -= quantity
-        elif products[1] == "cloth":
-            self.cloth -= quantity
-
-
 
     def set_firepower(self):
+        """
+        Set firepower of a ship.
+        :return:
+        """
         self.firepower = self.catapult + (self.cannon * 2)
 
     def change_turn(self):
+        """
+        Everything that have to be done in each ship when a turn passes.
+        :return:
+        """
         if self.check_if_traveling():
             self.while_traveling()
             self.boat_deterioration()

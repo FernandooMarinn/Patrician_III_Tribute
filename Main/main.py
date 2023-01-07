@@ -56,7 +56,7 @@ def game_loop():
 def change_turn(player, cities_list):
     player.change_turn()
     Functionalities.Utilities.all_cities_change_turn(cities_list)
-    Functionalities.Utilities.set_new_captain()
+    Functionalities.Utilities.set_new_captain(all_taverns)
 
 
 def choose_options(option):

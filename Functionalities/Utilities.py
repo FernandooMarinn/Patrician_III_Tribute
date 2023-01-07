@@ -1,4 +1,9 @@
-import Classes.Tavern, Classes.Shipyard, Classes.Player, Classes.Money_Lender, Classes.Cities
+import Classes.Tavern
+import Classes.Weapon_Master
+import Classes.Shipyard
+import Classes.Player
+import Classes.Money_Lender
+import Classes.Cities
 import random
 
 
@@ -101,7 +106,9 @@ def create_cities(player):
 def add_all_buildings(cities):
     cities = create_taverns(cities)
     cities = create_shipyards(cities)
+    cities = create_weapon_masters(cities)
     return cities
+
 
 def create_taverns(cities):
     cities_with_tavern = []
@@ -111,6 +118,7 @@ def create_taverns(cities):
         cities_with_tavern.append(city)
     return cities_with_tavern
 
+
 def create_shipyards(cities):
     cities_with_shipyard = []
     for city in cities:
@@ -119,12 +127,21 @@ def create_shipyards(cities):
         cities_with_shipyard.append(city)
     return cities_with_shipyard
 
+def create_weapon_masters(cities):
+    cities_with_weapon_master = []
+    for city in cities:
+        weapon_master = Classes.Weapon_Master.Weapon_master(city)
+        city.weapon_master = weapon_master
+        cities_with_weapon_master.append(city)
+    return cities_with_weapon_master
+
 def calculate_list_mean(list):
     if sum(list) == 0:
         return 0
     else:
         mean = round(sum(list) / len(list))
         return mean
+
 
 def calculate_average_price(old_price, old_items, new_price, new_items):
     # Calculate the average price of the old and new items
@@ -146,12 +163,15 @@ def set_new_captain(taverns):
     random_tavern = random.choice(taverns)
     random_tavern.captain = True
 
+
 def text_separation():
     print("-" * 90)
+
 
 def all_cities_change_turn(cities):
     for city in cities:
         city.change_turn()
+
 
 def select_boat_from_convoy(convoy):
     counter = 1
@@ -200,6 +220,7 @@ def choose_boat_from_city(city):
     elif option == 2:
         return choose_boat_from_convoy(city)
 
+
 def choose_boat_or_convoy_from_city(city):
     print("Do you want to select a ship or a convoy?\n"
           "1- Ship.\n"
@@ -214,6 +235,7 @@ def choose_boat_or_convoy_from_city(city):
     elif option == 2:
         return choose_convoy(city), "convoy"
 
+
 def choose_boat(city):
     counter = 1
     for boat in city.boats:
@@ -222,6 +244,7 @@ def choose_boat(city):
     option = input()
     option = correct_values(1, len(city.boats), option)
     return city.boats[option - 1]
+
 
 def choose_boat_from_convoy(city):
     counter = 1
@@ -232,6 +255,7 @@ def choose_boat_from_convoy(city):
     option = correct_values(1, len(city.convoys), option)
     return choose_boat(city.convoys[option - 1])
 
+
 def choose_convoy(city):
     counter = 1
     for convoy in city.convoys:
@@ -240,3 +264,31 @@ def choose_convoy(city):
     option = input()
     option = correct_values(1, len(city.convoys), option)
     return city.convoys[option - 1]
+
+
+def decrease_product_number(object, products):
+    quantity = products[0]
+    if products[1] == "skins":
+        object.skins -= quantity
+    elif products[1] == "tools":
+        object.tools -= quantity
+    elif products[1] == "beer":
+        object.beer -= quantity
+    elif products[1] == "wine":
+        object.wine -= quantity
+    elif products[1] == "cloth":
+        object.cloth -= quantity
+
+
+def increase_product_number(object, products):
+    quantity = products[0]
+    if products[1] == "skins":
+        object.skins += quantity
+    elif products[1] == "tools":
+        object.tools += quantity
+    elif products[1] == "beer":
+        object.beer += quantity
+    elif products[1] == "wine":
+        object.wine += quantity
+    elif products[1] == "cloth":
+        object.cloth += quantity
