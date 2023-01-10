@@ -76,6 +76,7 @@ class Boat:
         """
         self.current_load = self.skins + self.tools + self.beer + self.wine + self.cloth + self.sailors
         self.empty_space = self.max_load - self.current_load
+
     def boat_deterioration(self):
         """
         When moving, change ship health, so it have to be repaired.
@@ -109,9 +110,10 @@ class Boat:
         :return:
         """
         if self.enough_sailors:
+            counter = 1
             print("Where do you want to move?\n")
-            for i, x in enumerate(cities):
-                print("{}- {}.".format(i + 1, x))
+            for city in cities:
+                print("{}- {}.".format(counter, city.name))
             option = input("\n")
             option = Functionalities.Utilities.correct_values(1, len(cities), option)
             self.check_distance_between_cities(option - 1)
@@ -255,105 +257,22 @@ class Boat:
         :return:
         """
         if option == 1:
-            self.buy_from_city()
+            Functionalities.Utilities.buy_from_city(self)
         elif option == 2:
-            self.sell_to_city()
+            Functionalities.Utilities.sell_to_city(self)
         elif option == 3:
             self.check_boat()
         elif option == 4:
             self.choose_city_to_travel(self.player.all_cities_list)
 
-    def buy_from_city(self):
-        """
-        Trading is not easy, and it is probably the most difficult function to read in the whole game,
-        especially buying.
-
-        It starts with selecting the current city, updating its prices and printing them out.
-
-        Then choose the product we want to buy, and calculate how much free space we have on the ship.
-
-        After that, it asks how many products we want to buy, the city class calculates if we have enough money,
-        and finally returns the products.
-
-        It calculates the average price, which is updated to have a better reference when we trade.
-
-        :return:
-        """
-        # Select current city, update prices and choose a product.
-        choosen_product = self.city.choose_product()
-
-        # Finding out how many empty space we have.
-        self.check_current_load()
-
-        # Selecting how many we want to buy, and returning it`s price.
-        new_products = self.city.how_many_buy(choosen_product, self.empty_space)
-        product_prices = self.choose_prices(new_products[1])
-        product = self.choose_products(new_products[1])
-        new_price = new_products[2]
-        average_price = Functionalities.Utilities.calculate_average_price(product_prices,
-                                                                          product, new_price, product + new_products[0])
-        # Adding bought products and changing it`s mean price.
-        Functionalities.Utilities.increase_product_number(self, new_products)
-        self.change_prices(new_products[1], average_price)
-
-    def sell_to_city(self):
-        """
-        Selling is easier, as the city will always take everything.
-
-        It choose a product, calculate its price and then delete it from the boat.
-        :return:
-        """
-        # Select current city, update prices and choose a product.
-        choosen_product = self.city.choose_product()
-        boat_product = self.choose_products(choosen_product[3])
-
-        # Selecting how many we want to sell, and returning it`s price.
-        new_products = self.city.how_many_sell(choosen_product, boat_product)
-
-        # deleting sold products.
-        Functionalities.Utilities.decrease_product_number(self, new_products)
-        if self.choose_products(choosen_product[3]) == 0:
-            self.change_prices(choosen_product[3], 0)
-
 
 
 # Cambiar esto por comprensiones de diccionario.
 
-    def change_prices(self, name, new_price):
-        if name == "skins":
-            self.price_skins = new_price
-        elif name == "tools":
-            self.price_tools = new_price
-        elif name == "beer":
-            self.price_beer = new_price
-        elif name == "wine":
-            self.price_wine = new_price
-        elif name == "cloth":
-            self.price_cloth = new_price
 
-    def choose_products(self, name):
-        if name == "skins":
-            return self.skins
-        elif name == "tools":
-            return self.tools
-        elif name == "beer":
-            return self.beer
-        elif name == "wine":
-            return self.wine
-        elif name == "cloth":
-            return self.cloth
 
-    def choose_prices(self, name):
-        if name == "skins":
-            return self.price_skins
-        elif name == "tools":
-            return self.price_tools
-        elif name == "beer":
-            return self.price_beer
-        elif name == "wine":
-            return self.price_wine
-        elif name == "cloth":
-            return self.price_cloth
+
+
 
 
     def set_firepower(self):

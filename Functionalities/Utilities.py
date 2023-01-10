@@ -4,6 +4,7 @@ import Classes.Shipyard
 import Classes.Player
 import Classes.Money_Lender
 import Classes.Cities
+import Classes.Comercial_Office
 import random
 
 
@@ -72,6 +73,7 @@ def ask_initial_city(cities):
         print("{}- {}.".format(i + 1, cities[i].name))
     option = input("Wich city do you choose as your birthplace?\n\n")
     option = correct_values(1, len(cities), option)
+    add_commercial_office(cities[option - 1])
     return cities[option - 1]
 
 
@@ -88,15 +90,17 @@ def create_player():
 
 def create_cities(player):
     # Puta mierda
-                                #  nombre   consumption    initial            production       can_pruduce
+    #  nombre   consumption    initial            production       can_pruduce
     Lubeck = Classes.Cities.City("Lubeck", 3, 4, 6, 3, 3, 40, 60, 40, 50, 30, 0, 15, 0, 9, 0, False, True, False, True,
                                  False, False, 1, player)
-    Rostock = Classes.Cities.City("Rostock", 3, 4, 6, 3, 3, 40, 40, 40, 50, 30, 0, 0, 0, 0, 0, False, False, False, False,
-                                 False, False, 1, player)
+    Rostock = Classes.Cities.City("Rostock", 3, 4, 6, 3, 3, 40, 40, 40, 50, 30, 0, 0, 0, 0, 0, False, False, False,
+                                  False,
+                                  False, False, 1, player)
     Malmo = Classes.Cities.City("Malmo", 3, 4, 6, 3, 3, 60, 60, 30, 30, 50, 8, 0, 0, 0, 7, True, False, False, False,
-                                 True, False, 1, player)
-    Stettin = Classes.Cities.City("Stettin", 3, 4, 6, 3, 3, 40, 50, 70, 50, 30, 0, 0, 15, 0, 0, False, False, True, True,
-                                 False, False, 1, player)
+                                True, False, 1, player)
+    Stettin = Classes.Cities.City("Stettin", 3, 4, 6, 3, 3, 40, 50, 70, 50, 30, 0, 0, 15, 0, 0, False, False, True,
+                                  True,
+                                  False, False, 1, player)
     Gdanks = Classes.Cities.City("Gdanks", 3, 4, 4, 3, 3, 30, 40, 60, 40, 40, 0, 0, 10, 0, 0, False, False, True, False,
                                  False, False, 1, player)
 
@@ -127,6 +131,7 @@ def create_shipyards(cities):
         cities_with_shipyard.append(city)
     return cities_with_shipyard
 
+
 def create_weapon_masters(cities):
     cities_with_weapon_master = []
     for city in cities:
@@ -134,6 +139,7 @@ def create_weapon_masters(cities):
         city.weapon_master = weapon_master
         cities_with_weapon_master.append(city)
     return cities_with_weapon_master
+
 
 def calculate_list_mean(list):
     if sum(list) == 0:
@@ -292,3 +298,127 @@ def increase_product_number(object, products):
         object.wine += quantity
     elif products[1] == "cloth":
         object.cloth += quantity
+
+def choose_prices(name, object):
+    if name == "skins":
+        return object.price_skins
+    elif name == "tools":
+        return object.price_tools
+    elif name == "beer":
+        return object.price_beer
+    elif name == "wine":
+        return object.price_wine
+    elif name == "cloth":
+        return object.price_cloth
+
+def choose_products(name, object):
+    if name == "skins":
+        return object.skins
+    elif name == "tools":
+        return object.tools
+    elif name == "beer":
+        return object.beer
+    elif name == "wine":
+        return object.wine
+    elif name == "cloth":
+        return object.cloth
+
+def change_prices(name, new_price, object):
+    if name == "skins":
+        object.price_skins = new_price
+    elif name == "tools":
+        object.price_tools = new_price
+    elif name == "beer":
+        object.price_beer = new_price
+    elif name == "wine":
+        object.price_wine = new_price
+    elif name == "cloth":
+        object.price_cloth = new_price
+
+def return_trading_items_values(name, city):
+    if name == "skins":
+        return [city.max_price_skins, city.min_price_skins, city.skins]
+    elif name == "tools":
+        return [city.max_price_tools, city.min_price_tools, city.tools]
+    elif name == "beer":
+        return [city.max_price_beer, city.min_price_beer, city.beer]
+    elif name == "wine":
+        return [city.max_price_wine, city.min_price_wine, city.wine]
+    elif name == "cloth":
+        return [city.max_price_cloth, city.min_price_cloth, city.cloth]
+
+def buy_from_city(ship_or_office):
+    """
+    Trading is not easy, and it is probably the most difficult function to read in the whole game,
+    especially buying.
+
+    It starts with selecting the current city, updating its prices and printing them out.
+
+    Then choose the product we want to buy, and calculate how much free space we have on the ship.
+
+    After that, it asks how many products we want to buy, the city class calculates if we have enough money,
+    and finally returns the products.
+
+    It calculates the average price, which is updated to have a better reference when we trade.
+
+    :return:
+    """
+    # Select current city, update prices and choose a product.
+    choosen_product = ship_or_office.city.choose_product()
+    # Finding out how many empty space we have. Only if it is a ship.
+    try:
+        ship_or_office.check_current_load()
+        empty_space = ship_or_office.empty_space
+    except AttributeError:
+        empty_space = 99_999
+
+    # Selecting how many we want to buy, and returning it`s price.
+    new_products = ship_or_office.city.how_many_buy(choosen_product, empty_space)
+    product_prices = choose_prices(new_products[1], ship_or_office)
+    product = choose_products(new_products[1], ship_or_office)
+    new_price = new_products[2]
+    average_price = calculate_average_price(product_prices,
+                                            product, new_price, product + new_products[0])
+    # Adding bought products and changing it`s mean price.
+    increase_product_number(ship_or_office, new_products)
+    change_prices(new_products[1], average_price, ship_or_office)
+
+
+def sell_to_city(ship_or_office):
+    """
+    Selling is easier, as the city will always take everything.
+
+    It chooses a product, calculate its price and then delete it from the boat.
+    :return:
+    """
+    # Select current city, update prices and choose a product.
+    choosen_product = ship_or_office.city.choose_product()
+    inventory_product = choose_products(choosen_product[3], ship_or_office)
+
+    # Selecting how many we want to sell, and returning it`s price.
+    new_products = ship_or_office.city.how_many_sell(choosen_product, inventory_product)
+
+    # deleting sold products.
+    decrease_product_number(ship_or_office, new_products)
+    if choose_products(choosen_product[3], ship_or_office) == 0:
+        change_prices(choosen_product[3], 0, ship_or_office)
+
+
+def calculate_how_many_can_buy_trader(given_price, minimum_price, maximum_price, num_products):
+    if given_price <= 0:
+        return 0
+    num_bought = 0
+    proportional_price = minimum_price + (maximum_price - minimum_price) * (100 - num_products) / 100
+    while num_bought < num_products and proportional_price <= given_price:
+        num_bought += 1
+        proportional_price = minimum_price + (maximum_price - minimum_price) * (100 - num_products + num_bought) / 100
+    return num_bought
+
+def add_trader(city):
+    new_trader = Classes.Comercial_Office.Trader(city, city.commercial_office)
+    city.commercial_office.trader = new_trader
+
+
+def add_commercial_office(city):
+    new_commercial_office = Classes.Comercial_Office.CommercialOffice(city)
+    city.commercial_office = new_commercial_office

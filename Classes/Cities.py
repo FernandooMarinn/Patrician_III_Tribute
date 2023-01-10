@@ -315,6 +315,10 @@ class City:
         self.calculate_prices()
         self.tavern.change_turn()
         self.shipyard.change_turn()
+        if not self.commercial_office:
+            pass
+        else:
+            self.commercial_office.change_turn()
 
     def show_prices(self):
         """
@@ -443,8 +447,10 @@ class City:
         :return:
         """
         if option == 1:
-            #self.commercial_office.show_menu()
-            pass
+            if not self.commercial_office:
+                print("You dont have a commercial office in {}".format(self.name))
+            else:
+                self.commercial_office.show_menu()
         elif option == 2:
             #self.prestamist.show_menu()
             pass
