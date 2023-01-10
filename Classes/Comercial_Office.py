@@ -58,6 +58,7 @@ class CommercialOffice:
             self.trader_menu()
 
     def check_warehouse(self):
+
         self.set_inventory_size()
         Functionalities.Utilities.text_separation()
         print("Your commercial office at {} have:\n"
@@ -252,10 +253,11 @@ class Trader:
         name = item[3]
         price_to_sell = item[2]
         city_price = Functionalities.Utilities.choose_prices(name, self.city)
-        self.sell_one_by_one(name, price_to_sell, city_price)
+        number_of_products = Functionalities.Utilities.choose_products(name, self.commercial_office)
+        self.sell_one_by_one(name, price_to_sell, city_price, number_of_products)
 
-    def sell_one_by_one(self, name, price_to_sell, city_price):
-        while price_to_sell > city_price:
+    def sell_one_by_one(self, name, price_to_sell, city_price, number_of_products):
+        while price_to_sell < city_price and number_of_products > 0:
             Functionalities.Utilities.decrease_product_number(self.commercial_office, [1, name])
             Functionalities.Utilities.increase_product_number(self.city, [1, name])
             self.player.coins += city_price
@@ -263,6 +265,7 @@ class Trader:
             self.city.calculate_prices()
             self.gain_experience(city_price)
             city_price = Functionalities.Utilities.choose_prices(name, self.city)
+            number_of_products = Functionalities.Utilities.choose_products(name, self.commercial_office)
 
 
     def trade_can_not_buy_all(self, min_price, max_price, city_product, how_many_can_buy, name, product):
@@ -295,7 +298,7 @@ class Trader:
             self.calculate_how_many_can_buy(item)
     def sell_trade(self, sell_list):
         for item in sell_list:
-            pass
+            self.calculate_how_many_can_sell(item)
 
 
     def change_turn(self):

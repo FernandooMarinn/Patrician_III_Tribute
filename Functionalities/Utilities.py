@@ -171,7 +171,7 @@ def set_new_captain(taverns):
 
 
 def text_separation():
-    print("-" * 90)
+    print("-" * 120)
 
 
 def all_cities_change_turn(cities):
@@ -272,6 +272,21 @@ def choose_convoy(city):
     return city.convoys[option - 1]
 
 
+
+def select_item():
+    print("What do you want to select?\n"
+          "1- Skins.\n"
+          "2- Tools.\n"
+          "3- Beer.\n"
+          "4- Wine.\n"
+          "5- Cloth.\n")
+    option = input()
+    option = correct_values(1, 5, option)
+    equivalences = {1: "skins", 2: "tools", 3: "beer", 4: "wine", 5: "cloth"}
+    return equivalences[option]
+
+
+# Cambiar tutto por diccionarios.
 def decrease_product_number(object, products):
     quantity = products[0]
     if products[1] == "skins":

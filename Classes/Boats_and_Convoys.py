@@ -239,13 +239,14 @@ class Boat:
             print("What do you want to do with your boat {}?\n"
                   "1- Buy from city.\n"
                   "2- Sell to city.\n"
-                  "3- Check cargo.\n"
-                  "4- Move to another city.\n"
-                  "5- Exit.\n"
+                  "3- Transfer items to warehouse.\n"
+                  "4- Check cargo.\n"
+                  "5- Move to another city.\n"
+                  "6- Exit.\n"
                   .format(self.name))
             option = input("")
-            option = Functionalities.Utilities.correct_values(1, 5, option)
-            if option == 5:
+            option = Functionalities.Utilities.correct_values(1, 6, option)
+            if option == 6:
                 break
             else:
                 self.choose_options(option)
@@ -261,19 +262,65 @@ class Boat:
         elif option == 2:
             Functionalities.Utilities.sell_to_city(self)
         elif option == 3:
-            self.check_boat()
+            self.ask_witch_direction_to_move()
         elif option == 4:
+            self.check_boat()
+        elif option == 5:
             self.choose_city_to_travel(self.player.all_cities_list)
 
+    def ask_witch_direction_to_move(self):
+        if self.check_if_commercial_office():
+            print("What do you want to do?\n"
+                  "1- Move from ship to warehouse.\n"
+                  "2- Move from warehouse to ship.\n"
+                  "3- Exit.\n")
+            option = input("\n")
+            option = Functionalities.Utilities.correct_values(1, 3, option)
+            if option == 3:
+                pass
+            else:
+                item_name = Functionalities.Utilities.select_item()
+            if option == 1:
+                self.move_from_ship(item_name)
+            elif option == 2:
+                self.move_from_warehouse(item_name)
 
 
-# Cambiar esto por comprensiones de diccionario.
+    def move_from_ship(self, name):
+        product = Functionalities.Utilities.choose_products(name, self)
+        product_price = Functionalities.Utilities.choose_prices(name, self)
+        print("You have {} {} at {} coins. How many do you want to move?\n"
+              .format(product, name, product_price))
+        option = input("\n")
+        option = Functionalities.Utilities.correct_values(0, product, option)
+        self.moving_products(name, option, product_price, self, self.city.commercial_office)
+
+
+    def moving_products(self, name, how_many, price, origin, destiny):
+        Functionalities.Utilities.decrease_product_number(origin, [how_many, name])
+        Functionalities.Utilities.increase_product_number(destiny, [how_many, name])
+        old_items = Functionalities.Utilities.choose_products(name, destiny)
+        old_price = Functionalities.Utilities.choose_prices(name, destiny)
+        new_price = Functionalities.Utilities.calculate_average_price(old_price, old_items, price, how_many)
+        Functionalities.Utilities.change_prices(name, new_price, destiny)
+
+    def move_from_warehouse(self, name):
+        product = Functionalities.Utilities.choose_products(name, self.city)
+        product_price = Functionalities.Utilities.choose_prices(name, self.city)
+        print("You have {} {} at {} coins. How many do you want to move?\n"
+              .format(product, name, product_price))
+        option = input("\n")
+        option = Functionalities.Utilities.correct_values(0, product, option)
+        self.moving_products(name, option, product_price, self.city.commercial_office, self)
 
 
 
-
-
-
+    def check_if_commercial_office(self):
+        if not self.city.commercial_office:
+            print("There is not a commercial office in this city.\n")
+            return False
+        else:
+            return True
 
     def set_firepower(self):
         """
