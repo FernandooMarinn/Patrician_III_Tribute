@@ -287,80 +287,40 @@ def select_item():
 
 
 # Cambiar tutto por diccionarios.
-def decrease_product_number(object, products):
+def modify_product_number(object, products, mode):
     quantity = products[0]
-    if products[1] == "skins":
-        object.skins -= quantity
-    elif products[1] == "tools":
-        object.tools -= quantity
-    elif products[1] == "beer":
-        object.beer -= quantity
-    elif products[1] == "wine":
-        object.wine -= quantity
-    elif products[1] == "cloth":
-        object.cloth -= quantity
+    product = products[1]
+    equivalences = {"skins": object.skins, "tools": object.tools, "beer": object.beer, "wine": object.wine
+                    , "cloth": object.cloth}
+    if mode is "decrease":
+        equivalences[product] -= quantity
+    elif mode is "increase":
+        equivalences[product] += quantity
 
-
-def increase_product_number(object, products):
-    quantity = products[0]
-    if products[1] == "skins":
-        object.skins += quantity
-    elif products[1] == "tools":
-        object.tools += quantity
-    elif products[1] == "beer":
-        object.beer += quantity
-    elif products[1] == "wine":
-        object.wine += quantity
-    elif products[1] == "cloth":
-        object.cloth += quantity
 
 def choose_prices(name, object):
-    if name == "skins":
-        return object.price_skins
-    elif name == "tools":
-        return object.price_tools
-    elif name == "beer":
-        return object.price_beer
-    elif name == "wine":
-        return object.price_wine
-    elif name == "cloth":
-        return object.price_cloth
+    equivalences = {"skins": object.price_skins, "tools": object.price_tools, "beer": object.price_beer,
+                    "wine": object.price_wine, "cloth": object.price_cloth}
+    return equivalences[name]
 
 def choose_products(name, object):
-    if name == "skins":
-        return object.skins
-    elif name == "tools":
-        return object.tools
-    elif name == "beer":
-        return object.beer
-    elif name == "wine":
-        return object.wine
-    elif name == "cloth":
-        return object.cloth
+    equivalences = {"skins": object.skins, "tools": object.tools, "beer": object.beer, "wine": object.wine
+                    , "cloth": object.cloth}
+    return equivalences[name]
 
 def change_prices(name, new_price, object):
-    if name == "skins":
-        object.price_skins = new_price
-    elif name == "tools":
-        object.price_tools = new_price
-    elif name == "beer":
-        object.price_beer = new_price
-    elif name == "wine":
-        object.price_wine = new_price
-    elif name == "cloth":
-        object.price_cloth = new_price
+    equivalences = {"skins": object.price_skins, "tools": object.price_tools, "beer": object.price_beer,
+                    "wine": object.price_wine, "cloth": object.price_cloth}
+    equivalences[name] = new_price
 
 def return_trading_items_values(name, city):
-    if name == "skins":
-        return [city.max_price_skins, city.min_price_skins, city.skins]
-    elif name == "tools":
-        return [city.max_price_tools, city.min_price_tools, city.tools]
-    elif name == "beer":
-        return [city.max_price_beer, city.min_price_beer, city.beer]
-    elif name == "wine":
-        return [city.max_price_wine, city.min_price_wine, city.wine]
-    elif name == "cloth":
-        return [city.max_price_cloth, city.min_price_cloth, city.cloth]
+    equivalences = {"skins": [city.max_price_skins, city.min_price_skins, city.skins],
+                    "tools": [city.max_price_tools, city.min_price_tools, city.tools],
+                    "beer": [city.max_price_beer, city.min_price_beer, city.beer],
+                    "wine": [city.max_price_wine, city.min_price_wine, city.wine],
+                    "cloth": [city.max_price_cloth, city.min_price_cloth, city.cloth]}
+    return equivalences[name]
+
 
 def buy_from_city(ship_or_office):
     """
@@ -395,7 +355,7 @@ def buy_from_city(ship_or_office):
     average_price = calculate_average_price(product_prices,
                                             product, new_price, product + new_products[0])
     # Adding bought products and changing it`s mean price.
-    increase_product_number(ship_or_office, new_products)
+    modify_product_number(ship_or_office, new_products, "increase")
     change_prices(new_products[1], average_price, ship_or_office)
 
 
@@ -414,7 +374,7 @@ def sell_to_city(ship_or_office):
     new_products = ship_or_office.city.how_many_sell(choosen_product, inventory_product)
 
     # deleting sold products.
-    decrease_product_number(ship_or_office, new_products)
+    modify_product_number(ship_or_office, new_products)
     if choose_products(choosen_product[3], ship_or_office) == 0:
         change_prices(choosen_product[3], 0, ship_or_office)
 

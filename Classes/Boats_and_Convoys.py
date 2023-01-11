@@ -50,6 +50,7 @@ class Boat:
         self.check_current_load()
         self.city.boats.append(self)
         self.check_if_enough_sailors()
+
     def check_level(self):
         if self.level == 1:
             self.max_sailors = 20
@@ -92,7 +93,6 @@ class Boat:
                       .format(self.name))
                 return False
 
-
     def check_if_enough_sailors(self):
         """
         Can´t travel with less than 8 sailors.
@@ -122,7 +122,7 @@ class Boat:
 
     def check_distance_between_cities(self, option):
         """
-        Check distance between cities. If they are close, will take less turns to move.
+        Check distance between cities. If they are close, will take fewer turns to move.
         :param option:
         :return:
         """
@@ -151,7 +151,6 @@ class Boat:
         if self in self.city.boats:
             self.city.boats.remove(self)
         self.city = False
-
 
     def while_traveling(self):
         """
@@ -285,7 +284,6 @@ class Boat:
             elif option == 2:
                 self.move_from_warehouse(item_name)
 
-
     def move_from_ship(self, name):
         product = Functionalities.Utilities.choose_products(name, self)
         product_price = Functionalities.Utilities.choose_prices(name, self)
@@ -295,10 +293,9 @@ class Boat:
         option = Functionalities.Utilities.correct_values(0, product, option)
         self.moving_products(name, option, product_price, self, self.city.commercial_office)
 
-
     def moving_products(self, name, how_many, price, origin, destiny):
-        Functionalities.Utilities.decrease_product_number(origin, [how_many, name])
-        Functionalities.Utilities.increase_product_number(destiny, [how_many, name])
+        Functionalities.Utilities.modify_product_number(origin, [how_many, name], "decrease")
+        Functionalities.Utilities.modify_product_number(destiny, [how_many, name], "increase")
         old_items = Functionalities.Utilities.choose_products(name, destiny)
         old_price = Functionalities.Utilities.choose_prices(name, destiny)
         new_price = Functionalities.Utilities.calculate_average_price(old_price, old_items, price, how_many)
@@ -312,8 +309,6 @@ class Boat:
         option = input("\n")
         option = Functionalities.Utilities.correct_values(0, product, option)
         self.moving_products(name, option, product_price, self.city.commercial_office, self)
-
-
 
     def check_if_commercial_office(self):
         if not self.city.commercial_office:

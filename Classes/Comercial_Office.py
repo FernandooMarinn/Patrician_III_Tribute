@@ -258,8 +258,8 @@ class Trader:
 
     def sell_one_by_one(self, name, price_to_sell, city_price, number_of_products):
         while price_to_sell < city_price and number_of_products > 0:
-            Functionalities.Utilities.decrease_product_number(self.commercial_office, [1, name])
-            Functionalities.Utilities.increase_product_number(self.city, [1, name])
+            Functionalities.Utilities.modify_product_number(self.commercial_office, [1, name], "decrease")
+            Functionalities.Utilities.modify_product_number(self.city, [1, name], "increase")
             self.player.coins += city_price
             self.city.coins -= city_price
             self.city.calculate_prices()
@@ -277,8 +277,8 @@ class Trader:
                                                                       mean_price, how_many_can_buy)
 
         Functionalities.Utilities.change_prices(name, new_price, self.commercial_office)
-        Functionalities.Utilities.decrease_product_number(self.city, [how_many_can_buy, name])
-        Functionalities.Utilities.increase_product_number(self.commercial_office, [how_many_can_buy, name])
+        Functionalities.Utilities.modify_product_number(self.city, [how_many_can_buy, name], "decrease")
+        Functionalities.Utilities.modify_product_number(self.commercial_office, [how_many_can_buy, name], "increase")
         self.gain_experience(mean_price * how_many_can_buy)
 
     def trade_can_buy_all(self, min_price, max_price, city_product, number_to_reach_goal, name, product):
@@ -289,8 +289,8 @@ class Trader:
         new_price = Functionalities.Utilities.calculate_average_price(former_price, product,
                                                                       mean_price, number_to_reach_goal)
         Functionalities.Utilities.change_prices(name, new_price, self.commercial_office)
-        Functionalities.Utilities.decrease_product_number(self.city, [number_to_reach_goal, name])
-        Functionalities.Utilities.increase_product_number(self.commercial_office, [number_to_reach_goal, name])
+        Functionalities.Utilities.modify_product_number(self.city, [number_to_reach_goal, name], "decrease")
+        Functionalities.Utilities.modify_product_number(self.commercial_office, [number_to_reach_goal, name], "increase")
         self.gain_experience(mean_price * number_to_reach_goal)
 
     def buy_trade(self, buy_list):

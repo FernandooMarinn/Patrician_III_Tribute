@@ -385,7 +385,7 @@ class City:
 
             #Check if player has enough money. If it does, takes the money and return to boat all the info.
             if self.player.coins > total_price:
-                Functionalities.Utilities.decrease_product_number(self, choosen_product[3])
+                Functionalities.Utilities.modify_product_number(self, choosen_product[3], "decrease")
                 self.coins += total_price
                 self.player.coins -= total_price
                 print("You have bought {} items at {} coins each."
@@ -411,13 +411,12 @@ class City:
         medium_price = self.calculate_group_trade(choosen_product[1], choosen_product[0], choosen_product[2],
                                                   option)
         total_price = medium_price * option
-        Functionalities.Utilities.increase_product_number(self, choosen_product[3])
+        Functionalities.Utilities.modify_product_number(self, choosen_product[3], "increase")
         self.coins -= total_price
         self.player.coins += total_price
         print("You have sold {} items at {} coins each.\n"
               .format(option, medium_price))
         return option, choosen_product[3], medium_price
-
 
     def menu_city_buildings(self):
         """
@@ -427,7 +426,7 @@ class City:
         while True:
             print("What do you want to do?\n\n"
                   "1- Go to your comercial office.\n"
-                  "2- Go to prestamist.\n"
+                  "2- Go to money lender.\n"
                   "3- Go to shipyard.\n"
                   "4- Go to tavern.\n"
                   "5- Go to weapon master.\n"
@@ -452,7 +451,7 @@ class City:
             else:
                 self.commercial_office.show_menu()
         elif option == 2:
-            #self.prestamist.show_menu()
+            #self.money_lender.show_menu()
             pass
         elif option == 3:
             self.shipyard.show_menu()
