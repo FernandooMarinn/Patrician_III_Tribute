@@ -315,6 +315,7 @@ class City:
         self.calculate_prices()
         self.tavern.change_turn()
         self.shipyard.change_turn()
+        self.money_lender.change_turn()
         if not self.commercial_office:
             pass
         else:
@@ -385,7 +386,7 @@ class City:
 
             #Check if player has enough money. If it does, takes the money and return to boat all the info.
             if self.player.coins > total_price:
-                Functionalities.Utilities.modify_product_number(self, choosen_product[3], "decrease")
+                Functionalities.Utilities.decrease_product_number(self, [option, choosen_product[3]])
                 self.coins += total_price
                 self.player.coins -= total_price
                 print("You have bought {} items at {} coins each."
@@ -411,7 +412,7 @@ class City:
         medium_price = self.calculate_group_trade(choosen_product[1], choosen_product[0], choosen_product[2],
                                                   option)
         total_price = medium_price * option
-        Functionalities.Utilities.modify_product_number(self, choosen_product[3], "increase")
+        Functionalities.Utilities.increase_product_number(self, choosen_product[3])
         self.coins -= total_price
         self.player.coins += total_price
         print("You have sold {} items at {} coins each.\n"
@@ -451,8 +452,7 @@ class City:
             else:
                 self.commercial_office.show_menu()
         elif option == 2:
-            #self.money_lender.show_menu()
-            pass
+            self.money_lender.show_menu()
         elif option == 3:
             self.shipyard.show_menu()
         elif option == 4:
