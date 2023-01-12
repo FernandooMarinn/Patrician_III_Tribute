@@ -110,10 +110,9 @@ class Boat:
         :return:
         """
         if self.enough_sailors:
-            counter = 1
             print("Where do you want to move?\n")
-            for city in cities:
-                print("{}- {}.".format(counter, city.name))
+            for i, x in enumerate(cities):
+                print("{}- {}.".format(i + 1, x.name))
             option = input("\n")
             option = Functionalities.Utilities.correct_values(1, len(cities), option)
             self.check_distance_between_cities(option - 1)
@@ -285,30 +284,32 @@ class Boat:
                 self.move_from_warehouse(item_name)
 
     def move_from_ship(self, name):
-        product = Functionalities.Utilities.choose_products(name, self)
-        product_price = Functionalities.Utilities.choose_prices(name, self)
-        print("You have {} {} at {} coins. How many do you want to move?\n"
-              .format(product, name, product_price))
-        option = input("\n")
-        option = Functionalities.Utilities.correct_values(0, product, option)
-        self.moving_products(name, option, product_price, self, self.city.commercial_office)
+        while True:
+            product = Functionalities.Utilities.choose_products(name, self)
+            product_price = Functionalities.Utilities.choose_prices(name, self)
+            print("You have {} {} at {} coins. How many do you want to move?\n"
+                  .format(product, name, product_price))
+            option = input("\n")
+            option = Functionalities.Utilities.correct_values(0, product, option)
+            self.moving_products(name, option, product_price, self, self.city.commercial_office)
 
     def moving_products(self, name, how_many, price, origin, destiny):
-        Functionalities.Utilities.modify_product_number(origin, [how_many, name], "decrease")
-        Functionalities.Utilities.modify_product_number(destiny, [how_many, name], "increase")
+        Functionalities.Utilities.decrease_product_number(origin, [how_many, name])
+        Functionalities.Utilities.increase_product_number(destiny, [how_many, name])
         old_items = Functionalities.Utilities.choose_products(name, destiny)
         old_price = Functionalities.Utilities.choose_prices(name, destiny)
         new_price = Functionalities.Utilities.calculate_average_price(old_price, old_items, price, how_many)
         Functionalities.Utilities.change_prices(name, new_price, destiny)
 
     def move_from_warehouse(self, name):
-        product = Functionalities.Utilities.choose_products(name, self.city)
-        product_price = Functionalities.Utilities.choose_prices(name, self.city)
-        print("You have {} {} at {} coins. How many do you want to move?\n"
-              .format(product, name, product_price))
-        option = input("\n")
-        option = Functionalities.Utilities.correct_values(0, product, option)
-        self.moving_products(name, option, product_price, self.city.commercial_office, self)
+        while True:
+            product = Functionalities.Utilities.choose_products(name, self.city.commercial_office)
+            product_price = Functionalities.Utilities.choose_prices(name, self.city)
+            print("You have {} {} at {} coins. How many do you want to move?\n"
+                  .format(product, name, product_price))
+            option = input("\n")
+            option = Functionalities.Utilities.correct_values(0, product, option)
+            self.moving_products(name, option, product_price, self.city.commercial_office, self)
 
     def check_if_commercial_office(self):
         if not self.city.commercial_office:
@@ -405,3 +406,7 @@ class Convoy:
     def change_turn(self):
         self.convoy_deterioration()
         self.calculate_all_healths()
+
+
+    def show_menu(self):
+        print("Convoy menu.\n")

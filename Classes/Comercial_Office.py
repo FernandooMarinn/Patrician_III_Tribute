@@ -26,6 +26,7 @@ class CommercialOffice:
 
         self.inventory = [self.skins, self.tools, self.beer, self.wine, self.cloth]
 
+
     def set_max_inventory_size(self):
         self.inventory_size = 500 + self.warehouses * 2500
 
@@ -137,6 +138,9 @@ class Trader:
         self.trading_instructions = [self.skins_instructions, self.tools_instructions, self.beer_instructions,
                                      self.wine_instructions, self.cloth_instructions]
 
+        self.speed = 3
+        self.speed_counter = 1
+
     def gain_experience(self, exp):
         self.experience += exp
         self.level_up()
@@ -146,10 +150,12 @@ class Trader:
             if self.experience >= 10_000:
                 self.level += 1
                 self.experience -= 10_000
+                self.speed = 2
         elif self.level == 2:
             if self.experience >= 15_000:
                 self.level += 1
                 self.experience -= 15_000
+                self.speed = 1
 
     def show_menu(self):
         while True:
@@ -258,8 +264,8 @@ class Trader:
 
     def sell_one_by_one(self, name, price_to_sell, city_price, number_of_products):
         while price_to_sell < city_price and number_of_products > 0:
-            Functionalities.Utilities.modify_product_number(self.commercial_office, [1, name], "decrease")
-            Functionalities.Utilities.modify_product_number(self.city, [1, name], "increase")
+            Functionalities.Utilities.decrease_product_number(self.commercial_office, [1, name])
+            Functionalities.Utilities.increase_product_number(self.city, [1, name])
             self.player.coins += city_price
             self.city.coins -= city_price
             self.city.calculate_prices()
@@ -277,8 +283,8 @@ class Trader:
                                                                       mean_price, how_many_can_buy)
 
         Functionalities.Utilities.change_prices(name, new_price, self.commercial_office)
-        Functionalities.Utilities.modify_product_number(self.city, [how_many_can_buy, name], "decrease")
-        Functionalities.Utilities.modify_product_number(self.commercial_office, [how_many_can_buy, name], "increase")
+        Functionalities.Utilities.decrease_product_number(self.city, [how_many_can_buy, name])
+        Functionalities.Utilities.increase_product_number(self.commercial_office, [how_many_can_buy, name])
         self.gain_experience(mean_price * how_many_can_buy)
 
     def trade_can_buy_all(self, min_price, max_price, city_product, number_to_reach_goal, name, product):
@@ -289,8 +295,8 @@ class Trader:
         new_price = Functionalities.Utilities.calculate_average_price(former_price, product,
                                                                       mean_price, number_to_reach_goal)
         Functionalities.Utilities.change_prices(name, new_price, self.commercial_office)
-        Functionalities.Utilities.modify_product_number(self.city, [number_to_reach_goal, name], "decrease")
-        Functionalities.Utilities.modify_product_number(self.commercial_office, [number_to_reach_goal, name], "increase")
+        Functionalities.Utilities.decrease_product_number(self.city, [number_to_reach_goal, name])
+        Functionalities.Utilities.increase_product_number(self.commercial_office, [number_to_reach_goal, name])
         self.gain_experience(mean_price * number_to_reach_goal)
 
     def buy_trade(self, buy_list):
@@ -300,6 +306,12 @@ class Trader:
         for item in sell_list:
             self.calculate_how_many_can_sell(item)
 
+    def calculate_trading_speed(self):
+        if self.speed_counter == self.speed:
+            self.trade()
+            self.speed_counter = 1
+        else:
+            self.speed_counter += 1
 
     def change_turn(self):
-        self.trade()
+        self.calculate_trading_speed()

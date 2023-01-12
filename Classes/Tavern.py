@@ -45,6 +45,7 @@ class Tavern:
             pass
         else:
             self.choose_options(option, boat)
+        boat.check_if_enough_sailors()
 
     def choose_options(self, option, boat):
         if option == 1:

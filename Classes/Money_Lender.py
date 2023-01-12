@@ -12,6 +12,12 @@ class MoneyLender():
 
         self.current_loans = []
 
+        self.level_increases = {
+            1: [random.randint(5000, 20_000), random.randint(20, 50), random.randint(4, 10)],
+            2: [random.randint(7000, 28_000), random.randint(20, 50), random.randint(3, 12)],
+            3: [random.randint(10_000, 35_000), random.randint(20, 60), random.randint(2, 14)]
+        }
+
     def gain_experience(self, experience):
         self.experience += experience
         self.level_up()
@@ -27,7 +33,7 @@ class MoneyLender():
                 self.experience -= 15_000
 
     def generate_loans(self):
-        options = [[random.randint(5000, 20000), random.randint(20, 50), random.randint(4, 12)] for i in range(3)]
+        options = self.get_loan_options_depending_levels()
         for option in options:
             total_to_return = round(((option[0] * option[1]) / 100) + option[0])
             option.append(total_to_return)
@@ -78,10 +84,14 @@ class MoneyLender():
                     print("You dont have money to grant this loan.")
 
     def money_change(self, loan_option):
+        Functionalities.Utilities.text_separation()
         if loan_option[4] == "ask":
             self.player.coins += loan_option[0]
+            print("You have received {} coins. Remember that you have to return it!".format(loan_option[0]))
         elif loan_option[4] == "grant":
             self.player.coins -= loan_option[0]
+            print("You have granted a loan for {} coins. It will be returned to you.".format(loan_option[0]))
+        Functionalities.Utilities.text_separation()
 
     def pass_turn_loans_and_finish_them(self):
         to_delete = []
@@ -144,7 +154,6 @@ class MoneyLender():
             else:
                 self.choose_option(option)
 
-
     def check_loans(self):
         Functionalities.Utilities.text_separation()
         if len(self.current_loans) == 0:
@@ -169,6 +178,17 @@ class MoneyLender():
             self.check_loans()
         elif option == 4:
             self.return_loan()
+
+    def reboot_loans(self):
+        self.level_increases = {
+            1: [random.randint(5000, 20_000), random.randint(20, 50), random.randint(4, 10)],
+            2: [random.randint(7000, 28_000), random.randint(20, 50), random.randint(3, 12)],
+            3: [random.randint(10_000, 35_000), random.randint(20, 60), random.randint(2, 14)]
+        }
+        return self.level_increases[self.level]
+
+    def get_loan_options_depending_levels(self):
+        return [self.reboot_loans() for _ in range(3)]
 
     def change_turn(self):
         self.level_up()

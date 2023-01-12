@@ -85,16 +85,16 @@ class Shipyard:
 
     def choose_option(self, option):
         if option == 1:
-            unit_to_select = Functionalities.Utilities.choose_boat_or_convoy_from_city(self.city)
+            unit_to_select = Functionalities.Utilities.choose_boat_from_city(self.city)
+            # Funcion aparte.
             if not unit_to_select:
                 pass
             elif unit_to_select[1] == "boat":
                 self.repair_boat(unit_to_select[0])
             elif unit_to_select[1] == "convoy":
                 self.repair_convoy(unit_to_select[0])
-
         elif option == 2:
-            unit_to_select = Functionalities.Utilities.choose_boat_or_convoy_from_city(self.city)
+            unit_to_select = Functionalities.Utilities.choose_boat_from_city(self.city)
             if not unit_to_select:
                 pass
             elif unit_to_select[1] == "boat":
@@ -118,6 +118,7 @@ class Shipyard:
         if option == 1:
             if self.city.player.coins >= 10_000:
                 self.build_ship()
+                self.city.player.coins -= 10_000
             else:
                 print("You can´t afford a ship.")
 
@@ -125,7 +126,8 @@ class Shipyard:
         name = input("Witch name do you choose for your ship?")
         new_boat = Classes.Boats_and_Convoys.Boat(100, 1, [0, 0, 0, 0, 0], 0, False, 0, name,
                                                   self.city, self.city.player)
-        self.building_queue.append([new_boat, self.build_speed])
+        total_remaining_turns = self.calculate_remaining_turns()
+        self.building_queue.append([new_boat, self.build_speed + total_remaining_turns])
         print("Your ship {} will be ready in {} turns.".format(new_boat.name, self.build_speed))
 
     def check_building_boats(self):
@@ -205,6 +207,12 @@ class Shipyard:
             else:
                 print("You can´t afford to improve your ship.\n")
 
+
+    def calculate_remaining_turns(self):
+        counter = 0
+        for ship in self.building_queue:
+            counter += ship[1]
+        return counter
 
     def improve_convoy(self, covoy):
         pass

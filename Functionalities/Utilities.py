@@ -91,20 +91,20 @@ def create_player():
 def create_cities(player):
     # Puta mierda
     #  nombre   consumption    initial            production       can_pruduce
-    Lubeck = Classes.Cities.City("Lubeck", 3, 4, 6, 3, 3, 40, 60, 40, 50, 30, 0, 15, 0, 9, 0, False, True, False, True,
+    lubeck = Classes.Cities.City("Lubeck", 3, 4, 6, 3, 3, 40, 60, 40, 50, 30, 0, 15, 0, 9, 0, False, True, False, True,
                                  False, False, 1, player)
-    Rostock = Classes.Cities.City("Rostock", 3, 4, 6, 3, 3, 40, 40, 40, 50, 30, 0, 0, 0, 0, 0, False, False, False,
+    rostock = Classes.Cities.City("Rostock", 3, 4, 6, 3, 3, 40, 40, 40, 50, 30, 0, 0, 0, 0, 0, False, False, False,
                                   False,
                                   False, False, 1, player)
-    Malmo = Classes.Cities.City("Malmo", 3, 4, 6, 3, 3, 60, 60, 30, 30, 50, 8, 0, 0, 0, 7, True, False, False, False,
+    malmo = Classes.Cities.City("Malmo", 3, 4, 6, 3, 3, 60, 60, 30, 30, 50, 8, 0, 0, 0, 7, True, False, False, False,
                                 True, False, 1, player)
-    Stettin = Classes.Cities.City("Stettin", 3, 4, 6, 3, 3, 40, 50, 70, 50, 30, 0, 0, 15, 0, 0, False, False, True,
+    stettin = Classes.Cities.City("Stettin", 3, 4, 6, 3, 3, 40, 50, 70, 50, 30, 0, 0, 15, 0, 0, False, False, True,
                                   True,
                                   False, False, 1, player)
-    Gdanks = Classes.Cities.City("Gdanks", 3, 4, 4, 3, 3, 30, 40, 60, 40, 40, 0, 0, 10, 0, 0, False, False, True, False,
+    gdanks = Classes.Cities.City("Gdanks", 3, 4, 4, 3, 3, 30, 40, 60, 40, 40, 0, 0, 10, 0, 0, False, False, True, False,
                                  False, False, 1, player)
 
-    return Lubeck, Rostock, Malmo, Stettin, Gdanks
+    return lubeck, rostock, malmo, stettin, gdanks
 
 
 def add_all_buildings(cities):
@@ -151,11 +151,11 @@ def create_money_lender(cities):
     return cities_with_money_lender
 
 
-def calculate_list_mean(list):
-    if sum(list) == 0:
+def calculate_list_mean(list_to_check):
+    if sum(list_to_check) == 0:
         return 0
     else:
-        mean = round(sum(list) / len(list))
+        mean = round(sum(list_to_check) / len(list_to_check))
         return mean
 
 
@@ -170,7 +170,7 @@ def calculate_average_price(old_price, old_items, new_price, new_items):
         new_items_average_price = new_price * new_items
 
         # Calculate the final average price
-        average_price = ((old_items_average_price + new_items_average_price)) / (new_items + old_items)
+        average_price = (old_items_average_price + new_items_average_price) / (new_items + old_items)
 
         return round(average_price)
 
@@ -221,7 +221,7 @@ def boat_battle(who_starts, who_goes_after):
         print("{} health is {} and {} health is {}."
               .format(who_starts.name, who_starts.health, who_goes_after.name, who_goes_after.health))
 
-
+# Poner en una sola
 def choose_boat_from_city(city):
     print("Is your ship free or in a convoy?\n"
           "1- Ship.\n"
@@ -235,21 +235,6 @@ def choose_boat_from_city(city):
         return choose_boat(city)
     elif option == 2:
         return choose_boat_from_convoy(city)
-
-
-def choose_boat_or_convoy_from_city(city):
-    print("Do you want to select a ship or a convoy?\n"
-          "1- Ship.\n"
-          "2- Convoy.\n"
-          "3- Exit.\n")
-    option = input()
-    option = correct_values(1, 3, option)
-    if option == 3:
-        return False
-    elif option == 1:
-        return choose_boat(city), "boat"
-    elif option == 2:
-        return choose_convoy(city), "convoy"
 
 
 def choose_boat(city):

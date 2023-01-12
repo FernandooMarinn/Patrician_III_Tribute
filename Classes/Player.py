@@ -9,12 +9,13 @@ class Player:
         self.level = 1
         self.city = 0
         self.experience = 0
-        # Tooked?? loans.
-        self.loans = []
         self.boats = []
         self.convoys = []
         self.turn = 0
         self.all_cities_list = 0
+
+        self.number_of_offices = 1
+        self.can_build_offices = False
     def check_player(self):
         """
         Prints out any important data.
@@ -25,25 +26,54 @@ class Player:
               .format(self.coins, len(self.boats), len(self.convoys), self.level))
         print("-" * 60, "\n")
 
-    def gain_experience(self, exp):
-        self.experience += exp
 
     def level_up(self):
         """
-        Gain experience and level up.
+        Level up.
         :return:
         """
         if self.level == 1:
-            if self.coins > 50_000 and self.experience > 99:
+            if self.coins > 50_000:
                 self.level += 1
-                self.experience = 0
+                self.print_level_up(1)
         elif self.level == 2:
-            if self.coins > 100_000 and self.experience > 199:
+            if self.coins > 100_000:
                 self.level += 1
-                self.experience = 0
+                self.print_level_up(2)
         elif self.level == 3:
-            if self.coins > 200_000 and self.experience > 299:
+            if self.coins > 200_000:
                 self.level += 1
+                self.print_level_up(3)
+
+
+    def print_level_up(self, option):
+        """
+        Everytime the player levels up, this print a message.
+        :param option:
+        :return:
+        """
+        Functionalities.Utilities.text_separation()
+        if option == 1:
+            print("You have reached a good amount of wealth. People are now beginning to know you.")
+        elif option == 2:
+            print("Your wealth have granted you a place in among aristocracy. Your new friends have granted you the\n"
+                  "right to create a new commercial office.")
+        elif option == 3:
+            print("Unavailable. You are now one of the most wealthiest persons in the hanseatic league. \n"
+                  "You can now create commercial offices in every city that you want.")
+        Functionalities.Utilities.text_separation()
+
+    def check_if_can_build_office(self):
+        """
+        Check if possible to build offices in another cities.
+        :return:
+        """
+        if self.level == 1:
+            self.can_build_offices = False
+        elif self.level == 2 and self.number_of_offices < 2:
+            self.can_build_offices = True
+        else:
+            self.can_build_offices = True
 
     def check_boats(self):
         """
@@ -117,12 +147,10 @@ class Player:
         if len(self.convoys) == 0:
             print("You dont have any convoys to select.\n")
         else:
-            convoy_number = 1
-            for convoy in self.convoys:
-                print("{}- {}. ({})\n".format(convoy_number, convoy.name, convoy.city.name))
-                convoy_number += 1
-            current = self.select_boat_or_convoy(self.convoys)
-            self.boat_or_convoy_options(current)
+            for i, x in enumerate(self.convoys):
+                print("{}- {}. ({})\n".format(i + 1, x.name, x.city.name))
+            option = self.select_boat_or_convoy(self.convoys)
+            option.show_menu()
 
     def select_boat_or_convoy(self, type):
         """

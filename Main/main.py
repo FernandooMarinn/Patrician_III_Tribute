@@ -25,6 +25,7 @@ def welcome():
 
 
 def print_menu():
+    Functionalities.Utilities.text_separation()
     print("\nWhat do you want to do?. Your current turn is {}. Your are in {}\n\n"
           "1- Choose a boat.\n"
           "2- Choose a convoy.\n"
