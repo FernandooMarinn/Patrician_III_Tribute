@@ -7,7 +7,6 @@ player = Functionalities.Utilities.create_player()
 Cities = Functionalities.Utilities.create_cities(player)
 
 player.city = Functionalities.Utilities.ask_initial_city(Cities)
-player.city.have_commercial_office = True
 player.all_cities_list = Cities
 
 cities_list = Functionalities.Utilities.add_all_buildings(Cities)
@@ -43,7 +42,8 @@ def game_loop():
             player.turn += 1
         else:
             change_turn(player, cities_list)
-            print("ESTO ES UN CAMBIO DE TURNOOOO")
+            Functionalities.Utilities.text_separation()
+            Functionalities.Utilities.text_separation()
         while True:
             print_menu()
             option = input()
@@ -57,8 +57,9 @@ def game_loop():
 def change_turn(player, cities_list):
     player.change_turn()
     Functionalities.Utilities.all_cities_change_turn(cities_list)
-    Functionalities.Utilities.set_new_captain(all_taverns)
 
+def random_new_captain():
+    Functionalities.Utilities.set_new_captain(all_taverns)
 
 def choose_options(option):
     if option == 1:

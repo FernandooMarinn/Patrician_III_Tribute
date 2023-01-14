@@ -7,54 +7,47 @@ class Weapon_master:
         self.coins = 100
 
         self.city = city
+        self.commercial_office = self.city.commercial_office
 
         self.dagger = 3
         self.cannon = 2
-        self.bombarda = 0
+        self.bombard = 0
 
     def show_menu(self):
-        money = self.city.player.coins
         option = input("What do you want to buy?\n"
                        "1- Dagger. (100 coins)\n"
                        "2- Ship cannon. (800 coins)\n"
-                       "3- Bombarda. (1600 coins)\n")
+                       "3- Bombard. (1600 coins)\n")
         option = Functionalities.Utilities.correct_values(1, 3, option)
         if option == 1:
-            self.sell_dagger(money)
+            self.sell_weapons("dagger")
         elif option == 2:
-            self.sell_ship_cannnon(money)
+            self.sell_weapons("cannon")
         elif option == 3:
-            self.sell_bombard(money, 1600)
+            self.sell_weapons("bombard")
 
-    def sell_bombard(self, money, price):
-        max_purchable_objets = Functionalities.Utilities.how_many_can_afford(price, money)
-        cannon_number = input("How many bombards you want to buy?\n")
-        cannon_number = Functionalities.Utilities.correct_values(0, max_purchable_objets, cannon_number)
-        if Functionalities.Utilities.check_if_affordable(price, cannon_number, money):
-            total_money = cannon_number * price
-            self.coins += total_money
-            self.experience += total_money
-            return cannon_number, total_money
+    def sell_weapons(self, option):
+        names = {
+            "dagger": self.dagger,
+            "cannon": self.cannon,
+            "bombard": self.bombard
+        }
+        prices = {
+            "dagger": 100,
+            "cannon": 800,
+            "bombard": 1600
+        }
 
-    def sell_ship_cannnon(self, money):
-        max_purchable_objets = Functionalities.Utilities.how_many_can_afford(800, money)
-        cannon_number = input("How many cannons you want to buy?")
-        cannon_number = Functionalities.Utilities.correct_values(0, max_purchable_objets, cannon_number)
-        if Functionalities.Utilities.check_if_affordable(800, cannon_number, money):
-            total_money = cannon_number * 800
-            self.coins += total_money
-            self.experience += total_money
-            return cannon_number, total_money
+        how_many = input("How many do you want to buy? There are {} on sale.\n".format(names[option]))
+        how_many = Functionalities.Utilities.correct_values(0, names[option], how_many)
 
-    def sell_dagger(self, money):
-        max_purchable_objets = Functionalities.Utilities.how_many_can_afford(100, money)
-        dagger_number = input("How many daggers you want to buy?")
-        dagger_number = Functionalities.Utilities.correct_values(0, max_purchable_objets, dagger_number)
-        if Functionalities.Utilities.check_if_affordable(100, dagger_number, money):
-            total_money = dagger_number * 100
-            self.coins += total_money
-            self.experience += total_money
-            return dagger_number, total_money
+        can_afford = Functionalities.Utilities.how_many_can_afford(prices[option] * how_many, self.city.player.coins)
+        if can_afford >= how_many:
+            self.city.player.coins -= prices[option] * how_many
+            self.coins += prices[option] * how_many
+            self.move_items([option, how_many])
+        else:
+            print("You can't afford to buy those weapons.\n")
 
     def create_weapons(self):
         while self.coins > 51:
@@ -64,8 +57,8 @@ class Weapon_master:
             if self.cannon < 20:
                 self.cannon += 1
                 self.coins -= 400
-            if self.level > 2 and self.bombarda < 20:
-                self.bombarda += 1
+            if self.level > 2 and self.bombard < 20:
+                self.bombard += 1
                 self.coins += 650
 
     def change_turn(self):
@@ -81,3 +74,49 @@ class Weapon_master:
             if self.experience >= 3500:
                 self.experience = 0
                 self.level += 1
+
+
+    def calculate_item_weight(self, items):
+        item_name = items[0]
+        item_quantity = items[1]
+        item_weight = {
+            "dagger": 1,
+            "cannon": 5,
+            "bombard": 5
+        }
+        return item_weight[item_name] * item_quantity
+
+    def move_items(self, items):
+        print("Do you want to move the weapons to a ship or to the commercial office? (if there's one)\n"
+              "1- Ship.\n"
+              "2- Commercial office.\n"
+              "3- Exit.\n")
+        option = input()
+        option = Functionalities.Utilities.correct_values(1, 3, option)
+        if option == 3:
+            pass
+        elif option == 2:
+            if not self.city.commercial_office:
+                print("You don't have a commercial office in {}!".format(self.city.name))
+            else:
+                self.move_to_commercial_office(items)
+        elif option == 3:
+            ship = Functionalities.Utilities.choose_boat_from_city(self.city)
+            if not ship:
+                print("You dont have any ship in {}!".format(self.city.name))
+            else:
+                self.move_to_ship(items, ship)
+
+    def move_to_commercial_office(self, items):
+        current_weapons = getattr(self.commercial_office, items[0])
+        setattr(self.commercial_office, items[0], current_weapons + items[1])
+
+
+    def move_to_ship(self, items, ship):
+        items_weight = self.calculate_item_weight(items)
+        ship.check_current_load()
+        if items_weight > ship.empty_space:
+            print("You can't carry this weapons in your ship, it will be overloaded.")
+        else:
+            current_weapons = getattr(ship, items[0])
+            setattr(ship, items[0], current_weapons + items[1])

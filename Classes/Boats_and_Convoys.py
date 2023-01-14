@@ -2,9 +2,10 @@ import Functionalities.Utilities
 
 
 class Boat:
-    def __init__(self, health, level, load, sailors, captain, catapult, name, city, player):
+    def __init__(self, health, level, load, sailors, captain, cannon, name, city, player):
 
         self.name = name
+        self.city = city
 
         self.max_health = 0
         self.health = health
@@ -13,10 +14,12 @@ class Boat:
         self.current_load = 0
         self.max_sailors = 0
         self.sailors = sailors
+
         self.artillery_space = 0
-        self.catapult = catapult
-        self.cannon = 0
-        self.city = city
+        self.cannon = cannon
+        self.bombard = 0
+        self.dagger = 0
+
         self.city_before_travel = 0
         self.player = player
 
@@ -75,7 +78,7 @@ class Boat:
         Calculate current ship load by adding every item and sailors.
         :return:
         """
-        self.current_load = self.skins + self.tools + self.beer + self.wine + self.cloth + self.sailors
+        self.current_load = self.skins + self.tools + self.beer + self.wine + self.cloth + self.sailors + self.dagger
         self.empty_space = self.max_load - self.current_load
 
     def boat_deterioration(self):

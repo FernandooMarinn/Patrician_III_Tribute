@@ -234,11 +234,14 @@ class Player:
                 self.city = city
 
     def calculate_bill(self):
+        sailors = self.sailors_bill()
+        print("You have given {} to pay your sailors")
+
+    def sailors_bill(self):
         sailors = 0
         for boat in self.boats:
             sailors += boat.sailors
-        print("\n{} have been paid to your sailors.\n".format(sailors * 10))
-        self.coins -= sailors * 10
+        return sailors * 10
 
     def change_turn(self):
         self.turn += 1

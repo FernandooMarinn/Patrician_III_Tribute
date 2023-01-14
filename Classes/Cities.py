@@ -44,7 +44,6 @@ class City:
         self.beer_factories = 0
         self.wine_factories = 0
         self.cloth_factories = 0
-        self.factories_queue = []
 
         # Is it possible to create factories
         self.can_produce_skins = can_produce_skins
@@ -197,7 +196,6 @@ class City:
         Adds city production of every item.
         :return:
         """
-        # Add products, depending on city production.
         self.skins += self.skins_production
         self.tools += self.tools_production
         self.beer += self.beer_production
@@ -209,11 +207,30 @@ class City:
         Calculate factory production for each item.
         :return:
         """
-        self.skins += self.skins_factories * 3
-        self.tools += self.tools_factories * 5
-        self.beer += self.beer_factories * 10
-        self.wine += self.wine_factories * 4
-        self.cloth += self.cloth_factories * 4
+        if not self.commercial_office:
+            pass
+        else:
+            self.commercial_office.skins += self.skins_factories * 2
+            self.commercial_office.tools += self.tools_factories * 4
+            self.commercial_office.beer += self.beer_factories * 5
+            self.commercial_office.wine += self.wine_factories * 3
+            self.commercial_office.cloth += self.cloth_factories * 3
+
+            self.add_factories_prices()
+
+
+    def add_factories_prices(self):
+        office = self.commercial_office
+        list = [
+            [office.prices_skins, office.skins, self.min_price_skins, self.skins_factories * 2, "skins"],
+            [office.prices_tools, office.tools, self.min_price_tools, self.tools_factories * 4, "tools"],
+            [office.prices_beer, office.beer, self.min_price_beer, self.beer_factories * 5, "beer"],
+            [office.prices_wine, office.wine, self.min_price_wine, self.wine_factories * 3, "wine"],
+            [office.prices_cloth, office.cloth, self.min_price_cloth, self.cloth_factories * 3, "cloth"]
+        ]
+        for factory in list:
+            price = Functionalities.Utilities.calculate_average_price(factory[0], factory[1], factory[2], factory[3])
+            Functionalities.Utilities.change_prices(factory[4], price, self.commercial_office)
 
     def avoid_minus_zero_items(self):
         """
@@ -251,6 +268,7 @@ class City:
             pass
         else:
             self.commercial_office.change_turn()
+        self.decrease_turns_building_queue()
 
     def show_prices(self):
         """
@@ -389,61 +407,49 @@ class City:
         elif option == 4:
             print("To enter the tavern, you must state which ship is yours.")
             my_ship = Functionalities.Utilities.choose_boat_from_city(self)
-            self.tavern.show_menu(my_ship)
+            if not my_ship:
+                print("You don't have any ships in {}!".format(self.name))
+            else:
+                self.tavern.show_menu(my_ship)
         elif option == 5:
             self.weapon_master.show_menu()
         elif option == 6:
-            self.menu_city_buildings()
+            self.menu_construct_buildings()
+        elif option == 7:
             pass
-        if option == 7:
-            pass
-        else:
-            print("\n\n\n Not ready yet.\n\n\n")
 
-    def menu_city_buildings(self):
-        print("What do you want to do?\n"
-              "1- Build warehouses.\n"
-              "2- Build factories.\n"
-              "3- Build commercial office.\n"
-              "4- Check building queue."
-              "5- Exit.\n")
-        option = input()
-        option = Functionalities.Utilities.correct_values(1, 5, option)
-        if option == 4:
-            pass
-        else:
-            self.choose_city_buildings(option)
+    def menu_construct_buildings(self):
+        while True:
+            print("What do you want to do?\n"
+                  "1- Build warehouses.\n"
+                  "2- Build factories.\n"
+                  "3- Build commercial office.\n"
+                  "4- Check building queue.\n"
+                  "5- Check factory production.\n"
+                  "6- Exit.\n")
+            option = input()
+            option = Functionalities.Utilities.correct_values(1, 6, option)
+            if option == 6:
+                break
+            else:
+                self.choose_city_buildings(option)
 
     def choose_city_buildings(self, option):
         if option == 1:
             self.build_warehouses()
         elif option == 2:
-            self.factories_production()
+            self.create_factories_menu()
         elif option == 3:
             self.build_commercial_office()
+        elif option == 4:
+            self.check_building_queue()
+        elif option == 5:
+            self.check_factory_production()
 
-    def create_factories(self, type, money):
-        """
-        Creates factories for a city.
-        :param type:
-        :param money:
-        :return:
-        """
-        Functionalities.Utilities.how_many_can_afford(30000, money)
-        quantity = input("How many factories do you want to create?\n")
-        quantity = Functionalities.Utilities.correct_values(0, 10000, quantity)
-        if not Functionalities.Utilities.check_if_affordable(30000, quantity, money):
-            print("You cannot afford to build this number of factories.")
-            return False
-        else:
-            print("Done, it will be ready in 5 turns.")
-            total_cost = quantity * 30000
-            return total_cost, type
 
-    def create_factories_menu(self, money):
+    def create_factories_menu(self):
         """
         Print menu and take input.
-        :param money:
         :return:
         """
         print("Wich type of factory do you want to create?\n"
@@ -453,62 +459,77 @@ class City:
               "4- Wine.\n"
               "5- Cloth.\n"
               "6- Exit.\n")
-        election = input()
-        election = Functionalities.Utilities.correct_values(1, 6, election)
-        if election == 6:
+        option = input()
+        option = Functionalities.Utilities.correct_values(1, 6, option)
+        if option == 6:
             pass
         else:
-            self.check_if_can_build_factory(election, money)
+            self.check_if_can_build_factory(option)
 
-    def check_if_can_build_factory(self, election, money):
+    def check_if_can_build_factory(self, election):
         """
         Check if it is possible to build a certain factory in a city.
         :param election:
-        :param money:
         :return:
         """
-        if election == 1:
-            if self.can_produce_skins:
-                self.create_factories(1, money)
-            else:
-                print("You can not build skins factories in {}".format(self.name))
-        elif election == 2:
-            if self.can_produce_tools:
-                self.create_factories(2, money)
-            else:
-                print("You can not build tools factories in {}".format(self.name))
-        elif election == 3:
-            if self.can_produce_beer:
-                self.create_factories(3, money)
-            else:
-                print("You can not build beer factories in {}".format(self.name))
-        elif election == 4:
-            if self.can_produce_wine:
-                self.create_factories(4, money)
-            else:
-                print("You can not build wine factories in {}".format(self.name))
-        elif election == 5:
-            if self.can_produce_cloth:
-                self.create_factories(5, money)
-            else:
-                print("You can not build cloth factories in {}".format(self.name))
+        can_build_correspondencies = {
+            1: self.can_produce_skins,
+            2: self.can_produce_tools,
+            3: self.can_produce_beer,
+            4: self.can_produce_wine,
+            5: self.can_produce_cloth
+        }
+        factories_type = {
+            1: "skins_factories",
+            2: "tools_factories",
+            3: "beer_factories",
+            4: "wine_factories",
+            5: "cloth_factories"
+        }
+        names = {
+            1: "skins",
+            2: "tools",
+            3: "beer",
+            4: "wine",
+            5: "cloth"
+        }
+
+        if can_build_correspondencies[election]:
+            self.create_factories(factories_type[election], names[election])
+        else:
+            print("You cannot produce {} in {}.\n".format(names[election], self.name))
+
+
+    def create_factories(self, type, name):
+        can_afford = Functionalities.Utilities.how_many_can_afford(25000, self.player.coins)
+        how_many = input("How many {} factories do you want to create? Each one cost 25.000 coins.\n"
+                         "You can afford {}.\n".format(name, can_afford))
+        how_many = Functionalities.Utilities.correct_values(0, can_afford, how_many)
+        if how_many > 0:
+            print("It will take 5 turns to build a factory.\n")
+            self.add_building_to_queue(how_many, 5, type, 25_000)
+
+
 
     def build_warehouses(self):
+        Functionalities.Utilities.text_separation()
         if not self.commercial_office:
             print("You can´t build in this city if you dont have a commercial office in it.\n")
         else:
             print("You have {} warehouses in this city. Do you want to build more? (5000 coins each)\n"
                   "1- Yes.\n"
-                  "2- No.\n")
+                  "2- No.\n".format(self.commercial_office.warehouse))
             option = input()
             option = Functionalities.Utilities.correct_values(1, 2, option)
             if option == 1:
-                how_much_can_buy = round(self.player.coins / 5000)
-                how_much = input()
-                how_much = Functionalities.Utilities.correct_values(0, how_much_can_buy, how_much)
-                self.add_building_to_queue(how_much, 2, "warehouses")
+                how_much_can_afford = round(self.player.coins / 5000)
+                how_much = input("How many do you want to build? You can afford {}\n".format(how_much_can_afford))
+                how_much = Functionalities.Utilities.correct_values(0, how_much_can_afford, how_much)
+                self.add_building_to_queue(how_much, 2, "warehouse", 5000)
+        Functionalities.Utilities.text_separation()
 
     def build_commercial_office(self):
+        Functionalities.Utilities.text_separation()
         if not self.commercial_office:
             self.player.check_if_can_build_office()
             if self.player.can_build_offices:
@@ -520,26 +541,44 @@ class City:
                 if option == 1:
                     if Functionalities.Utilities.check_if_affordable(50_000, 1, self.player.coins):
                         print("Perfect, it will be ready in 10 turns.\n")
-                        self.add_building_to_queue(1, 10, "commercial_office")
+                        self.add_building_to_queue(1, 10, "commercial_office", 50_000)
                     else:
                         print("Unfortunately, you can´t afford to pay 50.000 coins.\n")
             else:
                 print("You are not famous enough to build this office. Win some more money and try again.\n")
         else:
             print("You already have an office in {}!".format(self.name))
+        Functionalities.Utilities.text_separation()
 
     def get_total_turns_queue(self):
+        """
+        Calculate total of turns in the building queue.
+        :return:
+        """
         counter = 0
         for building in self.construction_queue:
-            counter += building[0]
+            if building[0] > counter:
+                counter = building[0]
         return counter
 
-    def add_building_to_queue(self, quantity, turns, type):
+    def add_building_to_queue(self, quantity, turns, type, cost):
+        """
+        Adding building to the queue.
+        :param quantity:
+        :param turns:
+        :param type:
+        :return:
+        """
         for _ in range(quantity):
             total_turns = self.get_total_turns_queue()
             self.construction_queue.append([turns + total_turns, type])
+        self.player.coins -= cost
 
     def decrease_turns_building_queue(self):
+        """
+        Decrease turns, and if they are finished, sending building to be finished.
+        :return:
+        """
         if len(self.construction_queue) > 0:
             first_building = self.construction_queue[0]
             for building in self.construction_queue:
@@ -548,14 +587,64 @@ class City:
                 self.finish_building(first_building)
 
     def finish_building(self, building):
+        """
+        Last step for building construction. Adding them to the city and deleting them from the queue.
+        :param building:
+        :return:
+        """
+        Functionalities.Utilities.text_separation()
         building_type = building[1]
-        if building_type == "warehouses":
-            self.commercial_office.warehouses += 1
+        if building_type == "warehouse":
+            self.commercial_office.warehouse += 1
         elif building_type == "commercial_office":
             new_commercial_office = Classes.Comercial_Office.CommercialOffice(self)
             self.commercial_office = new_commercial_office
         else:
+            factory_name = Functionalities.Utilities.return_factory_name(building_type)
+            if not factory_name:
+                print("A new {} is ready in {}!".format(building_type, self.name))
+            else:
+                print("A new {} is ready in {}!".format(factory_name, self.name))
             current_building_number = getattr(self, building_type)
             setattr(self, building_type, current_building_number + 1)
 
         self.construction_queue.remove(building)
+        Functionalities.Utilities.text_separation()
+
+
+    def check_building_queue(self):
+        """
+        Print every building in queue.
+        :return:
+        """
+        counter = 1
+        Functionalities.Utilities.text_separation()
+        if len(self.construction_queue) == 0:
+            print("There are no works at the moment.")
+        else:
+            for building in self.construction_queue:
+                factory_name = Functionalities.Utilities.return_factory_name(building[1])
+                if not factory_name:
+                    print("{}-{}, will be ready in {} turns.".format(counter, building[1], building[0]))
+                    counter += 1
+                else:
+                    print("{}-{}, will be ready in {} turns.".format(counter, factory_name, building[0]))
+                    counter += 1
+        Functionalities.Utilities.text_separation()
+
+    def check_factory_production(self):
+        Functionalities.Utilities.text_separation()
+        all_factories = [self.skins_factories, self.tools_factories, self.beer_factories, self.wine_factories,
+                         self.wine_factories]
+        products_production = (
+            ("skins", 2),
+            ("tools", 4),
+            ("beer", 5),
+            ("wine", 3),
+            ("cloth", 3)
+        )
+        print("In {} you have:\n".format(self.name))
+        for i, x in enumerate(all_factories):
+            print("{} factories that are producing {} {} per turn."
+                  .format(x, products_production[i][1] * x, products_production[i][0]))
+        Functionalities.Utilities.text_separation()

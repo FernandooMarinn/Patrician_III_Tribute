@@ -77,6 +77,8 @@ class Tavern:
             if option == 1:
                 boat.captain = True
                 print("Your captain has enrolled your ship, and is ready to sail.")
+                all_taverns = Functionalities.Utilities.return_taverns(self.city.player.all_cities_list)
+                Functionalities.Utilities.set_new_captain(all_taverns)
             else:
                 print("The captain watch you from the table. -Why do you even bother me?")
 

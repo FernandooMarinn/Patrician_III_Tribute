@@ -5,7 +5,7 @@ class CommercialOffice:
     def __init__(self, city):
         self.city = city
         self.trader = False
-        self.warehouses = 0
+        self.warehouse = 0
         self.max_inventory_size = 500
         self.inventory_size = 0
 
@@ -24,11 +24,15 @@ class CommercialOffice:
         self.cloth = 0
         self.price_cloth = 0
 
+        self.dagger = 0
+        self.cannon = 0
+        self.bombard = 0
+
         self.inventory = [self.skins, self.tools, self.beer, self.wine, self.cloth]
 
 
     def set_max_inventory_size(self):
-        self.inventory_size = 500 + self.warehouses * 2500
+        self.inventory_size = 500 + self.warehouse * 2500
 
     def set_inventory_size(self):
         self.inventory_size = sum(self.inventory)
@@ -71,7 +75,7 @@ class CommercialOffice:
               .format(self.city.name, self.skins, self.price_skins, self.tools, self.price_tools, self.beer,
                       self.price_beer, self.wine, self.price_wine, self.cloth, self.price_cloth))
         print("There are {} units of space occupied and {} warehouses."
-              .format(self.inventory_size, self.warehouses))
+              .format(self.inventory_size, self.warehouse))
         Functionalities.Utilities.text_separation()
 
     def total_bill(self):
@@ -84,7 +88,7 @@ class CommercialOffice:
             inventory_bill = self.max_inventory_size - self.inventory_size
         else:
             inventory_bill = 0
-        return trader_bill + inventory_bill + self.warehouses * 20
+        return trader_bill + inventory_bill + self.warehouse * 20
 
     def pass_bill(self, bill):
         Functionalities.Utilities.text_separation()

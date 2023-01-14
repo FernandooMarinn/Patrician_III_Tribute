@@ -53,7 +53,7 @@ def check_if_affordable(price, quantity, money):
 
 def how_many_can_afford(price, money):
     can_afford_number = round(money / price)
-    print("You can afford {}".format(can_afford_number))
+    return can_afford_number
 
 
 def ask_initial_money():
@@ -114,6 +114,11 @@ def add_all_buildings(cities):
     cities = create_money_lender(cities)
     return cities
 
+def return_taverns(cities):
+    all_taverns = []
+    for city in cities:
+        all_taverns.append(city.tavern)
+    return all_taverns
 
 def create_taverns(cities):
     cities_with_tavern = []
@@ -239,23 +244,27 @@ def choose_boat_from_city(city):
 
 def choose_boat(city):
     counter = 1
-    for boat in city.boats:
-        print("{}- {}.".format(counter, boat.name))
-        counter += 1
-    option = input()
-    option = correct_values(1, len(city.boats), option)
-    return city.boats[option - 1]
-
+    if len(city.boats) > 0:
+        for boat in city.boats:
+            print("{}- {}.".format(counter, boat.name))
+            counter += 1
+        option = input()
+        option = correct_values(1, len(city.boats), option)
+        return city.boats[option - 1]
+    else:
+        return False
 
 def choose_boat_from_convoy(city):
     counter = 1
-    for convoy in city.convoys:
-        print("{} {}".format(counter, convoy.name))
-        counter += 1
-    option = input()
-    option = correct_values(1, len(city.convoys), option)
-    return choose_boat(city.convoys[option - 1])
-
+    if len(city.convoys) > 0:
+        for convoy in city.convoys:
+            print("{} {}".format(counter, convoy.name))
+            counter += 1
+        option = input()
+        option = correct_values(1, len(city.convoys), option)
+        return choose_boat(city.convoys[option - 1])
+    else:
+        return False
 
 def choose_convoy(city):
     counter = 1
@@ -430,7 +439,18 @@ def add_trader(city):
     new_trader = Classes.Comercial_Office.Trader(city, city.commercial_office)
     city.commercial_office.trader = new_trader
 
-
 def add_commercial_office(city):
     new_commercial_office = Classes.Comercial_Office.CommercialOffice(city)
     city.commercial_office = new_commercial_office
+
+def return_factory_name(factory):
+    well_written = {"skins_factories": "skins factory",
+            "tools_factories": "tool factory",
+            "beer_factories": "beer factory",
+            "wine_factories": "wine factory",
+            "cloth_factories": "cloth factory"
+            }
+    if factory in well_written:
+        return well_written[factory]
+    else:
+        return False
