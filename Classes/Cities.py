@@ -1,3 +1,5 @@
+import random
+
 import Classes.Comercial_Office
 import Functionalities.Utilities
 
@@ -222,11 +224,11 @@ class City:
     def add_factories_prices(self):
         office = self.commercial_office
         list = [
-            [office.prices_skins, office.skins, self.min_price_skins, self.skins_factories * 2, "skins"],
-            [office.prices_tools, office.tools, self.min_price_tools, self.tools_factories * 4, "tools"],
-            [office.prices_beer, office.beer, self.min_price_beer, self.beer_factories * 5, "beer"],
-            [office.prices_wine, office.wine, self.min_price_wine, self.wine_factories * 3, "wine"],
-            [office.prices_cloth, office.cloth, self.min_price_cloth, self.cloth_factories * 3, "cloth"]
+            [office.price_skins, office.skins, self.min_price_skins, self.skins_factories * 2, "skins"],
+            [office.price_tools, office.tools, self.min_price_tools, self.tools_factories * 4, "tools"],
+            [office.price_beer, office.beer, self.min_price_beer, self.beer_factories * 5, "beer"],
+            [office.price_wine, office.wine, self.min_price_wine, self.wine_factories * 3, "wine"],
+            [office.price_cloth, office.cloth, self.min_price_cloth, self.cloth_factories * 3, "cloth"]
         ]
         for factory in list:
             price = Functionalities.Utilities.calculate_average_price(factory[0], factory[1], factory[2], factory[3])
@@ -248,6 +250,18 @@ class City:
         if self.cloth < 0:
             self.cloth = 0
 
+    def random_items_fill(self):
+        all_products = ["skins", "tools", "beer", "wine", "cloth"]
+        probability = random.randint(0, 10)
+        number_of_items_to_fill= random.randint(0, 5)
+        number_of_products_to_add = [random.randint(0, 40) for _ in range(number_of_items_to_fill)]
+        if probability == 5:
+            for i in range(number_of_items_to_fill):
+                product_to_fill = random.choice(all_products)
+                current_number = getattr(self, product_to_fill)
+                setattr(self, product_to_fill, current_number + number_of_products_to_add[i])
+                all_products.remove(product_to_fill)
+
     def change_turn(self):
         """
         Everything that have to happen everytime a turn passes.
@@ -255,6 +269,7 @@ class City:
         """
         self.create_houses()
         self.get_taxes()
+        self.random_items_fill()
         self.set_consumption()
         self.city_consumption()
         self.city_production()

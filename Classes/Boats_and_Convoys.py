@@ -326,7 +326,7 @@ class Boat:
         Set firepower of a ship.
         :return:
         """
-        self.firepower = self.catapult + (self.cannon * 2)
+        self.firepower = self.cannon + (self.bombard * 2) + (round(0.35 * self.dagger))
 
     def change_turn(self):
         """

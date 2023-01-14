@@ -63,7 +63,7 @@ class CommercialOffice:
             self.trader_menu()
 
     def check_warehouse(self):
-
+        self.set_prices_to_zero_if_no_items()
         self.set_inventory_size()
         Functionalities.Utilities.text_separation()
         print("Your commercial office at {} have:\n"
@@ -77,6 +77,19 @@ class CommercialOffice:
         print("There are {} units of space occupied and {} warehouses."
               .format(self.inventory_size, self.warehouse))
         Functionalities.Utilities.text_separation()
+
+    def set_prices_to_zero_if_no_items(self):
+        if self.skins == 0:
+            self.price_skins = 0
+        elif self.tools == 0:
+            self.price_tools = 0
+        elif self.beer == 0:
+            self.price_beer = 0
+        elif self.wine == 0:
+            self.price_wine = 0
+        elif self.cloth == 0:
+            self.price_cloth = 0
+
 
     def total_bill(self):
         self.set_inventory_size()
