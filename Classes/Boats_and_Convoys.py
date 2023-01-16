@@ -17,7 +17,7 @@ class Boat:
 
         self.artillery_space = 0
         self.cannon = cannon
-        self.bombard = 0
+        self.bombard = 6
         self.dagger = 0
 
         self.city_before_travel = 0
@@ -231,6 +231,14 @@ class Boat:
         else:
             print("In order to create a convoy, you need a captain.")
 
+    def turn_into_convoy(self):
+        if self.check_if_can_become_convoy():
+            new_convoy = Convoy(self.name, self.city, [self])
+            self.player.convoys.append(new_convoy)
+            self.city.convoys.append(new_convoy)
+            self.city.boats.remove(self)
+            self.player.boats.remove(self)
+
     def show_menu(self):
         """
         Print ship menu and takes choosen option.
@@ -243,11 +251,15 @@ class Boat:
                   "3- Transfer items to warehouse.\n"
                   "4- Check cargo.\n"
                   "5- Move to another city.\n"
-                  "6- Exit.\n"
+                  "6- Create a convoy.\n"
+                  "7- Exit.\n"
                   .format(self.name))
             option = input("")
-            option = Functionalities.Utilities.correct_values(1, 6, option)
-            if option == 6:
+            option = Functionalities.Utilities.correct_values(1, 7, option)
+            if option == 7:
+                break
+            elif option == 6:
+                self.turn_into_convoy()
                 break
             else:
                 self.choose_options(option)
@@ -268,6 +280,8 @@ class Boat:
             self.check_boat()
         elif option == 5:
             self.choose_city_to_travel(self.player.all_cities_list)
+        elif option == 6:
+            self.turn_into_convoy()
 
     def ask_witch_direction_to_move(self):
         if self.check_if_commercial_office():
@@ -364,6 +378,7 @@ class Convoy:
         self.min_level = 0
         self.name = name
         self.city = city
+        self.player = self.city.player
 
         self.traveling = False
         self.travel_duration = 0
@@ -376,11 +391,58 @@ class Convoy:
 
         self.is_convoy = True
 
+        self.sailors = 0
+        self.captains = 1
+
+        self.skins = 0
+        self.tools = 0
+        self.beer = 0
+        self.wine = 0
+        self.cloth = 0
+
+
+
+
+    def initialize_convoy(self):
+        self.set_sailors()
+        self.set_every_item()
+        self.set_all_health()
+        self.set_medium_health()
+        self.set_minimum_health()
+
     def check_min_lvl(self):
         all_levels = []
         for boat in self.boats:
             all_levels.append(boat.level)
         self.min_level = min(all_levels)
+
+    def set_every_item(self):
+        skins = 0
+        tools = 0
+        beer = 0
+        wine = 0
+        cloth = 0
+        for boat in self.boats:
+            skins += boat.skins
+            tools += boat.tools
+            beer += boat.beer
+            wine += boat.wine
+            cloth += boat.cloth
+        self.skins = skins
+        self.tools = tools
+        self.beer = beer
+        self.wine = wine
+        self.cloth = cloth
+
+    def set_sailors(self):
+        sailors = 0
+        captains = 0
+        for boat in self.boats:
+            sailors += boat.sailors
+            if boat.captain:
+                captains += 1
+        self.sailors = sailors
+        self.captains = captains
 
     def set_travel(self, distance, destination):
         self.travel_turns = distance
@@ -428,4 +490,61 @@ class Convoy:
         self.calculate_all_healths()
 
     def show_menu(self):
-        print("Convoy menu.\n")
+        while True:
+            print("1- Buy from city.\n"
+                  "2- Sell to city.\n"
+                  "3- Move items to warehouse.\n"
+                  "4- Check convoy.\n"
+                  "5- Add boat to convoy.\n"
+                  "6- Dissolve convoy.\n"
+                  "7- Exit.\n")
+            option = input()
+            option = Functionalities.Utilities.correct_values(1, 7, option)
+            if option == 7:
+                break
+            elif option == 6:
+                Functionalities.Utilities.delete_convoy(self)
+                break
+            else:
+                self.choose_option(option)
+
+    def choose_option(self, option):
+        if option == 1:
+            pass
+        elif option == 2:
+            pass
+        elif option == 3:
+            pass
+        elif option == 4:
+            self.check_convoy()
+        elif option == 5:
+            self.add_boat()
+        elif option == 6:
+            Functionalities.Utilities.delete_convoy(self)
+
+    def add_boat(self):
+        boat = Functionalities.Utilities.choose_boat_from_city(self.city)
+        if not boat:
+            pass
+        else:
+            print("Do you want {} to join convoy {}?\n"
+                  "1- Yes.\n"
+                  "2- No.\n".format(boat.name, self.name))
+            option = input()
+            option = Functionalities.Utilities.correct_values(1, 2, option)
+            if option == 1:
+                self.boats.append(boat)
+                self.initialize_convoy()
+                self.player.boats.remove(boat)
+                self.city.boats.remove(boat)
+
+    def dissolve_convoy(self):
+        print("Do you want to dissolve convoy {}?"
+              "1- Yes.\n"
+              "2- No.\n".format(self.name))
+        option = input()
+        option = Functionalities.Utilities.correct_values(1, 2, option)
+        if option == 1:
+            Functionalities.Utilities.delete_convoy(self)
+
+

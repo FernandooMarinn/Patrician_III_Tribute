@@ -25,7 +25,7 @@ player.all_cities_list = Cities
 cities_list = Functionalities.Utilities.add_all_buildings(Cities)
 
 
-boat1 = Classes.Boats_and_Convoys.Boat(100, 1, [0, 0, 0, 0, 0], 8, False, 0, "Prueba", player.city, player)
+boat1 = Classes.Boats_and_Convoys.Boat(100, 3, [0, 0, 0, 0, 0], 20, True, 0, "Prueba", player.city, player)
 player.boats.append(boat1)
 boat2 = Classes.Boats_and_Convoys.Boat(100, 1, [0, 0, 0, 0, 0], 8, False, 0, "Adios", cities_list[2], player)
 player.boats.append(boat2)
@@ -51,12 +51,9 @@ def print_menu():
 
 def game_loop():
     while True:
-        if player.turn == 0:
-            player.turn += 1
-        else:
-            change_turn(player, cities_list)
-            Functionalities.Utilities.text_separation()
-            Functionalities.Utilities.text_separation()
+        change_turn(player, cities_list)
+        Functionalities.Utilities.text_separation()
+        Functionalities.Utilities.text_separation()
         while True:
             print_menu()
             option = input()
@@ -68,8 +65,11 @@ def game_loop():
 
 
 def change_turn(player, cities_list):
-    player.change_turn()
-    Functionalities.Utilities.all_cities_change_turn(cities_list)
+    if player.turn == 0:
+        player.turn += 1
+    else:
+        player.change_turn()
+        Functionalities.Utilities.all_cities_change_turn(cities_list)
 
 
 def random_new_captain():

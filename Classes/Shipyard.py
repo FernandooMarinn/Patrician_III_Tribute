@@ -89,9 +89,20 @@ class Shipyard:
                 self.choose_option(option)
 
     def choose_option(self, option):
+        if option == 1 or option == 2:
+            self.repair_or_improve(option)
+        elif option == 3:
+            self.building_menu()
+        elif option == 4:
+            self.check_repairing_boats()
+        elif option == 5:
+            self.check_building_boats()
+        elif option == 6:
+            self.change_name()
+
+    def repair_or_improve(self, option):
         if option == 1:
             unit_to_select = Functionalities.Utilities.choose_boat_from_city(self.city)
-            # Funcion aparte.
             if not unit_to_select:
                 pass
             elif unit_to_select[1] == "boat":
@@ -106,14 +117,6 @@ class Shipyard:
                 self.ask_if_improve_boat(unit_to_select[0])
             elif unit_to_select[1] == "convoy":
                 self.improve_convoy(unit_to_select[0])
-        elif option == 3:
-            self.building_menu()
-        elif option == 4:
-            self.check_repairing_boats()
-        elif option == 5:
-            self.check_building_boats()
-        elif option == 6:
-            self.change_name()
 
     def change_name(self):
         ship = Functionalities.Utilities.choose_boat_from_city(self.city)

@@ -52,8 +52,11 @@ def check_if_affordable(price, quantity, money):
 
 
 def how_many_can_afford(price, money):
-    can_afford_number = round(money / price)
-    return can_afford_number
+    if price == 0:
+        return 0
+    else:
+        can_afford_number = round(money / price)
+        return can_afford_number
 
 
 def ask_initial_money():
@@ -225,7 +228,7 @@ def boat_battle_who_starts(boat, pirate):
 
 
 def boat_battle(who_starts, who_goes_after):
-    while who_starts.health > 1 or who_goes_after.health > 1:
+    while who_starts.health > 0 or who_goes_after.health > 0:
         who_goes_after.health -= who_starts.firepower
         print("{} fires at {} and made {} damage."
               .format(who_starts.name, who_goes_after.name, who_starts.firepower))
@@ -236,7 +239,6 @@ def boat_battle(who_starts, who_goes_after):
               .format(who_starts.name, who_starts.health, who_goes_after.name, who_goes_after.health))
 
 
-# Poner en una sola
 
 
 def choose_boat_from_city(city):
@@ -473,3 +475,17 @@ def return_factory_name(factory):
         return well_written[factory]
     else:
         return False
+
+
+def delete_convoy(convoy):
+    city = convoy.city
+    player = convoy.player
+    for boat in convoy.boats:
+        city.boats.append(boat)
+        player.boats.append(boat)
+    city.convoys.remove(convoy)
+    player.convoys.remove(convoy)
+    text_separation()
+    print("Convoy {} has been dissolved.".format(convoy.name))
+    text_separation()
+    del convoy

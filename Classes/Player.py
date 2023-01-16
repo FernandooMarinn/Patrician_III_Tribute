@@ -281,6 +281,9 @@ class Player:
         sailors = 0
         for boat in self.boats:
             sailors += boat.sailors
+        for convoy in self.convoys:
+            convoy.set_sailors_and_captains()
+            sailors += convoy.sailors
         return sailors
 
     def captains_bill(self):
@@ -288,6 +291,8 @@ class Player:
         for boat in self.boats:
             if boat.captain:
                 captains += 1
+        for convoy in self.convoys:
+            captains += convoy.captains
         return captains
 
     def traders_and_offices_bill(self):
