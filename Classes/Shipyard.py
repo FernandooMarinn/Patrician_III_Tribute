@@ -79,10 +79,11 @@ class Shipyard:
                   "3- Build new ship.\n"
                   "4- Check reparation queue.\n"
                   "5- Check build queue.\n"
-                  "6- Exit.\n")
+                  "6- Change name (ship).\n"
+                  "7- Exit.\n")
             option = input()
-            option = Functionalities.Utilities.correct_values(1, 6, option)
-            if option == 6:
+            option = Functionalities.Utilities.correct_values(1, 7, option)
+            if option == 7:
                 break
             else:
                 self.choose_option(option)
@@ -111,6 +112,15 @@ class Shipyard:
             self.check_repairing_boats()
         elif option == 5:
             self.check_building_boats()
+        elif option == 6:
+            self.change_name()
+
+    def change_name(self):
+        ship = Functionalities.Utilities.choose_boat_from_city(self.city)
+        if not ship:
+            print("You don`t have any ships in {}".format(self.city.name))
+        name = input("What are you thinking of naming your boat")
+        ship.name = name
 
     def building_menu(self):
         """
