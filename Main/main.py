@@ -2,6 +2,19 @@ import Functionalities.Utilities
 import Classes.Boats_and_Convoys
 
 
+
+""" To do list:
+1- combat.
+2- finish levels.
+3- pirates
+4- Hacer todas las ciudades y todos los productos (ultimo).
+5- Guardado y cargado IMPORTANTE
+6- Convoys
+8- Que no baje nunca de 0 el dinero
+"""
+
+
+
 # Creating everything to see if it works.
 player = Functionalities.Utilities.create_player()
 Cities = Functionalities.Utilities.create_cities(player)
@@ -58,8 +71,10 @@ def change_turn(player, cities_list):
     player.change_turn()
     Functionalities.Utilities.all_cities_change_turn(cities_list)
 
+
 def random_new_captain():
     Functionalities.Utilities.set_new_captain(all_taverns)
+
 
 def choose_options(option):
     if option == 1:

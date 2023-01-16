@@ -287,13 +287,15 @@ class Boat:
                 self.move_from_warehouse(item_name)
 
     def move_from_ship(self, name):
-        while True:
-            product = Functionalities.Utilities.choose_products(name, self)
-            product_price = Functionalities.Utilities.choose_prices(name, self)
-            print("You have {} {} at {} coins. How many do you want to move?\n"
-                  .format(product, name, product_price))
-            option = input("\n")
-            option = Functionalities.Utilities.correct_values(0, product, option)
+        product = Functionalities.Utilities.choose_products(name, self)
+        product_price = Functionalities.Utilities.choose_prices(name, self)
+        print("You have {} {} at {} coins. How many do you want to move?\n"
+              .format(product, name, product_price))
+        option = input("\n")
+        option = Functionalities.Utilities.correct_values(0, product, option)
+        if option == 0:
+            pass
+        else:
             self.moving_products(name, option, product_price, self, self.city.commercial_office)
 
     def moving_products(self, name, how_many, price, origin, destiny):
@@ -312,7 +314,10 @@ class Boat:
                   .format(product, name, product_price))
             option = input("\n")
             option = Functionalities.Utilities.correct_values(0, product, option)
-            self.moving_products(name, option, product_price, self.city.commercial_office, self)
+            if option == 0:
+                pass
+            else:
+                self.moving_products(name, option, product_price, self.city.commercial_office, self)
 
     def check_if_commercial_office(self):
         if not self.city.commercial_office:
@@ -323,10 +328,22 @@ class Boat:
 
     def set_firepower(self):
         """
-        Set firepower of a ship.
+        Set firepower of a ship dependig on level.
         :return:
         """
-        self.firepower = self.cannon + (self.bombard * 2) + (round(0.35 * self.dagger))
+        if self.dagger > self.sailors:
+            dagger_value = self.sailors
+        else:
+            dagger_value = self.dagger
+        if self.cannon + self.bombard > self.artillery_space:
+            if self.bombard >= self.artillery_space:
+                self.firepower = self.artillery_space * 2 + (round(dagger_value * 0.35))
+            else:
+                max_cannon_value = self.artillery_space - self.bombard
+                self.firepower = max_cannon_value + (self.bombard * 2) + (round(0.35 * dagger_value))
+        else:
+            self.firepower = self.bombard * 2 + self.cannon + (round(0.35 * dagger_value))
+
 
     def change_turn(self):
         """
@@ -409,7 +426,6 @@ class Convoy:
     def change_turn(self):
         self.convoy_deterioration()
         self.calculate_all_healths()
-
 
     def show_menu(self):
         print("Convoy menu.\n")

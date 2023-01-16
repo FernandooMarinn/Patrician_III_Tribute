@@ -68,7 +68,7 @@ class Tavern:
         if not self.captain:
             print("This tavern does not have a captain. You should go to another city and take a chance.")
         else:
-            print("Do you want to hire a captain for your boat {}?\n"
+            print("Do you want to hire a captain for your boat {}? It will cost 15 coins each turn.\n"
                   "1- Yes.\n"
                   "2- No.\n"
                   .format(boat.name))
@@ -79,6 +79,7 @@ class Tavern:
                 print("Your captain has enrolled your ship, and is ready to sail.")
                 all_taverns = Functionalities.Utilities.return_taverns(self.city.player.all_cities_list)
                 Functionalities.Utilities.set_new_captain(all_taverns)
+                self.captain = False
             else:
                 print("The captain watch you from the table. -Why do you even bother me?")
 

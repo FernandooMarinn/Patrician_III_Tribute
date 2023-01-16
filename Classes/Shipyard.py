@@ -68,6 +68,10 @@ class Shipyard:
             pass
 
     def show_menu(self):
+        """
+        Prints ship menu.
+        :return:
+        """
         while True:
             print("What do you want to do?\n\n"
                   "1- Repair boat or convoy.\n"
@@ -108,8 +112,11 @@ class Shipyard:
         elif option == 5:
             self.check_building_boats()
 
-
     def building_menu(self):
+        """
+        Check if want to build a ship.
+        :return:
+        """
         print("Do you want to build a new ship? It cost 10.000 coins.\n"
               "1- Yes.\n"
               "2- No.\n")
@@ -131,6 +138,10 @@ class Shipyard:
         print("Your ship {} will be ready in {} turns.".format(new_boat.name, self.build_speed))
 
     def check_building_boats(self):
+        """
+        Shows every ship being build.
+        :return:
+        """
         for order in self.building_queue:
             boat = order[0]
             turns_remaining = order[1]
@@ -138,6 +149,10 @@ class Shipyard:
                   .format(boat.name, turns_remaining))
 
     def building_boats(self):
+        """
+        Decrease number of turns remaining for building each ship.
+        :return:
+        """
         boats_to_delete = []
         for boat in self.building_queue:
             ship = boat[0]
@@ -153,6 +168,10 @@ class Shipyard:
             self.building_queue.remove(to_be_deleted)
 
     def repairing_boats(self):
+        """
+        Decrease number of turns remaining for repairing each ship.
+        :return:
+        """
         to_delete_list = []
         for repairing_unit in self.reparation_queue:
             remaining_turns = repairing_unit[1]
@@ -169,6 +188,10 @@ class Shipyard:
             self.reparation_queue.remove(item)
 
     def check_repairing_boats(self):
+        """
+        Check queue of repairing ships.
+        :return:
+        """
         Functionalities.Utilities.text_separation()
         for repairing_unit in self.reparation_queue:
             boat = repairing_unit[0]
@@ -177,6 +200,11 @@ class Shipyard:
         Functionalities.Utilities.text_separation()
 
     def ask_if_improve_boat(self, unit):
+        """
+        Check if want to improve ship.
+        :param unit:
+        :return:
+        """
         if unit.level == 3:
             print("Your boat is already at its maximum level.")
         else:
@@ -192,6 +220,11 @@ class Shipyard:
                 self.improve_boat(unit)
 
     def improve_boat(self, boat):
+        """
+        Improve each ship to selected level.
+        :param boat:
+        :return:
+        """
         if boat.level == 1:
             option = input("How do you want to improve your ship?\n"
                            "1- To level 2. (3000 coins and 3 turns)\n"
@@ -207,7 +240,6 @@ class Shipyard:
             else:
                 print("You can´t afford to improve your ship.\n")
 
-
     def calculate_remaining_turns(self):
         counter = 0
         for ship in self.building_queue:
@@ -217,8 +249,11 @@ class Shipyard:
     def improve_convoy(self, covoy):
         pass
 
-
     def change_turn(self):
+        """
+        Everytime a turn changes.
+        :return:
+        """
         self.level_up()
         self.building_boats()
         if len(self.reparation_queue) > 0:

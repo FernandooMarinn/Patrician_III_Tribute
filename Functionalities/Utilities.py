@@ -114,11 +114,13 @@ def add_all_buildings(cities):
     cities = create_money_lender(cities)
     return cities
 
+
 def return_taverns(cities):
     all_taverns = []
     for city in cities:
         all_taverns.append(city.tavern)
     return all_taverns
+
 
 def create_taverns(cities):
     cities_with_tavern = []
@@ -181,7 +183,14 @@ def calculate_average_price(old_price, old_items, new_price, new_items):
 
 
 def set_new_captain(taverns):
+    """
+    Put a new captain in a random city, unless it was the one that had a captain.
+    :param taverns:
+    :return:
+    """
     random_tavern = random.choice(taverns)
+    while random_tavern.captain:
+        random_tavern = random.choice(taverns)
     random_tavern.captain = True
 
 
@@ -226,7 +235,10 @@ def boat_battle(who_starts, who_goes_after):
         print("{} health is {} and {} health is {}."
               .format(who_starts.name, who_starts.health, who_goes_after.name, who_goes_after.health))
 
+
 # Poner en una sola
+
+
 def choose_boat_from_city(city):
     print("Is your ship free or in a convoy?\n"
           "1- Ship.\n"
@@ -254,6 +266,7 @@ def choose_boat(city):
     else:
         return False
 
+
 def choose_boat_from_convoy(city):
     counter = 1
     if len(city.convoys) > 0:
@@ -266,6 +279,7 @@ def choose_boat_from_convoy(city):
     else:
         return False
 
+
 def choose_convoy(city):
     counter = 1
     for convoy in city.convoys:
@@ -274,7 +288,6 @@ def choose_convoy(city):
     option = input()
     option = correct_values(1, len(city.convoys), option)
     return city.convoys[option - 1]
-
 
 
 def select_item():
@@ -318,6 +331,7 @@ def increase_product_number(object, products):
     elif products[1] == "cloth":
         object.cloth += quantity
 
+
 def choose_prices(name, object):
     if name == "skins":
         return object.price_skins
@@ -329,6 +343,7 @@ def choose_prices(name, object):
         return object.price_wine
     elif name == "cloth":
         return object.price_cloth
+
 
 def choose_products(name, object):
     if name == "skins":
@@ -342,6 +357,7 @@ def choose_products(name, object):
     elif name == "cloth":
         return object.cloth
 
+
 def change_prices(name, new_price, object):
     if name == "skins":
         object.price_skins = new_price
@@ -354,6 +370,7 @@ def change_prices(name, new_price, object):
     elif name == "cloth":
         object.price_cloth = new_price
 
+
 def return_trading_items_values(name, city):
     if name == "skins":
         return [city.max_price_skins, city.min_price_skins, city.skins]
@@ -365,7 +382,6 @@ def return_trading_items_values(name, city):
         return [city.max_price_wine, city.min_price_wine, city.wine]
     elif name == "cloth":
         return [city.max_price_cloth, city.min_price_cloth, city.cloth]
-
 
 
 def buy_from_city(ship_or_office):
@@ -435,21 +451,24 @@ def calculate_how_many_can_buy_trader(given_price, minimum_price, maximum_price,
         proportional_price = minimum_price + (maximum_price - minimum_price) * (100 - num_products + num_bought) / 100
     return num_bought
 
+
 def add_trader(city):
     new_trader = Classes.Comercial_Office.Trader(city, city.commercial_office)
     city.commercial_office.trader = new_trader
+
 
 def add_commercial_office(city):
     new_commercial_office = Classes.Comercial_Office.CommercialOffice(city)
     city.commercial_office = new_commercial_office
 
+
 def return_factory_name(factory):
     well_written = {"skins_factories": "skins factory",
-            "tools_factories": "tool factory",
-            "beer_factories": "beer factory",
-            "wine_factories": "wine factory",
-            "cloth_factories": "cloth factory"
-            }
+                    "tools_factories": "tool factory",
+                    "beer_factories": "beer factory",
+                    "wine_factories": "wine factory",
+                    "cloth_factories": "cloth factory"
+                    }
     if factory in well_written:
         return well_written[factory]
     else:

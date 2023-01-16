@@ -30,7 +30,6 @@ class CommercialOffice:
 
         self.inventory = [self.skins, self.tools, self.beer, self.wine, self.cloth]
 
-
     def set_max_inventory_size(self):
         self.inventory_size = 500 + self.warehouse * 2500
 
@@ -89,7 +88,6 @@ class CommercialOffice:
             self.price_wine = 0
         elif self.cloth == 0:
             self.price_cloth = 0
-
 
     def total_bill(self):
         self.set_inventory_size()
@@ -251,8 +249,6 @@ class Trader:
         if len(sell_list) != 0:
             self.sell_trade(sell_list)
 
-
-
     def calculate_how_many_can_buy(self, item):
         number_to_reach = item[1]
         price = item[2]
@@ -290,7 +286,6 @@ class Trader:
             city_price = Functionalities.Utilities.choose_prices(name, self.city)
             number_of_products = Functionalities.Utilities.choose_products(name, self.commercial_office)
 
-
     def trade_can_not_buy_all(self, min_price, max_price, city_product, how_many_can_buy, name, product):
         mean_price = self.city.calculate_group_trade(min_price, max_price, city_product, -how_many_can_buy)
         self.city.coins += mean_price * how_many_can_buy
@@ -319,6 +314,7 @@ class Trader:
     def buy_trade(self, buy_list):
         for item in buy_list:
             self.calculate_how_many_can_buy(item)
+
     def sell_trade(self, sell_list):
         for item in sell_list:
             self.calculate_how_many_can_sell(item)

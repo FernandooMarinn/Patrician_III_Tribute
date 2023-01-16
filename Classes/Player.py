@@ -16,6 +16,9 @@ class Player:
 
         self.number_of_offices = 1
         self.can_build_offices = False
+        self.bill = {"sailors": 0, "captains": 0, "factories": 0, "traders": 0, "offices": 0}
+
+
     def check_player(self):
         """
         Prints out any important data.
@@ -25,7 +28,6 @@ class Player:
         print("You have {} coins, {} boats and {} convoys. Your level is {}."
               .format(self.coins, len(self.boats), len(self.convoys), self.level))
         print("-" * 60, "\n")
-
 
     def level_up(self):
         """
@@ -44,7 +46,6 @@ class Player:
             if self.coins > 200_000:
                 self.level += 1
                 self.print_level_up(3)
-
 
     def print_level_up(self, option):
         """
@@ -233,18 +234,91 @@ class Player:
                 print("\n\nYou have been moved to {}\n\n".format(city.name))
                 self.city = city
 
-    def calculate_bill(self):
+
+
+    def set_bill(self):
+        traders_and_offices = self.traders_and_offices_bill()
+
         sailors = self.sailors_bill()
-        print("You have given {} to pay your sailors")
+        captains = self.captains_bill()
+        traders = traders_and_offices[0]
+        offices = traders_and_offices[1]
+        factories = self.factories_bill()
+
+        self.bill["sailors"] = sailors
+        self.bill["captains"] = captains
+        self.bill["traders"] = traders
+        self.bill["offices"] = offices
+        self.bill["factories"] = factories
+
+
+    def pass_bill(self):
+        self.set_bill()
+        Functionalities.Utilities.text_separation()
+        sailors_bill = self.bill["sailors"] * 3
+        captains_bill =  self.bill["captains"] * 15
+        traders_bill =  self.bill["traders"] * 20
+        offices_bill = self.bill["offices"] * 10
+        factories_bill = self.bill["factories"] * 10
+
+        total_bill = sailors_bill + captains_bill + traders_bill + offices_bill + factories_bill
+        self.coins -= total_bill
+
+        print("Bill for this turn is:\n"
+              "{} coins for your sailors.\n"
+              "{} coins for your captains.\n"
+              "{} coins for your traders.\n"
+              "{} coins for your offices.\n"
+              "{} coins for your factories.\n\n"
+              "Total amount to pay is {} coins"
+              .format(sailors_bill, captains_bill,
+                      traders_bill, offices_bill,
+                      factories_bill, total_bill))
+
+
 
     def sailors_bill(self):
         sailors = 0
         for boat in self.boats:
             sailors += boat.sailors
-        return sailors * 10
+        return sailors
+
+    def captains_bill(self):
+        captains = 0
+        for boat in self.boats:
+            if boat.captain:
+                captains += 1
+        return captains
+
+    def traders_and_offices_bill(self):
+        traders = 0
+        offices = 0
+        for city in self.all_cities_list:
+            if not city.commercial_office:
+                pass
+            else:
+                offices += 1
+                if not city.commercial_office.trader:
+                    pass
+                else:
+                    traders += 1
+        return traders, offices
+
+    def factories_bill(self):
+        factories = 0
+        for city in self.all_cities_list:
+            city_factories = [
+                city.skins_factories,
+                city.tools_factories,
+                city.beer_factories,
+                city.wine_factories,
+                city.cloth_factories
+            ]
+            factories += sum(city_factories)
+        return factories
 
     def change_turn(self):
         self.turn += 1
         self.change_turns_boats_and_convoys()
         self.check_if_have_to_move_city()
-        self.calculate_bill()
+        self.pass_bill()

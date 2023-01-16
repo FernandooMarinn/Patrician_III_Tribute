@@ -220,7 +220,6 @@ class City:
 
             self.add_factories_prices()
 
-
     def add_factories_prices(self):
         office = self.commercial_office
         list = [
@@ -461,7 +460,6 @@ class City:
         elif option == 5:
             self.check_factory_production()
 
-
     def create_factories_menu(self):
         """
         Print menu and take input.
@@ -514,7 +512,6 @@ class City:
         else:
             print("You cannot produce {} in {}.\n".format(names[election], self.name))
 
-
     def create_factories(self, type, name):
         can_afford = Functionalities.Utilities.how_many_can_afford(25000, self.player.coins)
         how_many = input("How many {} factories do you want to create? Each one cost 25.000 coins.\n"
@@ -523,8 +520,6 @@ class City:
         if how_many > 0:
             print("It will take 5 turns to build a factory.\n")
             self.add_building_to_queue(how_many, 5, type, 25_000)
-
-
 
     def build_warehouses(self):
         Functionalities.Utilities.text_separation()
@@ -625,7 +620,6 @@ class City:
 
         self.construction_queue.remove(building)
         Functionalities.Utilities.text_separation()
-
 
     def check_building_queue(self):
         """

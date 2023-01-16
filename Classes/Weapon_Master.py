@@ -1,5 +1,6 @@
 import Functionalities.Utilities
 
+
 class Weapon_master:
     def __init__(self, city):
         self.level = 1
@@ -38,7 +39,8 @@ class Weapon_master:
             "bombard": 1600
         }
 
-        how_many = input("How many do you want to buy? There are {} on sale.\n".format(names[option]))
+        how_many = input("How many do you want to buy? There are {} on sale. (if you don`t have a commercial office, "
+                         "or enough space in your ship, you will lose the money!\n".format(names[option]))
         how_many = Functionalities.Utilities.correct_values(0, names[option], how_many)
 
         can_afford = Functionalities.Utilities.how_many_can_afford(prices[option] * how_many, self.city.player.coins)
@@ -75,7 +77,6 @@ class Weapon_master:
                 self.experience = 0
                 self.level += 1
 
-
     def calculate_item_weight(self, items):
         item_name = items[0]
         item_quantity = items[1]
@@ -110,7 +111,6 @@ class Weapon_master:
     def move_to_commercial_office(self, items):
         current_weapons = getattr(self.commercial_office, items[0])
         setattr(self.commercial_office, items[0], current_weapons + items[1])
-
 
     def move_to_ship(self, items, ship):
         items_weight = self.calculate_item_weight(items)
