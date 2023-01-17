@@ -220,28 +220,6 @@ def select_boat_from_convoy(convoy):
     return convoy.boats[option - 1]
 
 
-# have to finish battle.
-def boat_battle_who_starts(boat, pirate):
-    who_starts = random.choice([boat, pirate])
-    who_goes_after = 0
-    if who_starts == boat:
-        who_goes_after = pirate
-    else:
-        who_goes_after = boat
-    return who_starts, who_goes_after
-
-
-def boat_battle(who_starts, who_goes_after):
-    while who_starts.health > 0 or who_goes_after.health > 0:
-        who_goes_after.health -= who_starts.firepower
-        print("{} fires at {} and made {} damage."
-              .format(who_starts.name, who_goes_after.name, who_starts.firepower))
-        who_starts.health -= who_goes_after.firepower
-        print("{} fires at {} and made {} damage."
-              .format(who_goes_after.name, who_starts.name, who_goes_after.firepower))
-        print("{} health is {} and {} health is {}."
-              .format(who_starts.name, who_starts.health, who_goes_after.name, who_goes_after.health))
-
 
 def choose_boat_from_city(city):
     """
@@ -372,6 +350,24 @@ def choose_products(name, object):
         return object.wine
     elif name == "cloth":
         return object.cloth
+
+
+def set_price_to_zero(object):
+    """
+    Avoid getting a price on a product when there are no units in the inventory.
+    :param object:
+    :return:
+    """
+    if object.skins == 0:
+        object.price_skins = 0
+    if object.tools == 0:
+        object.price_tools = 0
+    if object.beer == 0:
+        object.price_beer = 0
+    if object.wine == 0:
+        object.price_wine = 0
+    if object.cloth == 0:
+        object.price_cloth = 0
 
 
 def change_prices(name, new_price, object):
@@ -536,20 +532,21 @@ def delete_convoy(convoy):
 
 def ask_witch_direction_to_move(object):
     if object.check_if_commercial_office():
-        print("What do you want to do?\n"
-              "1- Move from ship to warehouse.\n"
-              "2- Move from warehouse to ship.\n"
-              "3- Exit.\n")
-        option = input("\n")
-        option = correct_values(1, 3, option)
-        if option == 3:
-            pass
-        else:
-            item_name = select_item()
-        if option == 1:
-            move_from_ship_or_convoy(object, item_name)
-        elif option == 2:
-            move_from_warehouse(object, item_name)
+        while True:
+            print("What do you want to do?\n"
+                  "1- Move from ship to warehouse.\n"
+                  "2- Move from warehouse to ship.\n"
+                  "3- Exit.\n")
+            option = input("\n")
+            option = correct_values(1, 3, option)
+            if option == 3:
+                break
+            else:
+                item_name = select_item()
+            if option == 1:
+                move_from_ship_or_convoy(object, item_name)
+            elif option == 2:
+                move_from_warehouse(object, item_name)
 
 
 def move_from_ship_or_convoy(object, name):
@@ -562,7 +559,7 @@ def move_from_ship_or_convoy(object, name):
     if option == 0:
         pass
     else:
-        object.moving_products(name, option, product_price, object, object.city.commercial_office)
+        moving_products(name, option, product_price, object, object.city.commercial_office)
 
 
 def moving_products(name, how_many, price, origin, destiny):
@@ -581,11 +578,11 @@ def move_from_warehouse(object, name):
         print("You have {} {} at {} coins. How many do you want to move?\n"
               .format(product, name, product_price))
         option = input("\n")
-        option = correct_values(0, product, option)
-        if option == 0:
+        if option == "0":
             pass
         else:
-            object.moving_products(name, option, product_price, object.city.commercial_office, object)
+            option = correct_values(0, product, option)
+            moving_products(name, option, product_price, object.city.commercial_office, object)
 
 
 def choose_city_to_travel(object, cities):

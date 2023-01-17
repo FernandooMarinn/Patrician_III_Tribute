@@ -106,68 +106,6 @@ class Boat:
         else:
             self.enough_sailors = True
 
-    def choose_city_to_travel(self, cities):
-        """
-        Enumerate and choose a city from a list.
-        :param cities:
-        :return:
-        """
-        if self.enough_sailors:
-            print("Where do you want to move?\n")
-            for i, x in enumerate(cities):
-                print("{}- {}.".format(i + 1, x.name))
-            option = input("\n")
-            option = Functionalities.Utilities.correct_values(1, len(cities), option)
-            self.check_distance_between_cities(option - 1)
-        else:
-            print("You can´t move with less than 8 sailors.\n")
-
-    def check_distance_between_cities(self, option):
-        """
-        Check distance between cities. If they are close, will take fewer turns to move.
-        :param option:
-        :return:
-        """
-        # Terminar esto
-        cities = self.cities_list
-        distance = self.city.possition + cities[option].possition
-        if self.city == cities[option]:
-            print("You are already in {}".format(self.city.name))
-        else:
-            print("{} is now moving to {}. Will take {} turns."
-                  .format(self.name, cities[option].name, distance))
-            self.set_travel(distance, cities[option])
-
-    def set_travel(self, distance, destination):
-        """
-        Start moving to another city.
-        :param distance:
-        :param destination:
-        :return:
-        """
-        self.travel_turns = distance
-        self.traveling = True
-        self.destination = destination
-        self.boat_deterioration()
-        self.city_before_travel = self.city
-        if self in self.city.boats:
-            self.city.boats.remove(self)
-        self.city = False
-
-    def while_traveling(self):
-        """
-        Works every turn until arrival. Check if has arrived and calculate how many turns remain.
-        :return:
-        """
-        if self.travel_turns > 1:
-            self.travel_turns -= 1
-        elif self.travel_turns == 1:
-            self.city = self.destination
-            self.city.boats.append(self)
-            self.traveling = False
-            self.destination = 0
-            print("Your boat {} has arrived at {}."
-                  .format(self.name, self.city.name))
 
     def check_if_traveling(self):
         """
@@ -280,7 +218,7 @@ class Boat:
         elif option == 4:
             self.check_boat()
         elif option == 5:
-            self.choose_city_to_travel(self.player.all_cities_list)
+            Functionalities.Utilities.choose_city_to_travel(self, self.player.all_cities_list)
         elif option == 6:
             self.turn_into_convoy()
 
@@ -319,6 +257,7 @@ class Boat:
             self.boat_deterioration()
         self.check_level()
         self.set_firepower()
+        Functionalities.Utilities.set_price_to_zero(self)
 
 
 # Convoys, to control ships together.
@@ -460,11 +399,6 @@ class Convoy:
         self.set_medium_health()
         self.set_all_health()
 
-    def change_turn(self):
-        if self.traveling:
-            self.boat_deterioration()
-            Functionalities.Utilities.while_traveling(self)
-        self.calculate_all_healths()
 
     def show_menu(self):
         while True:
@@ -547,3 +481,10 @@ This convoy has a total of {self.sailors} sailors and {self.captains} captains.
 """)
         Functionalities.Utilities.text_separation()
 
+
+    def change_turn(self):
+        if self.traveling:
+            self.boat_deterioration()
+            Functionalities.Utilities.while_traveling(self)
+        self.calculate_all_healths()
+        Functionalities.Utilities.set_price_to_zero(self)
