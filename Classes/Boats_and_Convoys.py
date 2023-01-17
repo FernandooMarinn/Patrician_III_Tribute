@@ -50,7 +50,7 @@ class Boat:
         self.firepower = 0
 
         self.check_level()
-        self.check_current_load()
+        self.set_empty_space()
         self.city.boats.append(self)
         self.check_if_enough_sailors()
 
@@ -73,7 +73,7 @@ class Boat:
             self.max_health = 125
             self.max_load = 180
 
-    def check_current_load(self):
+    def set_empty_space(self):
         """
         Calculate current ship load by adding every item and sailors.
         :return:
@@ -185,7 +185,7 @@ class Boat:
         :return:
         """
         print("-" * 60)
-        self.check_current_load()
+        self.set_empty_space()
         print("Your boat {} have:\n"
               "{} skins at {} coins.\n"
               "{} tools at {} coins.\n"
@@ -238,6 +238,7 @@ class Boat:
             self.city.convoys.append(new_convoy)
             self.city.boats.remove(self)
             self.player.boats.remove(self)
+            new_convoy.initialize_convoy()
 
     def show_menu(self):
         """
@@ -275,63 +276,13 @@ class Boat:
         elif option == 2:
             Functionalities.Utilities.sell_to_city(self)
         elif option == 3:
-            self.ask_witch_direction_to_move()
+            Functionalities.Utilities.ask_witch_direction_to_move(self)
         elif option == 4:
             self.check_boat()
         elif option == 5:
             self.choose_city_to_travel(self.player.all_cities_list)
         elif option == 6:
             self.turn_into_convoy()
-
-    def ask_witch_direction_to_move(self):
-        if self.check_if_commercial_office():
-            print("What do you want to do?\n"
-                  "1- Move from ship to warehouse.\n"
-                  "2- Move from warehouse to ship.\n"
-                  "3- Exit.\n")
-            option = input("\n")
-            option = Functionalities.Utilities.correct_values(1, 3, option)
-            if option == 3:
-                pass
-            else:
-                item_name = Functionalities.Utilities.select_item()
-            if option == 1:
-                self.move_from_ship(item_name)
-            elif option == 2:
-                self.move_from_warehouse(item_name)
-
-    def move_from_ship(self, name):
-        product = Functionalities.Utilities.choose_products(name, self)
-        product_price = Functionalities.Utilities.choose_prices(name, self)
-        print("You have {} {} at {} coins. How many do you want to move?\n"
-              .format(product, name, product_price))
-        option = input("\n")
-        option = Functionalities.Utilities.correct_values(0, product, option)
-        if option == 0:
-            pass
-        else:
-            self.moving_products(name, option, product_price, self, self.city.commercial_office)
-
-    def moving_products(self, name, how_many, price, origin, destiny):
-        Functionalities.Utilities.decrease_product_number(origin, [how_many, name])
-        Functionalities.Utilities.increase_product_number(destiny, [how_many, name])
-        old_items = Functionalities.Utilities.choose_products(name, destiny)
-        old_price = Functionalities.Utilities.choose_prices(name, destiny)
-        new_price = Functionalities.Utilities.calculate_average_price(old_price, old_items, price, how_many)
-        Functionalities.Utilities.change_prices(name, new_price, destiny)
-
-    def move_from_warehouse(self, name):
-        while True:
-            product = Functionalities.Utilities.choose_products(name, self.city.commercial_office)
-            product_price = Functionalities.Utilities.choose_prices(name, self.city)
-            print("You have {} {} at {} coins. How many do you want to move?\n"
-                  .format(product, name, product_price))
-            option = input("\n")
-            option = Functionalities.Utilities.correct_values(0, product, option)
-            if option == 0:
-                pass
-            else:
-                self.moving_products(name, option, product_price, self.city.commercial_office, self)
 
     def check_if_commercial_office(self):
         if not self.city.commercial_office:
@@ -358,7 +309,6 @@ class Boat:
         else:
             self.firepower = self.bombard * 2 + self.cannon + (round(0.35 * dagger_value))
 
-
     def change_turn(self):
         """
         Everything that have to be done in each ship when a turn passes.
@@ -378,12 +328,15 @@ class Convoy:
         self.min_level = 0
         self.name = name
         self.city = city
+
         self.player = self.city.player
+        self.cities_list = self.player.all_cities_list
 
         self.traveling = False
         self.travel_duration = 0
         self.destination = 0
         self.travel_turns = 0
+        self.city_before_travel = 0
 
         self.all_healths = []
         self.medium_health = 0
@@ -400,21 +353,42 @@ class Convoy:
         self.wine = 0
         self.cloth = 0
 
+        self.max_load = 0
+        self.current_cargo = 0
 
+        self.price_skins = 0
+        self.price_tools = 0
+        self.price_beer = 0
+        self.price_wine = 0
+        self.price_cloth = 0
 
+        self.empty_space = 0
+
+        self.initialize_convoy()
 
     def initialize_convoy(self):
-        self.set_sailors()
+        self.set_sailors_and_captains()
         self.set_every_item()
         self.set_all_health()
         self.set_medium_health()
         self.set_minimum_health()
+        self.set_empty_space_and_max_load()
 
     def check_min_lvl(self):
         all_levels = []
         for boat in self.boats:
             all_levels.append(boat.level)
         self.min_level = min(all_levels)
+
+    def set_empty_space_and_max_load(self):
+        total_space = 0
+        max_load = 0
+        for boat in self.boats:
+            boat.set_empty_space()
+            total_space += boat.empty_space
+            max_load += boat.max_load
+        self.empty_space = total_space
+        self.max_load = max_load
 
     def set_every_item(self):
         skins = 0
@@ -433,8 +407,9 @@ class Convoy:
         self.beer = beer
         self.wine = wine
         self.cloth = cloth
+        self.current_cargo = skins + tools + beer + wine + cloth + self.sailors
 
-    def set_sailors(self):
+    def set_sailors_and_captains(self):
         sailors = 0
         captains = 0
         for boat in self.boats:
@@ -467,7 +442,7 @@ class Convoy:
         else:
             return False
 
-    def convoy_deterioration(self):
+    def boat_deterioration(self):
         for boat in self.boats:
             boat.boat_deterioration()
 
@@ -486,7 +461,9 @@ class Convoy:
         self.set_all_health()
 
     def change_turn(self):
-        self.convoy_deterioration()
+        if self.traveling:
+            self.boat_deterioration()
+            Functionalities.Utilities.while_traveling(self)
         self.calculate_all_healths()
 
     def show_menu(self):
@@ -495,31 +472,37 @@ class Convoy:
                   "2- Sell to city.\n"
                   "3- Move items to warehouse.\n"
                   "4- Check convoy.\n"
-                  "5- Add boat to convoy.\n"
-                  "6- Dissolve convoy.\n"
-                  "7- Exit.\n")
+                  "5- Move to another city.\n"
+                  "6- Add boat to convoy.\n"
+                  "7- Dissolve convoy.\n"
+                  "8- Exit.\n")
             option = input()
-            option = Functionalities.Utilities.correct_values(1, 7, option)
-            if option == 7:
+            option = Functionalities.Utilities.correct_values(1, 8, option)
+            if option == 8:
                 break
-            elif option == 6:
+            elif option == 7:
                 Functionalities.Utilities.delete_convoy(self)
+                break
+            elif option == 5:
+                Functionalities.Utilities.choose_city_to_travel(self, self.cities_list)
                 break
             else:
                 self.choose_option(option)
 
     def choose_option(self, option):
         if option == 1:
-            pass
+            Functionalities.Utilities.buy_from_city(self)
         elif option == 2:
-            pass
+            Functionalities.Utilities.sell_to_city(self)
         elif option == 3:
-            pass
+            Functionalities.Utilities.ask_witch_direction_to_move(self)
         elif option == 4:
             self.check_convoy()
         elif option == 5:
-            self.add_boat()
+            Functionalities.Utilities.choose_city_to_travel(self, self.cities_list)
         elif option == 6:
+            self.add_boat()
+        elif option == 7:
             Functionalities.Utilities.delete_convoy(self)
 
     def add_boat(self):
@@ -547,4 +530,20 @@ class Convoy:
         if option == 1:
             Functionalities.Utilities.delete_convoy(self)
 
+    def check_convoy(self):
+        Functionalities.Utilities.text_separation()
+        self.initialize_convoy()
+        print(f"""This is the {self.name} convoy. It has {len(self.boats)} ships in it. Current cargo is:
+
+-Skins: {self.skins} at {self.price_skins} coins.
+-Tools: {self.tools} at {self.price_tools} coins.
+-Beer: {self.beer} at {self.price_beer} coins.
+-Wine: {self.wine} at {self.price_wine} coins.
+-Cloth: {self.cloth} at {self.price_cloth} coins.
+
+Maximum load is {self.max_load} units, and {self.current_cargo} are already full. It can take another {self.empty_space} units.
+Average health among all ships is {self.medium_health} while the minimum ship health is {self.min_health}.
+This convoy has a total of {self.sailors} sailors and {self.captains} captains.
+""")
+        Functionalities.Utilities.text_separation()
 

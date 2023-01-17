@@ -149,9 +149,12 @@ class Player:
             print("You dont have any convoys to select.\n")
         else:
             for i, x in enumerate(self.convoys):
-                print("{}- {}. ({})\n".format(i + 1, x.name, x.city.name))
-            option = self.select_boat_or_convoy(self.convoys)
-            option.show_menu()
+                if not x.city:
+                    print("{} is traveling".format(x.name))
+                else:
+                    print("{}- {}. ({})\n".format(i + 1, x.name, x.city.name))
+                    option = self.select_boat_or_convoy(self.convoys)
+                    option.show_menu()
 
     def select_boat_or_convoy(self, type):
         """

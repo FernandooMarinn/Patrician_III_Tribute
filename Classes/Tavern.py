@@ -64,6 +64,7 @@ class Tavern:
             print("Your new sailors are already in your ship.")
 
 
+
     def hire_captain(self, boat):
         if not self.captain:
             print("This tavern does not have a captain. You should go to another city and take a chance.")

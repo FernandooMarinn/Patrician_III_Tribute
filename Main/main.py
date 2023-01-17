@@ -9,7 +9,6 @@ import Classes.Boats_and_Convoys
 3- pirates
 4- Hacer todas las ciudades y todos los productos (ultimo).
 5- Guardado y cargado IMPORTANTE
-6- Convoys
 8- Que no baje nunca de 0 el dinero
 """
 

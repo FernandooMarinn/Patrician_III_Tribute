@@ -114,7 +114,7 @@ class Weapon_master:
 
     def move_to_ship(self, items, ship):
         items_weight = self.calculate_item_weight(items)
-        ship.check_current_load()
+        ship.set_empty_space_and_max_load()
         if items_weight > ship.empty_space:
             print("You can't carry this weapons in your ship, it will be overloaded.")
         else:

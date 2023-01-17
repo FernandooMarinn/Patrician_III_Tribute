@@ -198,6 +198,10 @@ def set_new_captain(taverns):
 
 
 def text_separation():
+    """
+    Aesthetic line, used to separate different notifications, bill, or a change turn.
+    :return:
+    """
     print("-" * 120)
 
 
@@ -239,9 +243,12 @@ def boat_battle(who_starts, who_goes_after):
               .format(who_starts.name, who_starts.health, who_goes_after.name, who_goes_after.health))
 
 
-
-
 def choose_boat_from_city(city):
+    """
+    Name self-explanatory, selects a ship (if there is one in the city)
+    :param city:
+    :return:
+    """
     print("Is your ship free or in a convoy?\n"
           "1- Ship.\n"
           "2- Convoy.\n"
@@ -293,6 +300,10 @@ def choose_convoy(city):
 
 
 def select_item():
+    """
+    Returns string with the name of the product that we want to create.
+    :return:
+    """
     print("What do you want to select?\n"
           "1- Skins.\n"
           "2- Tools.\n"
@@ -305,7 +316,10 @@ def select_item():
     return equivalences[option]
 
 
-# Cambiar tutto por diccionarios.
+"""All of the next functions are very easy to understand, due to the fact that they only return an attribute
+from an object, given an string."""
+
+
 def decrease_product_number(object, products):
     quantity = products[0]
     if products[1] == "skins":
@@ -404,9 +418,9 @@ def buy_from_city(ship_or_office):
     """
     # Select current city, update prices and choose a product.
     choosen_product = ship_or_office.city.choose_product()
-    # Finding out how many empty space we have. Only if it is a ship.
+    # Finding out how many empty space we have. Only if it is a ship or a convoy.
     try:
-        ship_or_office.check_current_load()
+        ship_or_office.set_empty_space_and_max_load()
         empty_space = ship_or_office.empty_space
     except AttributeError:
         empty_space = 99_999
@@ -444,6 +458,14 @@ def sell_to_city(ship_or_office):
 
 
 def calculate_how_many_can_buy_trader(given_price, minimum_price, maximum_price, num_products):
+    """
+    Calculates maximum number of items that a trader can buy, given the product prices and the trader settings.
+    :param given_price:
+    :param minimum_price:
+    :param maximum_price:
+    :param num_products:
+    :return:
+    """
     if given_price <= 0:
         return 0
     num_bought = 0
@@ -455,16 +477,31 @@ def calculate_how_many_can_buy_trader(given_price, minimum_price, maximum_price,
 
 
 def add_trader(city):
+    """
+    Add trader to the commercial offices when hired.
+    :param city:
+    :return:
+    """
     new_trader = Classes.Comercial_Office.Trader(city, city.commercial_office)
     city.commercial_office.trader = new_trader
 
 
 def add_commercial_office(city):
+    """
+    Add a commercial office to the city when built.
+    :param city:
+    :return:
+    """
     new_commercial_office = Classes.Comercial_Office.CommercialOffice(city)
     city.commercial_office = new_commercial_office
 
 
 def return_factory_name(factory):
+    """
+    Necessary to use getatt
+    :param factory:
+    :return:
+    """
     well_written = {"skins_factories": "skins factory",
                     "tools_factories": "tool factory",
                     "beer_factories": "beer factory",
@@ -478,6 +515,12 @@ def return_factory_name(factory):
 
 
 def delete_convoy(convoy):
+    """
+    When a convoy is deleted, its ships have to return to the city as individual boats, then the former convoy object
+    has to be deleted from city, player and finally from memory.
+    :param convoy:
+    :return:
+    """
     city = convoy.city
     player = convoy.player
     for boat in convoy.boats:
@@ -489,3 +532,137 @@ def delete_convoy(convoy):
     print("Convoy {} has been dissolved.".format(convoy.name))
     text_separation()
     del convoy
+
+
+def ask_witch_direction_to_move(object):
+    if object.check_if_commercial_office():
+        print("What do you want to do?\n"
+              "1- Move from ship to warehouse.\n"
+              "2- Move from warehouse to ship.\n"
+              "3- Exit.\n")
+        option = input("\n")
+        option = correct_values(1, 3, option)
+        if option == 3:
+            pass
+        else:
+            item_name = select_item()
+        if option == 1:
+            move_from_ship_or_convoy(object, item_name)
+        elif option == 2:
+            move_from_warehouse(object, item_name)
+
+
+def move_from_ship_or_convoy(object, name):
+    product = choose_products(name, object)
+    product_price = choose_prices(name, object)
+    print("You have {} {} at {} coins. How many do you want to move?\n"
+          .format(product, name, product_price))
+    option = input("\n")
+    option = correct_values(0, product, option)
+    if option == 0:
+        pass
+    else:
+        object.moving_products(name, option, product_price, object, object.city.commercial_office)
+
+
+def moving_products(name, how_many, price, origin, destiny):
+    decrease_product_number(origin, [how_many, name])
+    increase_product_number(destiny, [how_many, name])
+    old_items = choose_products(name, destiny)
+    old_price = choose_prices(name, destiny)
+    new_price = calculate_average_price(old_price, old_items, price, how_many)
+    change_prices(name, new_price, destiny)
+
+
+def move_from_warehouse(object, name):
+    while True:
+        product = choose_products(name, object.city.commercial_office)
+        product_price = choose_prices(name, object.city)
+        print("You have {} {} at {} coins. How many do you want to move?\n"
+              .format(product, name, product_price))
+        option = input("\n")
+        option = correct_values(0, product, option)
+        if option == 0:
+            pass
+        else:
+            object.moving_products(name, option, product_price, object.city.commercial_office, object)
+
+
+def choose_city_to_travel(object, cities):
+    """
+    Enumerate and choose a city from a list.
+    :param cities:
+    :return:
+    """
+    print("Where do you want to move?\n")
+    for i, x in enumerate(cities):
+        print("{}- {}.".format(i + 1, x.name))
+    option = input("\n")
+    option = correct_values(1, len(cities), option)
+    check_distance_between_cities(object, option - 1)
+
+
+def check_distance_between_cities(object, option):
+    """
+    Check distance between cities. If they are close, will take fewer turns to move.
+    :param option:
+    :return:
+    """
+    cities = object.cities_list
+    distance = object.city.possition + cities[option].possition
+    if object.city == cities[option]:
+        print("You are already in {}".format(object.city.name))
+    else:
+        print("{} is now moving to {}. Will take {} turns."
+              .format(object.name, cities[option].name, distance))
+        set_travel(object, distance, cities[option])
+
+
+def set_travel(object, distance, destination):
+    """
+    Start moving to another city.
+    :param distance:
+    :param destination:
+    :return:
+    """
+    object.travel_turns = distance
+    object.traveling = True
+    object.destination = destination
+    object.boat_deterioration()
+    object.city_before_travel = object.city
+    if object in object.city.boats:
+        object.city.boats.remove(object)
+    if object in object.city.convoys:
+        object.city.convoys.remove(object)
+    object.city = False
+
+
+def while_traveling(object):
+    """
+    Works every turn until arrival. Check if ship or convoy has arrived and calculate how many turns remain.
+    :return:
+    """
+    if object.travel_turns > 1:
+        object.travel_turns -= 1
+    elif object.travel_turns == 1:
+        object.city = object.destination
+        object.city.boats.append(object)
+        object.traveling = False
+        object.destination = 0
+        if object.is_convoy:
+            print("Your convoy {} has arrived at {}"
+                  .format(object.name, object.city.name))
+        else:
+            print("Your boat {} has arrived at {}."
+                  .format(object.name, object.city.name))
+
+
+def check_if_traveling(object):
+    """
+    Return True if in open sea.
+    :return:
+    """
+    if object.traveling:
+        return True
+    else:
+        return False
