@@ -50,8 +50,7 @@ class Boat:
         self.firepower = 0
 
         self.check_level()
-        self.set_empty_space()
-        self.city.boats.append(self)
+        self.set_empty_space_and_max_load()
         self.check_if_enough_sailors()
 
     def check_level(self):
@@ -73,7 +72,7 @@ class Boat:
             self.max_health = 125
             self.max_load = 180
 
-    def set_empty_space(self):
+    def set_empty_space_and_max_load(self):
         """
         Calculate current ship load by adding every item and sailors.
         :return:
@@ -123,7 +122,7 @@ class Boat:
         :return:
         """
         print("-" * 60)
-        self.set_empty_space()
+        self.set_empty_space_and_max_load()
         print("Your boat {} have:\n"
               "{} skins at {} coins.\n"
               "{} tools at {} coins.\n"
@@ -246,6 +245,8 @@ class Boat:
                 self.firepower = max_cannon_value + (self.bombard * 2) + (round(0.35 * dagger_value))
         else:
             self.firepower = self.bombard * 2 + self.cannon + (round(0.35 * dagger_value))
+        if self.captain:
+            self.firepower += 2
 
     def change_turn(self):
         """
@@ -253,7 +254,7 @@ class Boat:
         :return:
         """
         if self.check_if_traveling():
-            self.while_traveling()
+            Functionalities.Utilities.while_traveling(self)
             self.boat_deterioration()
         self.check_level()
         self.set_firepower()
@@ -268,8 +269,8 @@ class Convoy:
         self.name = name
         self.city = city
 
-        self.player = self.city.player
-        self.cities_list = self.player.all_cities_list
+        #self.player = self.city.player
+        #self.cities_list = self.player.all_cities_list
 
         self.traveling = False
         self.travel_duration = 0
@@ -313,6 +314,11 @@ class Convoy:
         self.set_minimum_health()
         self.set_empty_space_and_max_load()
 
+
+    def set_firepower(self):
+        for boat in self.boats:
+            boat.set_firepower()
+
     def check_min_lvl(self):
         all_levels = []
         for boat in self.boats:
@@ -323,7 +329,7 @@ class Convoy:
         total_space = 0
         max_load = 0
         for boat in self.boats:
-            boat.set_empty_space()
+            boat.set_empty_space_and_max_load()
             total_space += boat.empty_space
             max_load += boat.max_load
         self.empty_space = total_space
@@ -395,9 +401,10 @@ class Convoy:
         self.min_health = min(self.all_healths)
 
     def calculate_all_healths(self):
-        self.set_minimum_health()
-        self.set_medium_health()
-        self.set_all_health()
+        if len(self.boats) > 0:
+            self.set_minimum_health()
+            self.set_medium_health()
+            self.set_all_health()
 
 
     def show_menu(self):

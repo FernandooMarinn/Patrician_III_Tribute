@@ -18,6 +18,8 @@ class Player:
         self.can_build_offices = False
         self.bill = {"sailors": 0, "captains": 0, "factories": 0, "traders": 0, "offices": 0}
 
+        self.pirate = 0
+        self.pirate_city = 0
 
     def check_player(self):
         """

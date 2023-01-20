@@ -5,6 +5,7 @@ import Classes.Player
 import Classes.Money_Lender
 import Classes.Cities
 import Classes.Comercial_Office
+import Functionalities.Combat
 import random
 
 
@@ -652,7 +653,7 @@ def while_traveling(object):
         else:
             print("Your boat {} has arrived at {}."
                   .format(object.name, object.city.name))
-
+    Functionalities.Combat.calculate_probability(object)
 
 def check_if_traveling(object):
     """
@@ -663,3 +664,31 @@ def check_if_traveling(object):
         return True
     else:
         return False
+
+
+def check_if_overloaded(object):
+    object.set_empty_space_and_max_load()
+    if object.empty_space < 0:
+        print(f"{object.name} is overloaded and can't sail.\n")
+        return False
+    else:
+        return True
+
+
+
+def create_pirate_and_pirate_city():
+    pirate = Classes.Player.Player("Evil_pirate", 1_000_000)
+    pirate_city = Classes.Cities.City("Evil pirate city", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                      0, 0, False, 5, pirate)
+    return pirate, pirate_city
+
+
+def money_exchange(object_who_pays, object_who_get_paid, ammount):
+    if object_who_pays.coins < ammount:
+        print("You can't afford to pay {} coins. You only have {}".format(ammount, object_who_pays.coins))
+        return False
+    else:
+        object_who_pays.coins -= ammount
+        object_who_get_paid.coins += ammount
+        return True
+

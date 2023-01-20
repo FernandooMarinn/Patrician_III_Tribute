@@ -45,7 +45,22 @@ class Shipyard:
             return False
 
     def repair_convoy(self, convoy):
-        pass
+        convoy.set_all_healths()
+
+        total_cost = 0
+        number_of_turns = 1 + round((110 - convoy.min_health) / self.repair_speed)
+
+        for boat in convoy.boats:
+            total_cost += (boat.max_health - boat.health) * 50
+        print("Do you want to repair your convoy {}? It will take {} and cost {} coins"
+              .format(convoy.name, number_of_turns, total_cost))
+        if Functionalities.Utilities.money_exchange(convoy.player, self, total_cost):
+            self.reparation_queue.append([convoy, number_of_turns])
+            self.city.player.convoys.remove(convoy)
+            self.city.convoys.remove(convoy)
+            self.gain_experience(100)
+
+
 
     def repair_boat(self, boat):
         number_of_turns = 1 + round((boat.max_health - boat.health) / self.repair_speed)
@@ -64,8 +79,6 @@ class Shipyard:
                 self.gain_experience(20)
             else:
                 print("You cannot afford the reparation.\n")
-        else:
-            pass
 
     def show_menu(self):
         """
@@ -104,19 +117,19 @@ class Shipyard:
         if option == 1:
             unit_to_select = Functionalities.Utilities.choose_boat_from_city(self.city)
             if not unit_to_select:
-                pass
-            elif unit_to_select[1] == "boat":
-                self.repair_boat(unit_to_select[0])
-            elif unit_to_select[1] == "convoy":
-                self.repair_convoy(unit_to_select[0])
+                print("There is no unit to select")
+            elif not unit_to_select.is_convoy:
+                self.repair_boat(unit_to_select)
+            elif unit_to_select.is_convoy:
+                self.repair_convoy(unit_to_select)
         elif option == 2:
             unit_to_select = Functionalities.Utilities.choose_boat_from_city(self.city)
             if not unit_to_select:
-                pass
-            elif unit_to_select[1] == "boat":
-                self.ask_if_improve_boat(unit_to_select[0])
-            elif unit_to_select[1] == "convoy":
-                self.improve_convoy(unit_to_select[0])
+                print("There is no unit to select")
+            elif not unit_to_select.is_convoy:
+                self.ask_if_improve_boat(unit_to_select)
+            elif unit_to_select.is_convoy:
+                self.improve_convoy(unit_to_select)
 
     def change_name(self):
         ship = Functionalities.Utilities.choose_boat_from_city(self.city)
@@ -190,15 +203,28 @@ class Shipyard:
             remaining_turns = repairing_unit[1]
             unit = repairing_unit[0]
             if remaining_turns == 1:
-                unit.health = unit.max_health
-                self.city.player.boats.append(unit)
-                self.city.boats.append(unit)
+                if unit.is_convoy:
+                    self.finish_repairing_convoys(unit)
+                else:
+                    self.finish_repairing_boats(unit)
                 to_delete_list.append(repairing_unit)
-                print("Your ship {} has been repaired in {}.".format(unit.name, self.city.name))
             else:
                 repairing_unit[1] -= 1
         for item in to_delete_list:
             self.reparation_queue.remove(item)
+
+    def finish_repairing_boats(self, boat):
+        boat.health = boat.max_health
+        self.city.player.boats.append(boat)
+        self.city.boats.append(boat)
+        print("Your ship {} has been repaired in {}.".format(boat.name, self.city.name))
+
+    def finish_repairing_convoys(self, convoy):
+        for boat in convoy.boats:
+            boat.health = boat.max_health
+        self.city.player.convoys.append(convoy)
+        self.city.convoys.append(convoy)
+        print("Your convoy {} has been repaired in {}.".format(convoy.name, self.city.name))
 
     def check_repairing_boats(self):
         """
@@ -259,8 +285,8 @@ class Shipyard:
             counter += ship[1]
         return counter
 
-    def improve_convoy(self, covoy):
-        pass
+    def improve_convoy(self, convoy):
+        print("Ir order to improve a ship, it has to be out of a convoy.")
 
     def change_turn(self):
         """

@@ -4,9 +4,9 @@ import Classes.Boats_and_Convoys
 
 
 """ To do list:
-1- combat.
+
 2- finish levels.
-3- pirates
+
 4- Hacer todas las ciudades y todos los productos (ultimo).
 5- Guardado y cargado IMPORTANTE
 8- Que no baje nunca de 0 el dinero
@@ -30,6 +30,10 @@ boat2 = Classes.Boats_and_Convoys.Boat(100, 1, [0, 0, 0, 0, 0], 8, False, 0, "Ad
 player.boats.append(boat2)
 
 all_taverns = [city.tavern for city in cities_list]
+
+create_pirates = Functionalities.Utilities.create_pirate_and_pirate_city()
+player.pirate = create_pirates[0]
+player.pirate_city = create_pirates[1]
 
 def welcome():
     print("Welcome to this tribute to Patrician III by FernandooMarinn (GitHub)")
