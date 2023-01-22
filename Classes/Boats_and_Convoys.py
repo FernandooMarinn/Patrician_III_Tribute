@@ -17,7 +17,7 @@ class Boat:
 
         self.artillery_space = 0
         self.cannon = cannon
-        self.bombard = 6
+        self.bombard = 0
         self.dagger = 0
 
         self.city_before_travel = 0

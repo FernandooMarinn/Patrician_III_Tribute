@@ -8,10 +8,8 @@ time_to_wait = 2
 
 def calculate_probability(ship_or_convoy):
     number = random.randint(0, 10)
-    if number < 20:
+    if number == 5:
         menu_battle(ship_or_convoy, ship_or_convoy.player.pirate)
-    else:
-        print("Esta vez no, ha salido un {}".format(number))
 
 
 def menu_battle(ship_or_convoy, pirate_captain):

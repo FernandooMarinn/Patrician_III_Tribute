@@ -19,7 +19,7 @@ class Shipyard:
 
     def level_up(self):
         if self.level < 5:
-            if self.experience > 99:
+            if self.experience > 10_000:
                 self.experience = 0
                 self.level += 1
                 self.set_speed()
@@ -58,7 +58,7 @@ class Shipyard:
             self.reparation_queue.append([convoy, number_of_turns])
             self.city.player.convoys.remove(convoy)
             self.city.convoys.remove(convoy)
-            self.gain_experience(100)
+            self.gain_experience(total_cost)
 
 
 
@@ -76,7 +76,7 @@ class Shipyard:
                 self.reparation_queue.append([boat, number_of_turns])
                 self.city.player.boats.remove(boat)
                 self.city.boats.remove(boat)
-                self.gain_experience(20)
+                self.gain_experience(price)
             else:
                 print("You cannot afford the reparation.\n")
 
@@ -152,6 +152,7 @@ class Shipyard:
             if self.city.player.coins >= 10_000:
                 self.build_ship()
                 self.city.player.coins -= 10_000
+                self.gain_experience(10_000)
             else:
                 print("You can´t afford a ship.")
 

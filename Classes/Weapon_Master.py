@@ -27,6 +27,19 @@ class Weapon_master:
         elif option == 3:
             self.sell_weapons("bombard")
 
+    def gain_experience(self, experience):
+        self.experience += experience
+
+    def level_up(self):
+        if self.level == 1:
+            if self.experience >= 1000:
+                self.level += 1
+                self.experience = 0
+        elif self.level == 2:
+            if self.experience >= 5000:
+                self.experience = 0
+                self.level += 1
+
     def sell_weapons(self, option):
         names = {
             "dagger": self.dagger,
@@ -48,6 +61,7 @@ class Weapon_master:
             self.city.player.coins -= prices[option] * how_many
             self.coins += prices[option] * how_many
             self.move_items([option, how_many])
+            self.gain_experience(prices[option] * how_many)
         else:
             print("You can't afford to buy those weapons.\n")
 
@@ -66,16 +80,6 @@ class Weapon_master:
     def change_turn(self):
         self.create_weapons()
         self.level_up()
-
-    def level_up(self):
-        if self.level == 1:
-            if self.experience >= 1000:
-                self.level += 1
-                self.experience = 0
-        elif self.level == 2:
-            if self.experience >= 3500:
-                self.experience = 0
-                self.level += 1
 
     def calculate_item_weight(self, items):
         item_name = items[0]
