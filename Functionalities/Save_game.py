@@ -1,3 +1,103 @@
+import os
+import pickle
+import Classes.Game
+import Classes.Boats_and_Convoys
+import Functionalities.Utilities
+
+
+def check_current_folder_files():
+    # Get the path of the folder where the current script is located
+    folder_path = os.path.dirname(__file__)
+
+    # Specify the file extension you want to search for
+    file_extension = '.pickle'
+
+    # Use the listdir() function to list the files in the folder
+    files = os.listdir(folder_path)
+    saved_games = []
+    # Iterate over the files and check if they have the desired extension
+    for file in files:
+        if file.endswith(file_extension):
+            saved_games.append(file)
+            print(os.path.join(folder_path, file))
+    if len(saved_games) == 0:
+        print("You don't have any saved game in this folder. You are going to start a new game.\n")
+        return False
+    else:
+        return True
+
+
+def save_game(game):
+    to_save = [game]
+
+    name = input("What is the name of this game?\n")
+    with open(f"{name}.pickle", "wb") as savefile:
+        pickle.dump(to_save, savefile)
+
+
+def load_game(save_game):
+    while True:
+        if not check_current_folder_files():
+            return False
+        else:
+            name = input("\nWhat is the name of your saved game?\n")
+            try:
+                with open(f"{name}.pickle", "rb") as savefile:
+                    game = pickle.load(savefile)
+                Functionalities.Save_game.update_player(game[0].player, save_game.player)
+                Functionalities.Save_game.update_cities(game[0].cities, save_game.cities)
+                break
+            except FileNotFoundError:
+                print("There is not a file named {}.\n".format(name))
+
+def load_or_new_game():
+    print("Do you want to start a new game, or load a previus one?.\n"
+          "1- New.\n"
+          "2- Load.\n")
+    option = input()
+    option = Functionalities.Utilities.correct_values(1, 2, option)
+    if option == 2:
+        player = Classes.Player.Player("player", 5000)
+        Cities = Functionalities.Utilities.create_cities(player)
+        WHOLE_GAME = Classes.Game.Game(player, Cities)
+        if not load_game(WHOLE_GAME):
+            option = 1
+        else:
+            return WHOLE_GAME
+
+    if option == 1:
+        player = Functionalities.Utilities.create_player()
+        Cities = Functionalities.Utilities.create_cities(player)
+        player.city = Functionalities.Utilities.ask_initial_city(Cities)
+        player.all_cities_list = Cities
+
+        cities_list = Functionalities.Utilities.add_all_buildings(Cities)
+
+
+        boat1 = Classes.Boats_and_Convoys.Boat(100, 3, [0, 0, 0, 0, 0], 20, True, 0, "Prueba", player.city, player)
+        player.boats.append(boat1)
+        boat2 = Classes.Boats_and_Convoys.Boat(100, 1, [0, 0, 0, 0, 0], 8, False, 0, "Adios", cities_list[2], player)
+        player.boats.append(boat2)
+
+        create_pirates = Functionalities.Utilities.create_pirate_and_pirate_city()
+        player.pirate = create_pirates[0]
+        player.pirate_city = create_pirates[1]
+
+        WHOLE_GAME = Classes.Game.Game(player, cities_list)
+        return WHOLE_GAME
+
+
+def choose_save_or_load_game(game):
+    print("What do you want to do?.\n"
+          "1- Save game.\n"
+          "2- Load game.\n")
+    option = input()
+    option = Functionalities.Utilities.correct_values(1, 2, option)
+    if option == 1:
+        save_game(game)
+    elif option == 2:
+        load_game(game)
+
 
 def update_player(saved_player, current_player):
     current_player.name = saved_player.name

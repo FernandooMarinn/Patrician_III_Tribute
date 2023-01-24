@@ -703,3 +703,4 @@ def money_exchange(object_who_pays, object_who_get_paid, ammount):
         object_who_get_paid.coins += ammount
         return True
 
+
