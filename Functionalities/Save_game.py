@@ -1,12 +1,3 @@
-import pickle
-
-
-
-
-
-
-
-
 
 def update_player(saved_player, current_player):
     current_player.name = saved_player.name

@@ -4,13 +4,29 @@ import Classes.Boats_and_Convoys
 import Classes.Game
 import Classes.Player
 import pickle
-
+import os
 
 """ To do list:
 1- Hacer que suba la población.
 4- Hacer todas las ciudades y todos los productos (ultimo).
-
+3- Hacer capitanes en tabernas.
 """
+
+
+def check_current_folder_files():
+    # Get the path of the folder where the current script is located
+    folder_path = os.path.dirname(__file__)
+
+    # Specify the file extension you want to search for
+    file_extension = '.pickle'
+
+    # Use the listdir() function to list the files in the folder
+    files = os.listdir(folder_path)
+
+    # Iterate over the files and check if they have the desired extension
+    for file in files:
+        if file.endswith(file_extension):
+            print(os.path.join(folder_path, file))
 
 
 def save_game(game):
@@ -23,6 +39,7 @@ def save_game(game):
 
 def load_game(save_game):
     while True:
+        check_current_folder_files()
         name = input("\nWhat is the name of your saved game?\n")
         try:
             with open(f"{name}.pickle", "rb") as savefile:
@@ -60,8 +77,6 @@ def load_or_new_game():
         player.boats.append(boat1)
         boat2 = Classes.Boats_and_Convoys.Boat(100, 1, [0, 0, 0, 0, 0], 8, False, 0, "Adios", cities_list[2], player)
         player.boats.append(boat2)
-
-        all_taverns = [city.tavern for city in cities_list]
 
         create_pirates = Functionalities.Utilities.create_pirate_and_pirate_city()
         player.pirate = create_pirates[0]
