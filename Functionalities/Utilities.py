@@ -278,17 +278,20 @@ def choose_convoy(city):
     return city.convoys[option - 1]
 
 
-def select_item():
+def select_item(ship_or_convoy):
     """
     Returns string with the name of the product that we want to create.
     :return:
     """
     print("What do you want to select?\n"
-          "1- Skins.\n"
-          "2- Tools.\n"
-          "3- Beer.\n"
-          "4- Wine.\n"
-          "5- Cloth.\n")
+          "1- Skins. You have {} at {} coins.\n"
+          "2- Tools. You have {} at {} coins.\n"
+          "3- Beer. You have {} at {} coins.\n"
+          "4- Wine. You have {} at {} coins.\n"
+          "5- Cloth. You have {} at {} coins.\n"
+          .format(ship_or_convoy.skins, ship_or_convoy.price_skins, ship_or_convoy.tools, ship_or_convoy.price_tools,
+                  ship_or_convoy.beer, ship_or_convoy.price_beer, ship_or_convoy.wine, ship_or_convoy.price_wine,
+                  ship_or_convoy.cloth, ship_or_convoy.price_cloth))
     option = input()
     option = correct_values(1, 5, option)
     equivalences = {1: "skins", 2: "tools", 3: "beer", 4: "wine", 5: "cloth"}
@@ -444,9 +447,10 @@ def sell_to_city(ship_or_office):
     # Select current city, update prices and choose a product.
     choosen_product = ship_or_office.city.choose_product()
     inventory_product = choose_products(choosen_product[3], ship_or_office)
+    product_price = choose_prices(choosen_product[3], ship_or_office)
 
     # Selecting how many we want to sell, and returning it`s price.
-    new_products = ship_or_office.city.how_many_sell(choosen_product, inventory_product)
+    new_products = ship_or_office.city.how_many_sell(choosen_product, [inventory_product, product_price])
 
     # deleting sold products.
     decrease_product_number(ship_or_office, new_products)
@@ -684,6 +688,13 @@ def create_pirate_and_pirate_city():
 
 
 def money_exchange(object_who_pays, object_who_get_paid, ammount):
+    """
+    Function to exchange money from two objects.
+    :param object_who_pays:
+    :param object_who_get_paid:
+    :param ammount:
+    :return:
+    """
     if object_who_pays.coins < ammount:
         print("You can't afford to pay {} coins. You only have {}".format(ammount, object_who_pays.coins))
         return False

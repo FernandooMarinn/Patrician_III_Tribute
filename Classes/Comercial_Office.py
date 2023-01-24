@@ -328,4 +328,4 @@ class Trader:
 
     def change_turn(self):
         self.calculate_trading_speed()
-        Functionalities.Utilities.set_price_to_zero(self)
+        Functionalities.Utilities.set_price_to_zero(self.commercial_office)

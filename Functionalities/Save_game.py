@@ -2,6 +2,12 @@ import pickle
 
 
 
+
+
+
+
+
+
 def update_player(saved_player, current_player):
     current_player.name = saved_player.name
     current_player.coins = saved_player.coins
@@ -21,7 +27,7 @@ def update_player(saved_player, current_player):
 
 
 def update_cities(saved_cities, current_cities):
-    for i in range(saved_cities):
+    for i in range(len(saved_cities)):
         current_cities[i].coins = saved_cities[i].coins
         current_cities[i].skins = saved_cities[i].skins
         current_cities[i].tools = saved_cities[i].tools
@@ -31,7 +37,7 @@ def update_cities(saved_cities, current_cities):
         current_cities[i].name = saved_cities[i].name
 
         current_cities[i].skins_consumption_ratio = saved_cities[i].skins_consumption_ratio
-        current_cities[i].tools_consumption_ratio = saved_cities[i].ools_consumption_ratio
+        current_cities[i].tools_consumption_ratio = saved_cities[i].tools_consumption_ratio
         current_cities[i].beer_consumption_ratio = saved_cities[i].beer_consumption_ratio
         current_cities[i].wine_consumption_ratio = saved_cities[i].wine_consumption_ratio
         current_cities[i].cloth_consumption_ratio = saved_cities[i].cloth_consumption_ratio
