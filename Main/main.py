@@ -1,10 +1,6 @@
 import Functionalities.Utilities
 import Functionalities.Save_game
-import Classes.Boats_and_Convoys
-import Classes.Game
-import Classes.Player
-import pickle
-import os
+
 
 """ To do list:
 1- Hacer que suba la población.
@@ -24,7 +20,9 @@ Cities = WHOLE_GAME.cities
 
 
 def welcome():
+    Functionalities.Utilities.text_separation()
     print("Welcome to this tribute to Patrician III by FernandooMarinn (GitHub)")
+    Functionalities.Utilities.text_separation()
 
 
 def print_menu():

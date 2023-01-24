@@ -103,7 +103,7 @@ class CommercialOffice:
 
     def pass_bill(self, bill):
         Functionalities.Utilities.text_separation()
-        print("You have to pay {} for your commercial operations in {}"
+        print("You have to pay {} for your commercial operations in {}."
               .format(bill, self.city.name))
         Functionalities.Utilities.text_separation()
 

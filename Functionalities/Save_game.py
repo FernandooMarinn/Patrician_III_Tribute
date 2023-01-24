@@ -2,6 +2,7 @@ import os
 import pickle
 import Classes.Game
 import Classes.Boats_and_Convoys
+import Classes.Player
 import Functionalities.Utilities
 
 
@@ -46,9 +47,10 @@ def load_game(save_game):
                     game = pickle.load(savefile)
                 Functionalities.Save_game.update_player(game[0].player, save_game.player)
                 Functionalities.Save_game.update_cities(game[0].cities, save_game.cities)
-                break
+                return True
             except FileNotFoundError:
                 print("There is not a file named {}.\n".format(name))
+
 
 def load_or_new_game():
     print("Do you want to start a new game, or load a previus one?.\n"

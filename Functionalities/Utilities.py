@@ -451,7 +451,6 @@ def sell_to_city(ship_or_office):
 
     # Selecting how many we want to sell, and returning it`s price.
     new_products = ship_or_office.city.how_many_sell(choosen_product, [inventory_product, product_price])
-
     # deleting sold products.
     decrease_product_number(ship_or_office, new_products)
     if choose_products(choosen_product[3], ship_or_office) == 0:

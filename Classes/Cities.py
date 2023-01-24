@@ -302,6 +302,68 @@ class City:
                    self.price_beer, self.beer, self.price_wine, self.wine, self.price_cloth, self.cloth))
         print("-" * 60)
 
+    def how_many_buy(self, choosen_product, empty_space):
+        """
+        Like in Class boat, this one is the most unreadable function.
+
+        It starts asking how many products you want to buy.
+
+        Check if everything is fine, and then calculate average and total price.
+
+        Finally, it returns the data to the Boat class.
+        :param choosen_product:
+        :param empty_space:
+        :return:
+        """
+        # Ask how many we want to buy, if it is 0, finish the function.
+        option = input("How many do you want to buy?\n")
+        option = Functionalities.Utilities.correct_values(0, empty_space, option)
+        if option == 0:
+            return 0, choosen_product[3], 0
+
+        # Check if enough items in city.
+        if option < choosen_product[2]:
+            # Calculate mean and total price.
+            medium_price = self.calculate_group_trade(choosen_product[1], choosen_product[0], choosen_product[2],
+                                                      -option)
+            total_price = medium_price * option
+
+            # Check if player has enough money. If it does, takes the money and return to boat all the info.
+            if self.player.coins > total_price:
+                Functionalities.Utilities.decrease_product_number(self, [option, choosen_product[3]])
+                self.coins += total_price
+                self.player.coins -= total_price
+                print("You have bought {} items at {} coins each."
+                      .format(option, medium_price))
+                print("-" * 60)
+                return option, choosen_product[3], medium_price
+            else:
+                print("You cannot afford to buy {} {}".format(option, choosen_product[3]))
+        else:
+            print("There are less than {} {} in {}".format(option, choosen_product[3], self.name))
+        return 0, choosen_product[3], 0
+
+    def how_many_sell(self, choosen_product, boat_products):
+        """
+        Same as above, but no need to check anything.
+
+        :param choosen_product:
+        :param boat_products:
+        :return:
+        """
+        option = input("How many do you want to sell. You have {} units at {} coins.\n"
+        .format(boat_products[0], boat_products[1]))
+        option = Functionalities.Utilities.correct_values(0, boat_products[0], option)
+        medium_price = self.calculate_group_trade(choosen_product[1], choosen_product[0], choosen_product[2],
+                                                  option)
+        total_price = medium_price * option
+        Functionalities.Utilities.increase_product_number(self, choosen_product[3])
+        self.coins -= total_price
+        self.player.coins += total_price
+        print("You have sold {} items at {} coins each.\n"
+              .format(option, medium_price))
+        return option, choosen_product[3], medium_price
+
     def choose_product(self):
         """
         Return max and min values for each product.
@@ -452,6 +514,7 @@ class City:
             self.create_factories(factories_type[election], names[election])
         else:
             print("You cannot produce {} in {}.\n".format(names[election], self.name))
+
 
     def create_factories(self, type, name):
         can_afford = Functionalities.Utilities.how_many_can_afford(25000, self.player.coins)
