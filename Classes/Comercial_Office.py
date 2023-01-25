@@ -62,6 +62,10 @@ class CommercialOffice:
             self.trader_menu()
 
     def check_warehouse(self):
+        """
+        Prints out every important information in a commercial office.
+        :return:
+        """
         self.set_prices_to_zero_if_no_items()
         self.set_inventory_size()
         Functionalities.Utilities.text_separation()
@@ -78,6 +82,10 @@ class CommercialOffice:
         Functionalities.Utilities.text_separation()
 
     def set_prices_to_zero_if_no_items(self):
+        """
+        If the number of an item is equal to zero, it's price drop to zero as well.
+        :return:
+        """
         if self.skins == 0:
             self.price_skins = 0
         elif self.tools == 0:
@@ -90,6 +98,10 @@ class CommercialOffice:
             self.price_cloth = 0
 
     def total_bill(self):
+        """
+        Calculate total bill.
+        :return:
+        """
         self.set_inventory_size()
         if not self.trader:
             trader_bill = 0
@@ -102,12 +114,21 @@ class CommercialOffice:
         return trader_bill + inventory_bill + self.warehouse * 20
 
     def pass_bill(self, bill):
+        """
+        Prints commercial office bill.
+        :param bill:
+        :return:
+        """
         Functionalities.Utilities.text_separation()
         print("You have to pay {} for your commercial operations in {}."
               .format(bill, self.city.name))
         Functionalities.Utilities.text_separation()
 
     def trader_menu(self):
+        """
+        If there is not a trader, ask to hire one, else redirect to trader menu.
+        :return:
+        """
         if not self.trader:
             print("You don´t have a trader in {}.".format(self.city.name))
             self.hire_trader()
@@ -115,6 +136,10 @@ class CommercialOffice:
             self.trader.show_menu()
 
     def hire_trader(self):
+        """
+        Ask if want to hire a trader for a commercial office.
+        :return:
+        """
         print("Do you want to hire a trader? It will cost 20 coins each turn.\n"
               "1- Yes.\n"
               "2- No.\n")
@@ -128,6 +153,7 @@ class CommercialOffice:
             pass
 
     def dismiss_trader(self):
+        # To fire a trader.
         self.trader = False
 
     def change_turn(self):
@@ -190,12 +216,21 @@ class Trader:
                 self.choose_option(option)
 
     def choose_option(self, option):
+        """
+        Selects an option from trader menu.
+        :param option:
+        :return:
+        """
         if option == 1:
             self.check_trading_options()
         elif option == 2:
             self.change_trading_options()
 
     def change_trading_options(self):
+        """
+        Menu for changing trading instructions given to a trader.
+        :return:
+        """
         item_list = ["skins", "tools", "beer", "wine", "cloth"]
         print("What do you want to change?\n\n")
         for i, x in enumerate(item_list):
@@ -205,6 +240,11 @@ class Trader:
         self.change_trading_options_individually(option - 1)
 
     def change_trading_options_individually(self, option):
+        """
+        Sets an individual instruction for buy/sell a certain product, and ask its price as well.
+        :param option:
+        :return:
+        """
         item_to_change = self.trading_instructions[option]
         print("Do you want to buy or sell {}?\n"
               "1- Buy.\n"
@@ -225,6 +265,10 @@ class Trader:
         item_to_change[2] = how_much
 
     def check_trading_options(self):
+        """
+        Prints out current trading options.
+        :return:
+        """
         Functionalities.Utilities.text_separation()
         for instruction in self.trading_instructions:
             if instruction[0] == 0:
@@ -236,6 +280,10 @@ class Trader:
         Functionalities.Utilities.text_separation()
 
     def trade(self):
+        """
+        When a turn passes, with the given instructions, calculates how many items sell/buy.
+        :return:
+        """
         self.city.calculate_prices()
         buy_list = []
         sell_list = []
@@ -250,6 +298,11 @@ class Trader:
             self.sell_trade(sell_list)
 
     def calculate_how_many_can_buy(self, item):
+        """
+        For a given instruction, calculate how many items can buy, until get to the given price.
+        :param item:
+        :return:
+        """
         number_to_reach = item[1]
         price = item[2]
         name = item[3]
@@ -269,6 +322,11 @@ class Trader:
                 self.trade_can_buy_all(min_price, max_price, city_product, number_to_reach_goal, name, product)
 
     def calculate_how_many_can_sell(self, item):
+        """
+        For a given instruction, calculate how many items can sell, until get to the given price.
+        :param item:
+        :return:
+        """
         name = item[3]
         price_to_sell = item[2]
         city_price = Functionalities.Utilities.choose_prices(name, self.city)
@@ -276,6 +334,15 @@ class Trader:
         self.sell_one_by_one(name, price_to_sell, city_price, number_of_products)
 
     def sell_one_by_one(self, name, price_to_sell, city_price, number_of_products):
+        """
+        Function to sell one by one, in order to change prices gradually until reaching the given price to the trader.
+        It also distributes money form city to player, and gain experience for the trader.
+        :param name:
+        :param price_to_sell:
+        :param city_price:
+        :param number_of_products:
+        :return:
+        """
         while price_to_sell < city_price and number_of_products > 0:
             Functionalities.Utilities.decrease_product_number(self.commercial_office, [1, name])
             Functionalities.Utilities.increase_product_number(self.city, [1, name])
@@ -287,6 +354,16 @@ class Trader:
             number_of_products = Functionalities.Utilities.choose_products(name, self.commercial_office)
 
     def trade_can_not_buy_all(self, min_price, max_price, city_product, how_many_can_buy, name, product):
+        """
+        This function works when trader can not buy all the items that he wants to reach an instruction.
+        :param min_price:
+        :param max_price:
+        :param city_product:
+        :param how_many_can_buy:
+        :param name:
+        :param product:
+        :return:
+        """
         mean_price = self.city.calculate_group_trade(min_price, max_price, city_product, -how_many_can_buy)
         self.city.coins += mean_price * how_many_can_buy
         self.city.player.coins -= mean_price * how_many_can_buy
@@ -300,6 +377,18 @@ class Trader:
         self.gain_experience(mean_price * how_many_can_buy)
 
     def trade_can_buy_all(self, min_price, max_price, city_product, number_to_reach_goal, name, product):
+        """
+        This function works when trader can buy all the items that he needs to fulfill a certain instruction. Player
+        has the money to continue buying items, so, in order to limit the number of items, we give as an argument the
+        number to reach the instruction.
+        :param min_price:
+        :param max_price:
+        :param city_product:
+        :param number_to_reach_goal:
+        :param name:
+        :param product:
+        :return:
+        """
         mean_price = self.city.calculate_group_trade(min_price, max_price, city_product, -number_to_reach_goal)
         self.city.coins += mean_price * number_to_reach_goal
         self.city.player.coins -= mean_price * number_to_reach_goal
@@ -320,6 +409,11 @@ class Trader:
             self.calculate_how_many_can_sell(item)
 
     def calculate_trading_speed(self):
+        """
+        Depending on level, trader will trade each turn, or every x turns. This function calculate if next turn it will
+        trade.
+        :return:
+        """
         if self.speed_counter == self.speed:
             self.trade()
             self.speed_counter = 1
@@ -327,5 +421,9 @@ class Trader:
             self.speed_counter += 1
 
     def change_turn(self):
+        """
+        Every time a turn changes.
+        :return:
+        """
         self.calculate_trading_speed()
         Functionalities.Utilities.set_price_to_zero(self.commercial_office)

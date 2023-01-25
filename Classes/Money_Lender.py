@@ -33,6 +33,10 @@ class MoneyLender():
                 self.experience -= 15_000
 
     def generate_loans(self):
+        """
+        Return loan options.
+        :return:
+        """
         options = self.get_loan_options_depending_levels()
         for option in options:
             total_to_return = round(((option[0] * option[1]) / 100) + option[0])
@@ -40,6 +44,12 @@ class MoneyLender():
         return options
 
     def print_loan_individually(self, option, counter):
+        """
+        Print out individually every loan option.
+        :param option:
+        :param counter:
+        :return:
+        """
         print("{}- {} with an interest of {}%, to repay in {} turns. Total to repay is {} coins.\n"
               .format(counter, option[0], option[1], option[2], option[3]))
 
@@ -57,6 +67,11 @@ class MoneyLender():
             self.granting_loan(options[option - 1])
 
     def asking_loan(self, loan_option):
+        """
+        Checks if we want to accept a certain loan, changing money and adding to current loans.
+        :param loan_option:
+        :return:
+        """
         print("Do you want to take this loan?\n")
         self.print_loan_individually(loan_option, "-")
         option = input("1- Yes.\n"
@@ -69,6 +84,11 @@ class MoneyLender():
                 self.current_loans.append(loan_option)
 
     def granting_loan(self, loan_option):
+        """
+        Check if we want to grant a loan, and calculates money.
+        :param loan_option:
+        :return:
+        """
         print("Do you want to grant this loan?\n")
         self.print_loan_individually(loan_option, "-")
         option = input("1- Yes.\n"
@@ -94,6 +114,10 @@ class MoneyLender():
         Functionalities.Utilities.text_separation()
 
     def pass_turn_loans_and_finish_them(self):
+        """
+        When a turn changes, decreases every loan duration. If duration reaches 0, send loan to finishing.
+        :return:
+        """
         to_delete = []
         for loan in self.current_loans:
             loan[2] -= 1
@@ -104,6 +128,11 @@ class MoneyLender():
             self.current_loans.remove(item_to_delete)
 
     def finish_loan(self, loan):
+        """
+        Finishes every loan. If it was granted, gives money to player. If it was taken, gets money from player.
+        :param loan:
+        :return:
+        """
         Functionalities.Utilities.text_separation()
         if loan[4] == "ask":
             self.player.coins -= loan[3]
@@ -117,6 +146,10 @@ class MoneyLender():
         Functionalities.Utilities.text_separation()
 
     def check_if_less_than_three_loans(self):
+        """
+        If there are 3 current loans, this function warns you and won't let you continue to get another.
+        :return:
+        """
         if len(self.current_loans) >= 3:
             print("You have three loans, you have to wait for one to finish.")
             return False
@@ -124,6 +157,10 @@ class MoneyLender():
             return True
 
     def return_loan(self):
+        """
+        To return a loan before it finishes.
+        :return:
+        """
         counter = 1
         asked_loans = []
         for loan in self.current_loans:
@@ -140,6 +177,10 @@ class MoneyLender():
             print("You dont have loans to return.\n")
 
     def show_menu(self):
+        """
+        Prints out money lender menu.
+        :return:
+        """
         while True:
             print("What do you want to do?\n"
                   "1- Ask for a loan.\n"
@@ -155,6 +196,10 @@ class MoneyLender():
                 self.choose_option(option)
 
     def check_loans(self):
+        """
+        Check every current loan, and prints out all the information.
+        :return:
+        """
         Functionalities.Utilities.text_separation()
         if len(self.current_loans) == 0:
             print("You dont have any loans to check.\n")
@@ -180,6 +225,10 @@ class MoneyLender():
             self.return_loan()
 
     def reboot_loans(self):
+        """
+        Depending on level, amount and interest of loans changes.
+        :return:
+        """
         self.level_increases = {
             1: [random.randint(5000, 20_000), random.randint(20, 50), random.randint(4, 10)],
             2: [random.randint(7000, 28_000), random.randint(20, 50), random.randint(3, 12)],
@@ -191,5 +240,9 @@ class MoneyLender():
         return [self.reboot_loans() for _ in range(3)]
 
     def change_turn(self):
+        """
+        Every time a turn changes.
+        :return:
+        """
         self.level_up()
         self.pass_turn_loans_and_finish_them()

@@ -46,6 +46,13 @@ def correct_values(start, final, number_to_check):
 
 
 def check_if_affordable(price, quantity, money):
+    """
+    Return true when there is more money than a given purchase.
+    :param price:
+    :param quantity:
+    :param money:
+    :return:
+    """
     if price * quantity <= money:
         return True
     else:
@@ -53,6 +60,12 @@ def check_if_affordable(price, quantity, money):
 
 
 def how_many_can_afford(price, money):
+    """
+    Given a price, return how many of that item its possible to buy.
+    :param price:
+    :param money:
+    :return:
+    """
     if price == 0:
         return 0
     else:
@@ -73,6 +86,11 @@ def ask_initial_money():
 
 
 def ask_initial_city(cities):
+    """
+    When a new game starts, this function ask for the initial city.
+    :param cities:
+    :return:
+    """
     for i in range(len(cities)):
         print("{}- {}.".format(i + 1, cities[i].name))
     option = input("Wich city do you choose as your birthplace?\n\n")
@@ -93,25 +111,42 @@ def create_player():
 
 
 def create_cities(player):
-    # Puta mierda
-    #  nombre   consumption    initial            production       can_pruduce
+    """
+    Creates and return each city, with its item consumption, production, capacity to produce a certain item, and
+    possition.
+    :param player:
+    :return:
+    """
+    #  name                                consumption     initial             production     can_pruduce
     lubeck = Classes.Cities.City("Lubeck", 3, 4, 6, 3, 3, 40, 60, 40, 50, 30, 0, 15, 0, 9, 0, False, True, False, True,
                                  False, False, 1, player)
     rostock = Classes.Cities.City("Rostock", 3, 4, 6, 3, 3, 40, 40, 40, 50, 30, 0, 0, 0, 0, 0, False, False, False,
-                                  False,
-                                  False, False, 1, player)
+                                  False, False, False, 1, player)
     malmo = Classes.Cities.City("Malmo", 3, 4, 6, 3, 3, 60, 60, 30, 30, 50, 8, 0, 0, 0, 7, True, False, False, False,
                                 True, False, 1, player)
     stettin = Classes.Cities.City("Stettin", 3, 4, 6, 3, 3, 40, 50, 70, 50, 30, 0, 0, 15, 0, 0, False, False, True,
-                                  True,
-                                  False, False, 1, player)
+                                  True, False, False, 1, player)
     gdanks = Classes.Cities.City("Gdanks", 3, 4, 4, 3, 3, 30, 40, 60, 40, 40, 0, 0, 10, 0, 0, False, False, True, False,
-                                 False, False, 1, player)
-
-    return lubeck, rostock, malmo, stettin, gdanks
+                                 False, False, 2, player)
+    stockholm = Classes.Cities.City("Stockholm", 3, 4, 6, 3, 3, 45, 50, 50, 40, 50, 0, 8, 0, 0, 0, False, True, False,
+                                    False, False, False, 3, player)
+    reval = Classes.Cities.City("Reval", 4, 4, 5, 3, 3, 50, 45, 55, 40, 40, 7, 0, 0, 0, 0, True, False, False, False,
+                                False, False, 3, player)
+    visby = Classes.Cities.City("Visby", 3, 4, 5, 3, 3, 40, 60, 50, 40, 40, 0, 0, 0, 0, 8, False, False, False, False,
+                                True, False, 3, player)
+    riga = Classes.Cities.City("Riga", 4, 5, 6, 3, 3, 60, 65, 45, 40, 40, 9, 11, 0, 0, 0, True, True, False, False,
+                               False, False, 3, player)
+    novgorod = Classes.Cities.City("Novgorod", 3, 4, 5, 3, 3, 65, 55, 60, 40, 40, 8, 0, 12, 0, 0, True, False, True,
+                                   False, False, False, 4, player)
+    return lubeck, rostock, malmo, stettin, gdanks, stockholm, reval, visby, riga, novgorod
 
 
 def add_all_buildings(cities):
+    """
+    Creates every building (objects) for a city. Tavern, shipyard, weapon master and money lender.
+    :param cities:
+    :return:
+    """
     cities = create_taverns(cities)
     cities = create_shipyards(cities)
     cities = create_weapon_masters(cities)
@@ -163,6 +198,11 @@ def create_money_lender(cities):
 
 
 def calculate_list_mean(list_to_check):
+    """
+    Return a list average value.
+    :param list_to_check:
+    :return:
+    """
     if sum(list_to_check) == 0:
         return 0
     else:
@@ -171,6 +211,14 @@ def calculate_list_mean(list_to_check):
 
 
 def calculate_average_price(old_price, old_items, new_price, new_items):
+    """
+    Used to calculate the new average price when we buy an item with different price.
+    :param old_price:
+    :param old_items:
+    :param new_price:
+    :param new_items:
+    :return:
+    """
     # Calculate the average price of the old and new items
     if old_price == 0:
         return new_price
@@ -207,18 +255,13 @@ def text_separation():
 
 
 def all_cities_change_turn(cities):
+    """
+    Calls every city to change turn.
+    :param cities:
+    :return:
+    """
     for city in cities:
         city.change_turn()
-
-
-def select_boat_from_convoy(convoy):
-    counter = 1
-    for boat in convoy.boats:
-        print("{}- {}. ({}) {}% health.\n".
-              format(counter, boat.name, boat.city.name, boat.health))
-    option = input()
-    option = correct_values(1, len(convoy.boats), option)
-    return convoy.boats[option - 1]
 
 
 
@@ -243,6 +286,11 @@ def choose_boat_from_city(city):
 
 
 def choose_boat(city):
+    """
+    Selects one boat from a certain city.
+    :param city:
+    :return:
+    """
     counter = 1
     if len(city.boats) > 0:
         for boat in city.boats:
@@ -256,6 +304,11 @@ def choose_boat(city):
 
 
 def choose_boat_from_convoy(city):
+    """
+    Selects one individual boat from a convoy.
+    :param city:
+    :return:
+    """
     counter = 1
     if len(city.convoys) > 0:
         for convoy in city.convoys:
@@ -535,6 +588,11 @@ def delete_convoy(convoy):
 
 
 def ask_witch_direction_to_move(object):
+    """
+    When moving items between warehouse and ship/convoy, this functions ask for the direction.
+    :param object:
+    :return:
+    """
     if object.check_if_commercial_office():
         while True:
             print("What do you want to do?\n"
@@ -546,7 +604,7 @@ def ask_witch_direction_to_move(object):
             if option == 3:
                 break
             else:
-                item_name = select_item()
+                item_name = select_item(object)
             if option == 1:
                 move_from_ship_or_convoy(object, item_name)
             elif option == 2:
@@ -554,6 +612,12 @@ def ask_witch_direction_to_move(object):
 
 
 def move_from_ship_or_convoy(object, name):
+    """
+    When moving to a warehouse from a ship/convoy.
+    :param object:
+    :param name:
+    :return:
+    """
     product = choose_products(name, object)
     product_price = choose_prices(name, object)
     print("You have {} {} at {} coins. How many do you want to move?\n"
@@ -567,6 +631,16 @@ def move_from_ship_or_convoy(object, name):
 
 
 def moving_products(name, how_many, price, origin, destiny):
+    """
+    Gets an object who gives items, other that takes it, type of item, how many of them and its price, and transfers
+    it to the destination objects, calculating and changing the new price.
+    :param name:
+    :param how_many:
+    :param price:
+    :param origin:
+    :param destiny:
+    :return:
+    """
     decrease_product_number(origin, [how_many, name])
     increase_product_number(destiny, [how_many, name])
     old_items = choose_products(name, destiny)
@@ -576,6 +650,12 @@ def moving_products(name, how_many, price, origin, destiny):
 
 
 def move_from_warehouse(object, name):
+    """
+    When moving from the warehouse to another object.
+    :param object:
+    :param name:
+    :return:
+    """
     while True:
         product = choose_products(name, object.city.commercial_office)
         product_price = choose_prices(name, object.city)
@@ -680,6 +760,10 @@ def check_if_overloaded(object):
 
 
 def create_pirate_and_pirate_city():
+    """
+    When a new game starts, this fuction returns the pirate and its city.
+    :return:
+    """
     pirate = Classes.Player.Player("Evil_pirate", 1_000_000)
     pirate_city = Classes.Cities.City("Evil pirate city", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                       0, 0, False, 5, pirate)

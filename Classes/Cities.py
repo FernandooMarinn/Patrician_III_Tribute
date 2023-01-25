@@ -221,15 +221,19 @@ class City:
             self.add_factories_prices()
 
     def add_factories_prices(self):
+        """
+        Update prices when there is a factory production. Every factory produces items at minimum cost.
+        :return:
+        """
         office = self.commercial_office
-        list = [
+        office_list = [
             [office.price_skins, office.skins, self.min_price_skins, self.skins_factories * 2, "skins"],
             [office.price_tools, office.tools, self.min_price_tools, self.tools_factories * 4, "tools"],
             [office.price_beer, office.beer, self.min_price_beer, self.beer_factories * 5, "beer"],
             [office.price_wine, office.wine, self.min_price_wine, self.wine_factories * 3, "wine"],
             [office.price_cloth, office.cloth, self.min_price_cloth, self.cloth_factories * 3, "cloth"]
         ]
-        for factory in list:
+        for factory in office_list:
             price = Functionalities.Utilities.calculate_average_price(factory[0], factory[1], factory[2], factory[3])
             Functionalities.Utilities.change_prices(factory[4], price, self.commercial_office)
 
@@ -250,6 +254,11 @@ class City:
             self.cloth = 0
 
     def random_items_fill(self):
+        """
+        This function works as a random trader that arrives at the city. It will sell a certain number of items, of a
+        certain number of different products, all based in probability and random numbers.
+        :return:
+        """
         all_products = ["skins", "tools", "beer", "wine", "cloth"]
         probability = random.randint(0, 12)
         number_of_items_to_fill= random.randint(0, 5)
@@ -436,6 +445,10 @@ class City:
             pass
 
     def menu_construct_buildings(self):
+        """
+        Prints construction menu.
+        :return:
+        """
         while True:
             print("What do you want to do?\n"
                   "1- Build warehouses.\n"
@@ -452,6 +465,11 @@ class City:
                 self.choose_city_buildings(option)
 
     def choose_city_buildings(self, option):
+        """
+        Selects choosen option from construction menu.
+        :param option:
+        :return:
+        """
         if option == 1:
             self.build_warehouses()
         elif option == 2:
@@ -517,6 +535,12 @@ class City:
 
 
     def create_factories(self, type, name):
+        """
+        Ask if want to create a factory, and adding it to the queue.
+        :param type:
+        :param name:
+        :return:
+        """
         can_afford = Functionalities.Utilities.how_many_can_afford(25000, self.player.coins)
         how_many = input("How many {} factories do you want to create? Each one cost 25.000 coins.\n"
                          "You can afford {}.\n".format(name, can_afford))
@@ -526,6 +550,10 @@ class City:
             self.add_building_to_queue(how_many, 5, type, 25_000)
 
     def build_warehouses(self):
+        """
+        Ask if want to create a warehouse, and adding it to the queue.
+        :return:
+        """
         Functionalities.Utilities.text_separation()
         if not self.commercial_office:
             print("You can´t build in this city if you dont have a commercial office in it.\n")
@@ -543,6 +571,10 @@ class City:
         Functionalities.Utilities.text_separation()
 
     def build_commercial_office(self):
+        """
+        Function to create a commercial office, cheking if player is famous enough.
+        :return:
+        """
         Functionalities.Utilities.text_separation()
         if not self.commercial_office:
             self.player.check_if_can_build_office()
@@ -646,6 +678,10 @@ class City:
         Functionalities.Utilities.text_separation()
 
     def check_factory_production(self):
+        """
+        Check factory production for a city.
+        :return:
+        """
         Functionalities.Utilities.text_separation()
         all_factories = [self.skins_factories, self.tools_factories, self.beer_factories, self.wine_factories,
                          self.wine_factories]
