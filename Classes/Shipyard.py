@@ -25,6 +25,10 @@ class Shipyard:
                 self.set_speed()
 
     def set_speed(self):
+        """
+        Set speed depending on level.
+        :return:
+        """
         if self.level == 1:
             self.repair_speed = 20
             self.build_speed = 6
@@ -39,12 +43,22 @@ class Shipyard:
             self.build_speed = 4
 
     def check_if_convoy(self, unit):
+        """
+        return true if unit is a convoy.
+        :param unit:
+        :return:
+        """
         if unit.is_convoy:
             return True
         else:
             return False
 
     def repair_convoy(self, convoy):
+        """
+        Calculates time and coins to repair a whole convoy.
+        :param convoy:
+        :return:
+        """
         convoy.set_all_healths()
 
         total_cost = 0
@@ -63,6 +77,11 @@ class Shipyard:
 
 
     def repair_boat(self, boat):
+        """
+        Calculate time and coins to repair a single ship.
+        :param boat:
+        :return:
+        """
         number_of_turns = 1 + round((boat.max_health - boat.health) / self.repair_speed)
         price = (boat.max_health - boat.health) * 50
         confirmation = input("Do you want to repair your ship {}? It will take {} turns and cost {} coins.\n"
@@ -102,6 +121,11 @@ class Shipyard:
                 self.choose_option(option)
 
     def choose_option(self, option):
+        """
+        Select option from menu.
+        :param option:
+        :return:
+        """
         if option == 1 or option == 2:
             self.repair_or_improve(option)
         elif option == 3:
@@ -114,6 +138,11 @@ class Shipyard:
             self.change_name()
 
     def repair_or_improve(self, option):
+        """
+        Check if possible to improve/repair unit.
+        :param option:
+        :return:
+        """
         if option == 1:
             unit_to_select = Functionalities.Utilities.choose_boat_from_city(self.city)
             if not unit_to_select:
@@ -132,6 +161,10 @@ class Shipyard:
                 self.improve_convoy(unit_to_select)
 
     def change_name(self):
+        """
+        Changes name to a ship.
+        :return:
+        """
         ship = Functionalities.Utilities.choose_boat_from_city(self.city)
         if not ship:
             print("You don`t have any ships in {}".format(self.city.name))
@@ -157,6 +190,10 @@ class Shipyard:
                 print("You can´t afford a ship.")
 
     def build_ship(self):
+        """
+        Ask name for a new ship, and creates it.
+        :return:
+        """
         name = input("Witch name do you choose for your ship?")
         new_boat = Classes.Boats_and_Convoys.Boat(100, 1, [0, 0, 0, 0, 0], 0, False, 0, name,
                                                   self.city, self.city.player)
@@ -215,12 +252,22 @@ class Shipyard:
             self.reparation_queue.remove(item)
 
     def finish_repairing_boats(self, boat):
+        """
+        Finish repair and prints a notification.
+        :param boat:
+        :return:
+        """
         boat.health = boat.max_health
         self.city.player.boats.append(boat)
         self.city.boats.append(boat)
         print("Your ship {} has been repaired in {}.".format(boat.name, self.city.name))
 
     def finish_repairing_convoys(self, convoy):
+        """
+        Finish repair of a convoy.
+        :param convoy:
+        :return:
+        """
         for boat in convoy.boats:
             boat.health = boat.max_health
         self.city.player.convoys.append(convoy)

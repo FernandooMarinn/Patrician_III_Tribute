@@ -211,6 +211,10 @@ class Player:
             print("You have moved to another city.")
 
     def change_turns_boats_and_convoys(self):
+        """
+        Every time a turn passes, this function activates change turn in every convoy and in every ship.
+        :return:
+        """
         for boat in self.boats:
             boat.change_turn()
         for convoy in self.convoys:
@@ -221,6 +225,10 @@ class Player:
             self.move_city()
 
     def not_remain_city_without_boats(self):
+        """
+        Doesnt let you stay in a city without any boat or convoy, if there is not a commercial office in it.
+        :return:
+        """
         if self.city.have_commercial_office:
             return True
         else:
@@ -234,6 +242,10 @@ class Player:
             return False
 
     def move_city(self):
+        """
+        Moves player automatically to a city with a commercial office.
+        :return:
+        """
         for city in self.all_cities_list:
             if city.have_commercial_office:
                 print("\n\nYou have been moved to {}\n\n".format(city.name))
@@ -242,6 +254,10 @@ class Player:
 
 
     def set_bill(self):
+        """
+        Creates a complete bill.
+        :return:
+        """
         traders_and_offices = self.traders_and_offices_bill()
 
         sailors = self.sailors_bill()
@@ -258,6 +274,10 @@ class Player:
 
 
     def pass_bill(self):
+        """
+        Passes a complete bill, from all cities, and prints a notification every time a turn changes.
+        :return:
+        """
         self.set_bill()
         Functionalities.Utilities.text_separation()
         sailors_bill = self.bill["sailors"] * 3
@@ -328,6 +348,10 @@ class Player:
         return factories
 
     def change_turn(self):
+        """
+        Every time a turn passes.
+        :return:
+        """
         self.turn += 1
         self.change_turns_boats_and_convoys()
         self.check_if_have_to_move_city()

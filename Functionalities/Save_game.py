@@ -29,6 +29,11 @@ def check_current_folder_files():
 
 
 def save_game(game):
+    """
+    Ask for a name, and save a game in the current folder.
+    :param game:
+    :return:
+    """
     to_save = [game]
 
     name = input("What is the name of this game?\n")
@@ -37,6 +42,11 @@ def save_game(game):
 
 
 def load_game(save_game):
+    """
+    Load game, if file exist.
+    :param save_game:
+    :return:
+    """
     while True:
         if not check_current_folder_files():
             return False
@@ -53,6 +63,13 @@ def load_game(save_game):
 
 
 def load_or_new_game():
+    """
+    First function of the game. Ask if want to create a new game, or if want to load one. If load, it creates an empty
+    player and cities objects, in order to copy the game inside them.
+
+    Else, it creates a player, all cities, pirates, and boats for start a new game, and return it all in a game object.
+    :return:
+    """
     print("Do you want to start a new game, or load a previus one?.\n"
           "1- New.\n"
           "2- Load.\n")
@@ -90,6 +107,11 @@ def load_or_new_game():
 
 
 def choose_save_or_load_game(game):
+    """
+    Function to save or load a game whenever we want, during the game.
+    :param game:
+    :return:
+    """
     print("What do you want to do?.\n"
           "1- Save game.\n"
           "2- Load game.\n")
@@ -102,6 +124,12 @@ def choose_save_or_load_game(game):
 
 
 def update_player(saved_player, current_player):
+    """
+    Get an object player, and replace every important data inside. This is the way to load a player from another game.
+    :param saved_player:
+    :param current_player:
+    :return:
+    """
     current_player.name = saved_player.name
     current_player.coins = saved_player.coins
     current_player.level = saved_player.level
@@ -120,6 +148,12 @@ def update_player(saved_player, current_player):
 
 
 def update_cities(saved_cities, current_cities):
+    """
+    Update every city, with every important attribute, for loading another game.
+    :param saved_cities:
+    :param current_cities:
+    :return:
+    """
     for i in range(len(saved_cities)):
         current_cities[i].coins = saved_cities[i].coins
         current_cities[i].skins = saved_cities[i].skins
