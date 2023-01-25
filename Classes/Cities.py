@@ -306,7 +306,6 @@ class City:
         3- Beer: {} coins, {} units.
         4- Wine: {} coins, {} units.
         5- Cloth: {}, coins, {} units.
-        6- Exit.
         """.format(self.price_skins, self.skins, self.price_tools, self.tools,
                    self.price_beer, self.beer, self.price_wine, self.wine, self.price_cloth, self.cloth))
         print("-" * 60)
@@ -405,7 +404,7 @@ class City:
                   "3- Go to shipyard.\n"
                   "4- Go to tavern.\n"
                   "5- Go to weapon master.\n"
-                  "6- Build buildings.\n"
+                  "6- Construct buildings.\n"
                   "7- Exit\n")
             option = input()
             option = Functionalities.Utilities.correct_values(1, 7, option)

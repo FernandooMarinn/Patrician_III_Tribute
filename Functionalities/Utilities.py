@@ -77,11 +77,11 @@ def ask_initial_money():
     print("How much money do you wnat to start with?\n"
           "1- 5000 (very few).\n"
           "2- 10000 (few).\n"
-          "3- 20000 (normal).\n"
+          "3- 25000 (normal).\n"
           "4- 50000 (too much).\n")
     option = input("\n")
     option = correct_values(1, 4, option)
-    money = {1: 5000, 2: 10_000, 3: 20_000, 4: 50_000}
+    money = {1: 5000, 2: 10_000, 3: 25_000, 4: 50_000}
     return money[option]
 
 
@@ -656,17 +656,16 @@ def move_from_warehouse(object, name):
     :param name:
     :return:
     """
-    while True:
-        product = choose_products(name, object.city.commercial_office)
-        product_price = choose_prices(name, object.city)
-        print("You have {} {} at {} coins. How many do you want to move?\n"
-              .format(product, name, product_price))
-        option = input("\n")
-        if option == "0":
-            pass
-        else:
-            option = correct_values(0, product, option)
-            moving_products(name, option, product_price, object.city.commercial_office, object)
+    product = choose_products(name, object.city.commercial_office)
+    product_price = choose_prices(name, object.city)
+    print("You have {} {} at {} coins. How many do you want to move?\n"
+          .format(product, name, product_price))
+    option = input("\n")
+    if option == "0":
+        pass
+    else:
+        option = correct_values(0, product, option)
+        moving_products(name, option, product_price, object.city.commercial_office, object)
 
 
 def choose_city_to_travel(object, cities):
