@@ -1,15 +1,6 @@
 import Functionalities.Utilities
 import Functionalities.Save_game
 
-
-""" To do list:
-1- Hacer que suba la población.
-4- Hacer todas las ciudades y todos los productos (ultimo).
-"""
-
-
-
-
 WHOLE_GAME = Functionalities.Save_game.load_or_new_game()
 player = WHOLE_GAME.player
 Cities = WHOLE_GAME.cities
@@ -75,7 +66,6 @@ def choose_options(option):
         Functionalities.Save_game.choose_save_or_load_game(WHOLE_GAME)
     elif option == 9:
         exit()
-
 
 
 def main():

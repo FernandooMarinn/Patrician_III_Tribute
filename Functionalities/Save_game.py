@@ -77,8 +77,8 @@ def load_or_new_game():
     option = Functionalities.Utilities.correct_values(1, 2, option)
     if option == 2:
         player = Classes.Player.Player("player", 5000)
-        Cities = Functionalities.Utilities.create_cities(player)
-        WHOLE_GAME = Classes.Game.Game(player, Cities)
+        cities = Functionalities.Utilities.create_cities(player)
+        WHOLE_GAME = Classes.Game.Game(player, cities)
         if not load_game(WHOLE_GAME):
             option = 1
         else:
@@ -86,12 +86,11 @@ def load_or_new_game():
 
     if option == 1:
         player = Functionalities.Utilities.create_player()
-        Cities = Functionalities.Utilities.create_cities(player)
-        player.city = Functionalities.Utilities.ask_initial_city(Cities)
-        player.all_cities_list = Cities
+        cities = Functionalities.Utilities.create_cities(player)
+        player.city = Functionalities.Utilities.ask_initial_city(cities)
+        player.all_cities_list = cities
 
-        cities_list = Functionalities.Utilities.add_all_buildings(Cities)
-
+        cities_list = Functionalities.Utilities.add_all_buildings(cities)
 
         boat1 = Classes.Boats_and_Convoys.Boat(100, 3, [0, 0, 0, 0, 0], 20, True, 0, "Prueba", player.city, player)
         player.boats.append(boat1)
@@ -143,8 +142,6 @@ def update_player(saved_player, current_player):
     current_player.number_of_offices = saved_player.number_of_offices
     current_player.can_build_offices = saved_player.can_build_offices
     current_player.bill = saved_player.bill
-
-
 
 
 def update_cities(saved_cities, current_cities):

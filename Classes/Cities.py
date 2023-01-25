@@ -261,7 +261,7 @@ class City:
         """
         all_products = ["skins", "tools", "beer", "wine", "cloth"]
         probability = random.randint(0, 12)
-        number_of_items_to_fill= random.randint(0, 5)
+        number_of_items_to_fill = random.randint(0, 5)
         number_of_products_to_add = [random.randint(0, 40) for _ in range(number_of_items_to_fill)]
         if probability == 5:
             for i in range(number_of_items_to_fill):
@@ -361,7 +361,7 @@ class City:
         :return:
         """
         option = input("How many do you want to sell. You have {} units at {} coins.\n"
-        .format(boat_products[0], boat_products[1]))
+                       .format(boat_products[0], boat_products[1]))
         option = Functionalities.Utilities.correct_values(0, boat_products[0], option)
         medium_price = self.calculate_group_trade(choosen_product[1], choosen_product[0], choosen_product[2],
                                                   option)
@@ -392,7 +392,6 @@ class City:
             return [self.max_price_wine, self.min_price_wine, self.wine, "wine"]
         elif option == 5:
             return [self.max_price_cloth, self.min_price_cloth, self.cloth, "cloth"]
-
 
     def menu_city_buildings(self):
         """
@@ -532,7 +531,6 @@ class City:
             self.create_factories(factories_type[election], names[election])
         else:
             print("You cannot produce {} in {}.\n".format(names[election], self.name))
-
 
     def create_factories(self, type, name):
         """

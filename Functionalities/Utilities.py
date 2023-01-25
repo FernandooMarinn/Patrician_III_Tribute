@@ -738,6 +738,7 @@ def while_traveling(object):
                   .format(object.name, object.city.name))
     Functionalities.Combat.calculate_probability(object)
 
+
 def check_if_traveling(object):
     """
     Return True if in open sea.
@@ -756,7 +757,6 @@ def check_if_overloaded(object):
         return False
     else:
         return True
-
 
 
 def create_pirate_and_pirate_city():
@@ -785,5 +785,4 @@ def money_exchange(object_who_pays, object_who_get_paid, ammount):
         object_who_pays.coins -= ammount
         object_who_get_paid.coins += ammount
         return True
-
 

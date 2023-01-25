@@ -74,8 +74,6 @@ class Shipyard:
             self.city.convoys.remove(convoy)
             self.gain_experience(total_cost)
 
-
-
     def repair_boat(self, boat):
         """
         Calculate time and coins to repair a single ship.

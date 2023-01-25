@@ -168,7 +168,6 @@ class Player:
         option = Functionalities.Utilities.correct_values(1, len(type), option)
         return type[option - 1]
 
-
     def list_cities(self, cities):
         """
         Print out list of cities, and let you choose one of them.
@@ -251,8 +250,6 @@ class Player:
                 print("\n\nYou have been moved to {}\n\n".format(city.name))
                 self.city = city
 
-
-
     def set_bill(self):
         """
         Creates a complete bill.
@@ -272,7 +269,6 @@ class Player:
         self.bill["offices"] = offices
         self.bill["factories"] = factories
 
-
     def pass_bill(self):
         """
         Passes a complete bill, from all cities, and prints a notification every time a turn changes.
@@ -281,8 +277,8 @@ class Player:
         self.set_bill()
         Functionalities.Utilities.text_separation()
         sailors_bill = self.bill["sailors"] * 3
-        captains_bill =  self.bill["captains"] * 15
-        traders_bill =  self.bill["traders"] * 20
+        captains_bill = self.bill["captains"] * 15
+        traders_bill = self.bill["traders"] * 20
         offices_bill = self.bill["offices"] * 10
         factories_bill = self.bill["factories"] * 10
 
@@ -299,8 +295,6 @@ class Player:
               .format(sailors_bill, captains_bill,
                       traders_bill, offices_bill,
                       factories_bill, total_bill))
-
-
 
     def sailors_bill(self):
         sailors = 0
