@@ -5,7 +5,6 @@ import Classes.Boats_and_Convoys
 import Classes.Player
 import Functionalities.Utilities
 
-
 def check_current_folder_files():
     # Get the path of the folder where the current script is located
     folder_path = os.path.dirname(__file__)
@@ -30,14 +29,16 @@ def check_current_folder_files():
 
 def save_game(game):
     """
-    Ask for a name, and save a game in the current folder.
+    Ask for a name, and save a game in the script's folder.
     :param game:
     :return:
     """
     to_save = [game]
 
     name = input("What is the name of this game?\n")
-    with open(f"{name}.pickle", "wb") as savefile:
+    script_folder = os.path.dirname(os.path.abspath(__file__))
+    save_path = os.path.join(script_folder, f"{name}.pickle")
+    with open(save_path, "wb") as savefile:
         pickle.dump(to_save, savefile)
 
 

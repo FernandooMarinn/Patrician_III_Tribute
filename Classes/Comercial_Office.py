@@ -234,12 +234,12 @@ class Trader:
         Menu for changing trading instructions given to a trader.
         :return:
         """
-        item_list = ["skins", "tools", "beer", "wine", "cloth"]
+        item_list = ["skins", "tools", "beer", "wine", "cloth", "grain"]
         print("What do you want to change?\n\n")
         for i, x in enumerate(item_list):
             print(f"{i + 1}- {x}")
         option = input()
-        option = Functionalities.Utilities.correct_values(1, 5, option)
+        option = Functionalities.Utilities.correct_values(1, 6, option)
         self.change_trading_options_individually(option - 1)
 
     def change_trading_options_individually(self, option):
