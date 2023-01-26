@@ -24,17 +24,19 @@ class CommercialOffice:
         self.cloth = 0
         self.price_cloth = 0
 
+        self.grain = 0
+        self.price_grain = 0
+
         self.dagger = 0
         self.cannon = 0
         self.bombard = 0
-
-        self.inventory = [self.skins, self.tools, self.beer, self.wine, self.cloth]
 
     def set_max_inventory_size(self):
         self.inventory_size = 500 + self.warehouse * 2500
 
     def set_inventory_size(self):
-        self.inventory_size = sum(self.inventory)
+        inventory = [self.skins, self.tools, self.beer, self.wine, self.cloth, self.grain * 10]
+        self.inventory_size = sum(inventory)
 
     def show_menu(self):
         while True:
@@ -75,8 +77,10 @@ class CommercialOffice:
               "{} beer at {} coins.\n"
               "{} wine at {} coins.\n"
               "{} cloth at {} coins.\n"
+              "{} grain at {} coins.\n"
               .format(self.city.name, self.skins, self.price_skins, self.tools, self.price_tools, self.beer,
-                      self.price_beer, self.wine, self.price_wine, self.cloth, self.price_cloth))
+                      self.price_beer, self.wine, self.price_wine, self.cloth, self.price_cloth, self.grain,
+                      self.price_grain))
         print("There are {} units of space occupied and {} warehouses."
               .format(self.inventory_size, self.warehouse))
         Functionalities.Utilities.text_separation()
@@ -88,14 +92,16 @@ class CommercialOffice:
         """
         if self.skins == 0:
             self.price_skins = 0
-        elif self.tools == 0:
+        if self.tools == 0:
             self.price_tools = 0
-        elif self.beer == 0:
+        if self.beer == 0:
             self.price_beer = 0
-        elif self.wine == 0:
+        if self.wine == 0:
             self.price_wine = 0
-        elif self.cloth == 0:
+        if self.cloth == 0:
             self.price_cloth = 0
+        if self.grain == 0:
+            self.price_grain = 0
 
     def total_bill(self):
         """
@@ -103,15 +109,11 @@ class CommercialOffice:
         :return:
         """
         self.set_inventory_size()
-        if not self.trader:
-            trader_bill = 0
-        else:
-            trader_bill = 20
         if self.max_inventory_size < self.inventory_size:
             inventory_bill = self.max_inventory_size - self.inventory_size
         else:
             inventory_bill = 0
-        return trader_bill + inventory_bill + self.warehouse * 20
+        return inventory_bill + self.warehouse * 20
 
     def pass_bill(self, bill):
         """
@@ -175,9 +177,10 @@ class Trader:
         self.beer_instructions = [0, 0, 0, "beer"]
         self.cloth_instructions = [0, 0, 0, "cloth"]
         self.wine_instructions = [0, 0, 0, "wine"]
+        self.grain_instructions = [0, 0, 0, "grain"]
 
         self.trading_instructions = [self.skins_instructions, self.tools_instructions, self.beer_instructions,
-                                     self.wine_instructions, self.cloth_instructions]
+                                     self.wine_instructions, self.cloth_instructions, self.grain_instructions]
 
         self.speed = 3
         self.speed_counter = 1

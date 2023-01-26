@@ -10,7 +10,7 @@ class Weapon_master:
         self.city = city
         self.commercial_office = self.city.commercial_office
 
-        self.dagger = 3
+        self.dagger = 4
         self.cannon = 2
         self.bombard = 0
 

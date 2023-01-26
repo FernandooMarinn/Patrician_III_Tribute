@@ -281,8 +281,9 @@ class Player:
         traders_bill = self.bill["traders"] * 20
         offices_bill = self.bill["offices"] * 10
         factories_bill = self.bill["factories"] * 10
+        warehouses_bill = self.warehouses_bill()
 
-        total_bill = sailors_bill + captains_bill + traders_bill + offices_bill + factories_bill
+        total_bill = sailors_bill + captains_bill + traders_bill + offices_bill + factories_bill + warehouses_bill
         self.coins -= total_bill
 
         print("Bill for this turn is:\n"
@@ -290,11 +291,13 @@ class Player:
               "{} coins for your captains.\n"
               "{} coins for your traders.\n"
               "{} coins for your offices.\n"
+              "{} coins for your warehouses and rented space.\n"
               "{} coins for your factories.\n\n"
               "Total amount to pay is {} coins"
               .format(sailors_bill, captains_bill,
                       traders_bill, offices_bill,
-                      factories_bill, total_bill))
+                      warehouses_bill, factories_bill,
+                      total_bill))
 
     def sailors_bill(self):
         sailors = 0
@@ -304,6 +307,15 @@ class Player:
             convoy.set_sailors_and_captains()
             sailors += convoy.sailors
         return sailors
+
+    def warehouses_bill(self):
+        total = 0
+        for city in self.all_cities_list:
+            if not city.commercial_office:
+                pass
+            else:
+                total += city.commercial_office.total_bill()
+        return total
 
     def captains_bill(self):
         captains = 0
@@ -336,7 +348,8 @@ class Player:
                 city.tools_factories,
                 city.beer_factories,
                 city.wine_factories,
-                city.cloth_factories
+                city.cloth_factories,
+                city.grain_factories
             ]
             factories += sum(city_factories)
         return factories

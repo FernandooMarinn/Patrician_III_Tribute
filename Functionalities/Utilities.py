@@ -118,26 +118,26 @@ def create_cities(player):
     :return:
     """
     #  name                                consumption     initial             production     can_pruduce
-    lubeck = Classes.Cities.City("Lubeck", 3, 4, 6, 3, 3, 40, 60, 40, 50, 30, 0, 15, 0, 9, 0, False, True, False, True,
-                                 False, False, 1, player)
-    rostock = Classes.Cities.City("Rostock", 3, 4, 6, 3, 3, 40, 40, 40, 50, 30, 0, 0, 0, 0, 0, False, False, False,
-                                  False, False, False, 1, player)
-    malmo = Classes.Cities.City("Malmo", 3, 4, 6, 3, 3, 60, 60, 30, 30, 50, 8, 0, 0, 0, 7, True, False, False, False,
-                                True, False, 1, player)
-    stettin = Classes.Cities.City("Stettin", 3, 4, 6, 3, 3, 40, 50, 70, 50, 30, 0, 0, 15, 0, 0, False, False, True,
-                                  True, False, False, 1, player)
-    gdanks = Classes.Cities.City("Gdanks", 3, 4, 4, 3, 3, 30, 40, 60, 40, 40, 0, 0, 10, 0, 0, False, False, True, False,
-                                 False, False, 2, player)
-    stockholm = Classes.Cities.City("Stockholm", 3, 4, 6, 3, 3, 45, 50, 50, 40, 50, 0, 8, 0, 0, 0, False, True, False,
-                                    False, False, False, 3, player)
-    reval = Classes.Cities.City("Reval", 4, 4, 5, 3, 3, 50, 45, 55, 40, 40, 7, 0, 0, 0, 0, True, False, False, False,
-                                False, False, 3, player)
-    visby = Classes.Cities.City("Visby", 3, 4, 5, 3, 3, 40, 60, 50, 40, 40, 0, 0, 0, 0, 8, False, False, False, False,
-                                True, False, 3, player)
-    riga = Classes.Cities.City("Riga", 4, 5, 6, 3, 3, 60, 65, 45, 40, 40, 9, 11, 0, 0, 0, True, True, False, False,
-                               False, False, 3, player)
-    novgorod = Classes.Cities.City("Novgorod", 3, 4, 5, 3, 3, 65, 55, 60, 40, 40, 8, 0, 12, 0, 0, True, False, True,
-                                   False, False, False, 4, player)
+    lubeck = Classes.Cities.City("Lubeck", 3, 4, 6, 3, 3, 3, 40, 60, 40, 50, 30, 40, 0, 15, 0, 9, 0, 3, False, True,
+                                 False, True, False, True, False, 1, player)
+    rostock = Classes.Cities.City("Rostock", 3, 4, 6, 3, 3, 3, 40, 40, 40, 50, 30, 35, 0, 0, 0, 0, 0, 0, False,
+                                  False, False, False, False, False, False, 1, player)
+    malmo = Classes.Cities.City("Malmo", 3, 4, 6, 3, 3, 3, 60, 60, 30, 30, 50, 50, 8, 0, 0, 0, 7, 0, True, False,
+                                False, False, True, False, False, 1, player)
+    stettin = Classes.Cities.City("Stettin", 3, 4, 6, 3, 3, 3, 40, 50, 70, 50, 30, 40, 0, 0, 15, 0, 0, 6, False, False,
+                                  True, True, False, True, False, 1, player)
+    gdanks = Classes.Cities.City("Gdanks", 3, 4, 4, 3, 3, 3, 30, 40, 60, 40, 40, 40, 0, 0, 10, 0, 0, 6, False, False,
+                                 True, False, False, True, False, 2, player)
+    stockholm = Classes.Cities.City("Stockholm", 3, 4, 6, 3, 3, 3, 45, 50, 50, 40, 50, 65, 0, 8, 0, 0, 0, 0, False,
+                                    True, False, False, False, True, False, 3, player)
+    reval = Classes.Cities.City("Reval", 4, 4, 5, 3, 3, 3, 50, 45, 55, 40, 40, 50, 7, 0, 0, 0, 0, 0, True, False,
+                                False, False, False, False, False, 3, player)
+    visby = Classes.Cities.City("Visby", 3, 4, 5, 3, 3, 3, 40, 60, 50, 40, 40, 45, 0, 0, 0, 0, 8, 5, False, False,
+                                False, False, True, True, False, 3, player)
+    riga = Classes.Cities.City("Riga", 4, 5, 6, 3, 3, 3, 60, 65, 45, 40, 40, 45, 9, 11, 0, 0, 0, 0, True, True, False,
+                               False, False, False, False, 3, player)
+    novgorod = Classes.Cities.City("Novgorod", 3, 4, 5, 3, 3, 3, 65, 55, 60, 40, 40, 45, 8, 0, 12, 0, 0, 0, True,
+                                   False, True, False, False, False, False, 4, player)
     return lubeck, rostock, malmo, stettin, gdanks, stockholm, reval, visby, riga, novgorod
 
 
@@ -264,7 +264,6 @@ def all_cities_change_turn(cities):
         city.change_turn()
 
 
-
 def choose_boat_from_city(city):
     """
     Name self-explanatory, selects a ship (if there is one in the city)
@@ -342,12 +341,13 @@ def select_item(ship_or_convoy):
           "3- Beer. You have {} at {} coins.\n"
           "4- Wine. You have {} at {} coins.\n"
           "5- Cloth. You have {} at {} coins.\n"
+          "6- Grain. You have {} at {} coins.\n"
           .format(ship_or_convoy.skins, ship_or_convoy.price_skins, ship_or_convoy.tools, ship_or_convoy.price_tools,
                   ship_or_convoy.beer, ship_or_convoy.price_beer, ship_or_convoy.wine, ship_or_convoy.price_wine,
-                  ship_or_convoy.cloth, ship_or_convoy.price_cloth))
+                  ship_or_convoy.cloth, ship_or_convoy.price_cloth, ship_or_convoy.grain, ship_or_convoy.price_grain))
     option = input()
-    option = correct_values(1, 5, option)
-    equivalences = {1: "skins", 2: "tools", 3: "beer", 4: "wine", 5: "cloth"}
+    option = correct_values(1, 6, option)
+    equivalences = {1: "skins", 2: "tools", 3: "beer", 4: "wine", 5: "cloth", 6: "grain"}
     return equivalences[option]
 
 
@@ -367,6 +367,8 @@ def decrease_product_number(object, products):
         object.wine -= quantity
     elif products[1] == "cloth":
         object.cloth -= quantity
+    elif products[1] == "grain":
+        object.grain -= quantity
 
 
 def increase_product_number(object, products):
@@ -381,6 +383,8 @@ def increase_product_number(object, products):
         object.wine += quantity
     elif products[1] == "cloth":
         object.cloth += quantity
+    elif products[1] == "grain":
+        object.grain += quantity
 
 
 def choose_prices(name, object):
@@ -394,6 +398,8 @@ def choose_prices(name, object):
         return object.price_wine
     elif name == "cloth":
         return object.price_cloth
+    elif name == "grain":
+        return object.price_grain
 
 
 def choose_products(name, object):
@@ -407,6 +413,8 @@ def choose_products(name, object):
         return object.wine
     elif name == "cloth":
         return object.cloth
+    elif name == "grain":
+        return object.grain
 
 
 def set_price_to_zero(object):
@@ -425,6 +433,8 @@ def set_price_to_zero(object):
         object.price_wine = 0
     if object.cloth == 0:
         object.price_cloth = 0
+    if object.grain == 0:
+        object.price_grain = 0
 
 
 def change_prices(name, new_price, object):
@@ -438,6 +448,8 @@ def change_prices(name, new_price, object):
         object.price_wine = new_price
     elif name == "cloth":
         object.price_cloth = new_price
+    elif name == "grain":
+        object.price_grain = new_price
 
 
 def return_trading_items_values(name, city):
@@ -451,6 +463,8 @@ def return_trading_items_values(name, city):
         return [city.max_price_wine, city.min_price_wine, city.wine]
     elif name == "cloth":
         return [city.max_price_cloth, city.min_price_cloth, city.cloth]
+    elif name == "grain":
+        return [city.max_price_grain, city.min_price_grain, city.grain]
 
 
 def buy_from_city(ship_or_office):
@@ -475,6 +489,9 @@ def buy_from_city(ship_or_office):
     try:
         ship_or_office.set_empty_space_and_max_load()
         empty_space = ship_or_office.empty_space
+        if choosen_product[3] == "grain":
+            empty_space = round(empty_space / 10)
+
     except AttributeError:
         empty_space = 99_999
 
@@ -559,7 +576,8 @@ def return_factory_name(factory):
                     "tools_factories": "tool factory",
                     "beer_factories": "beer factory",
                     "wine_factories": "wine factory",
-                    "cloth_factories": "cloth factory"
+                    "cloth_factories": "cloth factory",
+                    "grain_factories": "grain factory"
                     }
     if factory in well_written:
         return well_written[factory]
@@ -764,8 +782,8 @@ def create_pirate_and_pirate_city():
     :return:
     """
     pirate = Classes.Player.Player("Evil_pirate", 1_000_000)
-    pirate_city = Classes.Cities.City("Evil pirate city", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                      0, 0, False, 5, pirate)
+    pirate_city = Classes.Cities.City("Evil pirate city", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                      0, 0, 0, 0, False, 5, pirate)
     return pirate, pirate_city
 
 

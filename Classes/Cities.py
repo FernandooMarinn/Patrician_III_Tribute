@@ -327,7 +327,7 @@ class City:
         6- Grain: {} coins, {} units.
         """.format(self.price_skins, self.skins, self.price_tools, self.tools,
                    self.price_beer, self.beer, self.price_wine, self.wine, self.price_cloth, self.cloth,
-                   self.grain, self.price_grain))
+                   self.price_grain, self.grain))
         Functionalities.Utilities.text_separation()
 
     def how_many_buy(self, choosen_product, empty_space):
@@ -513,10 +513,11 @@ class City:
               "3- Beer.\n"
               "4- Wine.\n"
               "5- Cloth.\n"
-              "6- Exit.\n")
+              "6- Grain.\n"
+              "7- Exit.\n")
         option = input()
-        option = Functionalities.Utilities.correct_values(1, 6, option)
-        if option == 6:
+        option = Functionalities.Utilities.correct_values(1, 7, option)
+        if option == 7:
             pass
         else:
             self.check_if_can_build_factory(option)
@@ -532,21 +533,24 @@ class City:
             2: self.can_produce_tools,
             3: self.can_produce_beer,
             4: self.can_produce_wine,
-            5: self.can_produce_cloth
+            5: self.can_produce_cloth,
+            6: self.can_produce_grain
         }
         factories_type = {
             1: "skins_factories",
             2: "tools_factories",
             3: "beer_factories",
             4: "wine_factories",
-            5: "cloth_factories"
+            5: "cloth_factories",
+            6: "grain_factories"
         }
         names = {
             1: "skins",
             2: "tools",
             3: "beer",
             4: "wine",
-            5: "cloth"
+            5: "cloth",
+            6: "grain"
         }
 
         if can_build_correspondencies[election]:
@@ -592,7 +596,7 @@ class City:
 
     def build_commercial_office(self):
         """
-        Function to create a commercial office, cheking if player is famous enough.
+        Function to create a commercial office, checking if player is famous enough.
         :return:
         """
         Functionalities.Utilities.text_separation()
@@ -710,7 +714,8 @@ class City:
             ("tools", 4),
             ("beer", 5),
             ("wine", 3),
-            ("cloth", 3)
+            ("cloth", 3),
+            ("grain", 3)
         )
         print("In {} you have:\n".format(self.name))
         for i, x in enumerate(all_factories):

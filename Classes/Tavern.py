@@ -3,7 +3,6 @@ import Functionalities.Utilities
 
 class Tavern:
     def __init__(self, city):
-        super().__init__()
         self.city = city
         self.sailors = 12
         self.captain = False
