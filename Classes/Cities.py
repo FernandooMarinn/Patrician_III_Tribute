@@ -6,18 +6,20 @@ import Functionalities.Utilities
 
 class City:
     def __init__(self, name, skins_consumption_ratio, tools_consumption_ratio, beer_consumption_ratio,
-                 wine_consumption_ratio, cloth_consumption_ratio, initial_skins, initial_tools, initial_beer,
-                 initial_wine, initial_cloth, skins_production, tools_production, beer_production, wine_production,
-                 cloth_production, can_produce_skins, can_produce_tools, can_produce_beer, can_produce_wine,
-                 can_produce_cloth, commercial_office, position, player):
+                 wine_consumption_ratio, cloth_consumption_ratio, grain_consumption_ratio, initial_skins,
+                 initial_tools, initial_beer, initial_wine, initial_cloth, initial_grain, skins_production,
+                 tools_production, beer_production, wine_production, cloth_production, grain_production,
+                 can_produce_skins, can_produce_tools, can_produce_beer, can_produce_wine, can_produce_cloth,
+                 can_produce_grain, commercial_office, position, player):
 
-        self.coins = 10000
+        self.coins = 100_000
         # Products quantity.
         self.skins = initial_skins
         self.tools = initial_tools
         self.beer = initial_beer
         self.wine = initial_wine
         self.cloth = initial_cloth
+        self.grain = initial_grain
         self.name = name
 
         # City consuption of each item.
@@ -26,12 +28,14 @@ class City:
         self.beer_consumption_ratio = beer_consumption_ratio
         self.wine_consumption_ratio = wine_consumption_ratio
         self.cloth_consumption_ratio = cloth_consumption_ratio
+        self.grain_consumption_ratio = grain_consumption_ratio
 
         self.skins_consumption = 0
         self.tools_consumption = 0
         self.beer_consumption = 0
         self.wine_consumption = 0
         self.cloth_consumption = 0
+        self.grain_consumption = 0
 
         # City base production of each item.
         self.skins_production = skins_production
@@ -39,6 +43,7 @@ class City:
         self.beer_production = beer_production
         self.wine_production = wine_production
         self.cloth_production = cloth_production
+        self.grain_production = grain_production
 
         # Factories in the city
         self.skins_factories = 0
@@ -46,6 +51,7 @@ class City:
         self.beer_factories = 0
         self.wine_factories = 0
         self.cloth_factories = 0
+        self.grain_factories = 0
 
         # Is it possible to create factories
         self.can_produce_skins = can_produce_skins
@@ -53,6 +59,7 @@ class City:
         self.can_produce_beer = can_produce_beer
         self.can_produce_wine = can_produce_wine
         self.can_produce_cloth = can_produce_cloth
+        self.can_produce_grain = can_produce_grain
 
         # Max and min values for each product.
         self.max_price_skins = 1400
@@ -65,6 +72,8 @@ class City:
         self.min_price_wine = 200
         self.max_price_cloth = 440
         self.min_price_cloth = 200
+        self.max_price_grain = 220
+        self.min_price_grain = 80
 
         # Current values.
         self.price_skins = 0
@@ -72,6 +81,7 @@ class City:
         self.price_beer = 0
         self.price_wine = 0
         self.price_cloth = 0
+        self.price_grain = 0
         self.houses = 250
         self.population = 1000
 
@@ -117,6 +127,7 @@ class City:
         self.beer_consumption = round((self.population * self.beer_consumption_ratio) / 1000)
         self.wine_consumption = round((self.population * self.wine_consumption_ratio) / 1000)
         self.cloth_consumption = round((self.population * self.cloth_consumption_ratio) / 1000)
+        self.grain_consumption = round((self.population * self.grain_consumption_ratio) / 1000)
 
     def calculate_individual_price(self, max_value, min_value, quantity):
         """
@@ -181,6 +192,7 @@ class City:
         self.price_beer = self.calculate_individual_price(self.max_price_beer, self.min_price_beer, self.beer)
         self.price_wine = self.calculate_individual_price(self.max_price_wine, self.min_price_wine, self.wine)
         self.price_cloth = self.calculate_individual_price(self.max_price_cloth, self.min_price_cloth, self.cloth)
+        self.price_grain = self.calculate_individual_price(self.max_price_grain, self.min_price_grain, self.grain)
 
     def city_consumption(self):
         """
@@ -192,6 +204,7 @@ class City:
         self.beer -= self.beer_consumption
         self.wine -= self.wine_consumption
         self.cloth -= self.cloth_consumption
+        self.grain -= self.grain_consumption
 
     def city_production(self):
         """
@@ -203,6 +216,7 @@ class City:
         self.beer += self.beer_production
         self.wine += self.wine_production
         self.cloth += self.cloth_production
+        self.grain += self.grain_production
 
     def factories_production(self):
         """
@@ -217,6 +231,7 @@ class City:
             self.commercial_office.beer += self.beer_factories * 5
             self.commercial_office.wine += self.wine_factories * 3
             self.commercial_office.cloth += self.cloth_factories * 3
+            self.commercial_office.grain += self.grain_factories * 3
 
             self.add_factories_prices()
 
@@ -231,7 +246,8 @@ class City:
             [office.price_tools, office.tools, self.min_price_tools, self.tools_factories * 4, "tools"],
             [office.price_beer, office.beer, self.min_price_beer, self.beer_factories * 5, "beer"],
             [office.price_wine, office.wine, self.min_price_wine, self.wine_factories * 3, "wine"],
-            [office.price_cloth, office.cloth, self.min_price_cloth, self.cloth_factories * 3, "cloth"]
+            [office.price_cloth, office.cloth, self.min_price_cloth, self.cloth_factories * 3, "cloth"],
+            [office.price_grain, office.grain, self.min_price_grain, self.grain_factories * 3, "grain"]
         ]
         for factory in office_list:
             price = Functionalities.Utilities.calculate_average_price(factory[0], factory[1], factory[2], factory[3])
@@ -252,16 +268,18 @@ class City:
             self.wine = 0
         if self.cloth < 0:
             self.cloth = 0
+        if self.grain < 0:
+            self.grain = 0
 
     def random_items_fill(self):
         """
-        This function works as a random trader that arrives at the city. It will sell a certain number of items, of a
+        This function works as a random trader that arrives in a city. It will sell a certain number of items, of a
         certain number of different products, all based in probability and random numbers.
         :return:
         """
-        all_products = ["skins", "tools", "beer", "wine", "cloth"]
+        all_products = ["skins", "tools", "beer", "wine", "cloth", "grain"]
         probability = random.randint(0, 12)
-        number_of_items_to_fill = random.randint(0, 5)
+        number_of_items_to_fill = random.randint(0, 6)
         number_of_products_to_add = [random.randint(0, 40) for _ in range(number_of_items_to_fill)]
         if probability == 5:
             for i in range(number_of_items_to_fill):
@@ -298,17 +316,19 @@ class City:
         Check prices of everything.
         :return:
         """
-        print("-" * 60)
+        Functionalities.Utilities.text_separation()
         self.calculate_prices()
         print("""\nCurrent prices are:
         1- Skins: {} coins, {} units.
         2- Tools: {} coins, {} units.
         3- Beer: {} coins, {} units.
         4- Wine: {} coins, {} units.
-        5- Cloth: {}, coins, {} units.
+        5- Cloth: {} coins, {} units.
+        6- Grain: {} coins, {} units.
         """.format(self.price_skins, self.skins, self.price_tools, self.tools,
-                   self.price_beer, self.beer, self.price_wine, self.wine, self.price_cloth, self.cloth))
-        print("-" * 60)
+                   self.price_beer, self.beer, self.price_wine, self.wine, self.price_cloth, self.cloth,
+                   self.grain, self.price_grain))
+        Functionalities.Utilities.text_separation()
 
     def how_many_buy(self, choosen_product, empty_space):
         """
@@ -380,7 +400,7 @@ class City:
         self.calculate_prices()
         self.show_prices()
         option = input("What do you want to trade?\n")
-        option = Functionalities.Utilities.correct_values(1, 5, option)
+        option = Functionalities.Utilities.correct_values(1, 6, option)
         if option == 1:
             return [self.max_price_skins, self.min_price_skins, self.skins, "skins"]
         elif option == 2:
@@ -391,6 +411,9 @@ class City:
             return [self.max_price_wine, self.min_price_wine, self.wine, "wine"]
         elif option == 5:
             return [self.max_price_cloth, self.min_price_cloth, self.cloth, "cloth"]
+        elif option == 6:
+            return [self.max_price_grain, self.min_price_grain, self.grain, "grain"]
+
 
     def menu_city_buildings(self):
         """
@@ -399,7 +422,7 @@ class City:
         """
         while True:
             print("What do you want to do?\n\n"
-                  "1- Go to your comercial office.\n"
+                  "1- Go to your commercial office.\n"
                   "2- Go to money lender.\n"
                   "3- Go to shipyard.\n"
                   "4- Go to tavern.\n"

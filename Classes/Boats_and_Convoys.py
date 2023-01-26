@@ -29,6 +29,8 @@ class Boat:
         self.beer = load[2]
         self.wine = load[3]
         self.cloth = load[4]
+        self.grain = load[5]
+
         self.empty_space = 0
 
         self.captain = captain
@@ -43,6 +45,7 @@ class Boat:
         self.price_beer = 0
         self.price_wine = 0
         self.price_cloth = 0
+        self.price_grain = 0
 
         self.is_convoy = False
         self.enough_sailors = False
@@ -77,7 +80,8 @@ class Boat:
         Calculate current ship load by adding every item and sailors.
         :return:
         """
-        self.current_load = self.skins + self.tools + self.beer + self.wine + self.cloth + self.sailors + self.dagger
+        self.current_load = self.skins + self.tools + self.beer + self.wine + self.cloth + self.sailors + self.dagger + \
+                            self.grain * 10
         self.empty_space = self.max_load - self.current_load
 
     def boat_deterioration(self):
@@ -105,7 +109,6 @@ class Boat:
         else:
             self.enough_sailors = True
 
-
     def check_if_traveling(self):
         """
         Return True if in open sea.
@@ -122,6 +125,7 @@ class Boat:
         :return:
         """
         print("-" * 60)
+        Functionalities.Utilities.set_price_to_zero(self)
         self.set_empty_space_and_max_load()
         print("Your boat {} have:\n"
               "{} skins at {} coins.\n"
@@ -129,8 +133,10 @@ class Boat:
               "{} beer at {} coins.\n"
               "{} wine at {} coins.\n"
               "{} cloth at {} coins.\n"
+              "{} grain at {} coins.\n"
               .format(self.name, self.skins, self.price_skins, self.tools, self.price_tools, self.beer,
-                      self.price_beer, self.wine, self.price_wine, self.cloth, self.price_cloth))
+                      self.price_beer, self.wine, self.price_wine, self.cloth, self.price_cloth, self.grain,
+                      self.price_grain))
         print("\nThis ship have a maximum cargo of {} units. Is currently loaded with {}. {} empty spaces remain.\n"
               .format(self.max_load, self.current_load, self.max_load - self.current_load))
         if self.captain:
@@ -170,7 +176,7 @@ class Boat:
 
     def turn_into_convoy(self):
         if self.check_if_can_become_convoy():
-            new_convoy = Convoy(self.name, self.city, [self])
+            new_convoy = Convoy(self.name, self.city, [self], self.player, self.cities_list)
             self.player.convoys.append(new_convoy)
             self.city.convoys.append(new_convoy)
             self.city.boats.remove(self)
@@ -263,14 +269,18 @@ class Boat:
 
 # Convoys, to control ships together.
 class Convoy:
-    def __init__(self, name, city, boats):
+    """
+    Useful for mid/late game. It allows to create gropus of ships, and control them in a simple way.
+    """
+
+    def __init__(self, name, city, boats, player, cities_list):
         self.boats = boats
         self.min_level = 0
         self.name = name
         self.city = city
 
-        #self.player = self.city.player
-        #self.cities_list = self.player.all_cities_list
+        self.player = player
+        self.cities_list = cities_list
 
         self.traveling = False
         self.travel_duration = 0
@@ -292,6 +302,7 @@ class Convoy:
         self.beer = 0
         self.wine = 0
         self.cloth = 0
+        self.grain = 0
 
         self.max_load = 0
         self.current_cargo = 0
@@ -301,31 +312,43 @@ class Convoy:
         self.price_beer = 0
         self.price_wine = 0
         self.price_cloth = 0
+        self.price_grain = 0
 
         self.empty_space = 0
 
         self.initialize_convoy()
 
     def initialize_convoy(self):
+        """
+        When a convoy is created, this function creates all its metadata
+        :return:
+        """
         self.set_sailors_and_captains()
         self.set_every_item()
         self.set_all_health()
         self.set_medium_health()
         self.set_minimum_health()
         self.set_empty_space_and_max_load()
-
+        self.set_firepower()
+        Functionalities.Utilities.set_price_to_zero(self)
 
     def set_firepower(self):
+        # Set firepower for each boat in the convoy.
         for boat in self.boats:
             boat.set_firepower()
 
     def check_min_lvl(self):
+        # Check min level in the convoy.
         all_levels = []
         for boat in self.boats:
             all_levels.append(boat.level)
         self.min_level = min(all_levels)
 
     def set_empty_space_and_max_load(self):
+        """
+        Calculates empty space, and maximum load depending on each ship cargo.
+        :return:
+        """
         total_space = 0
         max_load = 0
         for boat in self.boats:
@@ -336,25 +359,36 @@ class Convoy:
         self.max_load = max_load
 
     def set_every_item(self):
+        """
+        Calculates total inventory, iterating over all the boats in the convoy.
+        :return:
+        """
         skins = 0
         tools = 0
         beer = 0
         wine = 0
         cloth = 0
+        grain = 0
         for boat in self.boats:
             skins += boat.skins
             tools += boat.tools
             beer += boat.beer
             wine += boat.wine
             cloth += boat.cloth
+            grain += boat.grain
         self.skins = skins
         self.tools = tools
         self.beer = beer
         self.wine = wine
         self.cloth = cloth
-        self.current_cargo = skins + tools + beer + wine + cloth + self.sailors
+        self.grain = grain
+        self.current_cargo = skins + tools + beer + wine + cloth + self.sailors + self.grain * 10
 
     def set_sailors_and_captains(self):
+        """
+        Calculates how many sailors and captains are in the convoy.
+        :return:
+        """
         sailors = 0
         captains = 0
         for boat in self.boats:
@@ -365,6 +399,12 @@ class Convoy:
         self.captains = captains
 
     def set_travel(self, distance, destination):
+        """
+        Start traveling.
+        :param distance:
+        :param destination:
+        :return:
+        """
         self.travel_turns = distance
         self.traveling = True
         self.destination = destination
@@ -372,8 +412,13 @@ class Convoy:
             boat.traveling = True
 
     def while_traveling(self):
+        """
+        When the convoy is traveling, this function calculates how long it takes to arrive, and set the data in arrival.
+        :return:
+        """
         if self.travel_turns > 0:
             self.travel_turns -= 1
+
         elif self.travel_turns == 0:
             self.city = self.destination
             self.traveling = False
@@ -406,8 +451,11 @@ class Convoy:
             self.set_medium_health()
             self.set_all_health()
 
-
     def show_menu(self):
+        """
+        Prints out convoy menu.
+        :return:
+        """
         while True:
             print("1- Buy from city.\n"
                   "2- Sell to city.\n"
@@ -419,11 +467,14 @@ class Convoy:
                   "8- Exit.\n")
             option = input()
             option = Functionalities.Utilities.correct_values(1, 8, option)
+            # 8 is selected when we want to exit the menu, so we break the loop.
             if option == 8:
                 break
+            # 7 is for dissolving the convoy. If we call it for another function it gets stuck in the loop.
             elif option == 7:
                 Functionalities.Utilities.delete_convoy(self)
                 break
+            # 5 when we choose a city to travel. we loose control on the convoy, so we have to break the loop.
             elif option == 5:
                 Functionalities.Utilities.choose_city_to_travel(self, self.cities_list)
                 break
@@ -439,14 +490,14 @@ class Convoy:
             Functionalities.Utilities.ask_witch_direction_to_move(self)
         elif option == 4:
             self.check_convoy()
-        elif option == 5:
-            Functionalities.Utilities.choose_city_to_travel(self, self.cities_list)
         elif option == 6:
             self.add_boat()
-        elif option == 7:
-            Functionalities.Utilities.delete_convoy(self)
 
     def add_boat(self):
+        """
+        Adds a new boat to the convoy, if there is any in the town.
+        :return:
+        """
         boat = Functionalities.Utilities.choose_boat_from_city(self.city)
         if not boat:
             pass
@@ -463,6 +514,10 @@ class Convoy:
                 self.city.boats.remove(boat)
 
     def dissolve_convoy(self):
+        """
+        To delete the convoy. Return every boat to the city.
+        :return:
+        """
         print("Do you want to dissolve convoy {}?"
               "1- Yes.\n"
               "2- No.\n".format(self.name))
@@ -472,6 +527,10 @@ class Convoy:
             Functionalities.Utilities.delete_convoy(self)
 
     def check_convoy(self):
+        """
+        Print out every useful information about a convoy.
+        :return:
+        """
         Functionalities.Utilities.text_separation()
         self.initialize_convoy()
         print(f"""This is the {self.name} convoy. It has {len(self.boats)} ships in it. Current cargo is:
@@ -481,13 +540,15 @@ class Convoy:
 -Beer: {self.beer} at {self.price_beer} coins.
 -Wine: {self.wine} at {self.price_wine} coins.
 -Cloth: {self.cloth} at {self.price_cloth} coins.
+-Grain: {self.grain} at {self.price_grain} coins.
 
-Maximum load is {self.max_load} units, and {self.current_cargo} are already full. It can take another {self.empty_space} units.
+Maximum load is {self.max_load} units, and {self.current_cargo} are already full.
+It can take another {self.empty_space} units.
+
 Average health among all ships is {self.medium_health} while the minimum ship health is {self.min_health}.
 This convoy has a total of {self.sailors} sailors and {self.captains} captains.
 """)
         Functionalities.Utilities.text_separation()
-
 
     def change_turn(self):
         if self.traveling:
