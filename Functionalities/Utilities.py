@@ -330,7 +330,7 @@ def choose_convoy(city):
     return city.convoys[option - 1]
 
 
-def select_item(ship_or_convoy):
+def select_item(object):
     """
     Returns string with the name of the product that we want to create.
     :return:
@@ -341,13 +341,18 @@ def select_item(ship_or_convoy):
           "3- Beer. You have {} at {} coins.\n"
           "4- Wine. You have {} at {} coins.\n"
           "5- Cloth. You have {} at {} coins.\n"
-          "6- Grain. You have {} at {} coins.\n"
-          .format(ship_or_convoy.skins, ship_or_convoy.price_skins, ship_or_convoy.tools, ship_or_convoy.price_tools,
-                  ship_or_convoy.beer, ship_or_convoy.price_beer, ship_or_convoy.wine, ship_or_convoy.price_wine,
-                  ship_or_convoy.cloth, ship_or_convoy.price_cloth, ship_or_convoy.grain, ship_or_convoy.price_grain))
+          "6- Grain. You have {} at {} coins.\n\n"
+          "7- Dagger. You have {}.\n"
+          "8- Cannon. You have {}.\n"
+          "9- Bombard. You have {}.\n"
+          .format(object.skins, object.price_skins, object.tools, object.price_tools,
+                  object.beer, object.price_beer, object.wine, object.price_wine,
+                  object.cloth, object.price_cloth, object.grain, object.price_grain,
+                  object.dagger, object.cannon, object.bombard))
     option = input()
-    option = correct_values(1, 6, option)
-    equivalences = {1: "skins", 2: "tools", 3: "beer", 4: "wine", 5: "cloth", 6: "grain"}
+    option = correct_values(1, 9, option)
+    equivalences = {1: "skins", 2: "tools", 3: "beer", 4: "wine", 5: "cloth", 6: "grain", 7: "dagger", 8: "cannon",
+                    9: "bombard"}
     return equivalences[option]
 
 
@@ -369,6 +374,12 @@ def decrease_product_number(object, products):
         object.cloth -= quantity
     elif products[1] == "grain":
         object.grain -= quantity
+    elif products[1] == "dagger":
+        object.dagger -= quantity
+    elif products[1] == "cannon":
+        object.cannon -= quantity
+    elif products[1] == "bombard":
+        object.bombard -= quantity
 
 
 def increase_product_number(object, products):
@@ -385,6 +396,13 @@ def increase_product_number(object, products):
         object.cloth += quantity
     elif products[1] == "grain":
         object.grain += quantity
+    elif products[1] == "dagger":
+        object.dagger += quantity
+    elif products[1] == "cannon":
+        object.cannon += quantity
+    elif products[1] == "bombard":
+        object.bombard += quantity
+
 
 
 def choose_prices(name, object):
@@ -415,7 +433,12 @@ def choose_products(name, object):
         return object.cloth
     elif name == "grain":
         return object.grain
-
+    elif name == "dagger":
+        return object.dagger
+    elif name == "cannon":
+        return object.cannon
+    elif name == "bombard":
+        return object.bombard
 
 def set_price_to_zero(object):
     """
@@ -621,11 +644,11 @@ def ask_witch_direction_to_move(object):
             option = correct_values(1, 3, option)
             if option == 3:
                 break
-            else:
-                item_name = select_item(object)
             if option == 1:
+                item_name = select_item(object)
                 move_from_ship_or_convoy(object, item_name)
             elif option == 2:
+                item_name = select_item(object.city.commercial_office)
                 move_from_warehouse(object, item_name)
 
 
@@ -636,16 +659,26 @@ def move_from_ship_or_convoy(object, name):
     :param name:
     :return:
     """
+    is_weapon = 0
     product = choose_products(name, object)
-    product_price = choose_prices(name, object)
-    print("You have {} {} at {} coins. How many do you want to move?\n"
-          .format(product, name, product_price))
+    if name != "dagger" and name != "cannon" and "name" != "bombard":
+        is_weapon = False
+        product_price = choose_prices(name, object.city)
+        print("You have {} {} at {} coins. How many do you want to move?\n"
+              .format(product, name, product_price))
+    else:
+        is_weapon = True
+        print("You have {} {}. How many do you want do move?\n"
+              .format(product, name))
     option = input("\n")
     option = correct_values(0, product, option)
     if option == 0:
         pass
     else:
-        moving_products(name, option, product_price, object, object.city.commercial_office)
+        if is_weapon:
+            moving_weapons(name, option, object, object.city.commercial_office)
+        else:
+            moving_products(name, option, product_price, object, object.city.commercial_office)
 
 
 def moving_products(name, how_many, price, origin, destiny):
@@ -667,6 +700,18 @@ def moving_products(name, how_many, price, origin, destiny):
     change_prices(name, new_price, destiny)
 
 
+def moving_weapons(name, how_many, origin, destiny):
+    """
+    For moving weapons instead of products (they dont have prices)
+    :param name:
+    :param how_many:
+    :param origin:
+    :param destiny:
+    :return:
+    """
+    decrease_product_number(origin, [how_many, name])
+    increase_product_number(destiny, [how_many, name])
+
 def move_from_warehouse(object, name):
     """
     When moving from the warehouse to another object.
@@ -674,16 +719,26 @@ def move_from_warehouse(object, name):
     :param name:
     :return:
     """
+    is_weapon = 0
     product = choose_products(name, object.city.commercial_office)
-    product_price = choose_prices(name, object.city)
-    print("You have {} {} at {} coins. How many do you want to move?\n"
-          .format(product, name, product_price))
+    if name != "dagger" and name != "cannon" and "name" != "bombard":
+        is_weapon = False
+        product_price = choose_prices(name, object.city)
+        print("You have {} {} at {} coins. How many do you want to move?\n"
+              .format(product, name, product_price))
+    else:
+        is_weapon = True
+        print("You have {} {}. How many do you want do move?\n"
+              .format(product, name))
     option = input("\n")
     if option == "0":
         pass
     else:
         option = correct_values(0, product, option)
-        moving_products(name, option, product_price, object.city.commercial_office, object)
+        if is_weapon:
+            moving_weapons(name, option, object.city.commercial_office, object)
+        else:
+            moving_products(name, option, product_price, object.city.commercial_office, object)
 
 
 def choose_city_to_travel(object, cities):

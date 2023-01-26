@@ -139,6 +139,8 @@ class Boat:
                       self.price_grain))
         print("\nThis ship have a maximum cargo of {} units. Is currently loaded with {}. {} empty spaces remain.\n"
               .format(self.max_load, self.current_load, self.max_load - self.current_load))
+        print("There are {} daggers, {} cannons and {} bombards in this ship.\n"
+              .format(self.dagger, self.cannon, self.bombard))
         if self.captain:
             print("This ship has a captain. There are {} sailors.\n"
                   .format(self.sailors))

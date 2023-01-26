@@ -26,10 +26,10 @@ class Player:
         Prints out any important data.
         :return:
         """
-        print("-" * 60)
+        Functionalities.Utilities.text_separation()
         print("You have {} coins, {} boats and {} convoys. Your level is {}."
               .format(self.coins, len(self.boats), len(self.convoys), self.level))
-        print("-" * 60, "\n")
+        Functionalities.Utilities.text_separation()
 
     def level_up(self):
         """

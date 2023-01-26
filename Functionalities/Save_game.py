@@ -5,21 +5,25 @@ import Classes.Boats_and_Convoys
 import Classes.Player
 import Functionalities.Utilities
 
+
 def check_current_folder_files():
     # Get the path of the folder where the current script is located
-    folder_path = os.path.dirname(__file__)
+    folder_path = os.path.dirname(os.path.abspath(__file__))
 
     # Specify the file extension you want to search for
     file_extension = '.pickle'
 
     # Use the listdir() function to list the files in the folder
-    files = os.listdir(folder_path)
+    saved_games_folder = os.path.join(folder_path, "saved games")
+    if not os.path.exists(saved_games_folder):
+        os.mkdir(saved_games_folder)
+    files = os.listdir(saved_games_folder)
     saved_games = []
     # Iterate over the files and check if they have the desired extension
     for file in files:
         if file.endswith(file_extension):
             saved_games.append(file)
-            print(os.path.join(folder_path, file))
+            print(os.path.join(saved_games_folder, file))
     if len(saved_games) == 0:
         print("You don't have any saved game in this folder. You are going to start a new game.\n")
         return False
@@ -37,15 +41,22 @@ def save_game(game):
 
     name = input("What is the name of this game?\n")
     script_folder = os.path.dirname(os.path.abspath(__file__))
-    save_path = os.path.join(script_folder, f"{name}.pickle")
+    saved_games_folder = os.path.join(script_folder, "saved games")
+    if not os.path.exists(saved_games_folder):
+        os.mkdir(saved_games_folder)
+    save_path = os.path.join(saved_games_folder, f"{name}.pickle")
+    try:
+        os.remove(save_path)
+    except FileNotFoundError:
+        pass
     with open(save_path, "wb") as savefile:
         pickle.dump(to_save, savefile)
 
 
-def load_game(save_game):
+def load_game():
     """
     Load game, if file exist.
-    :param save_game:
+    :param current_game:
     :return:
     """
     while True:
@@ -53,12 +64,14 @@ def load_game(save_game):
             return False
         else:
             name = input("\nWhat is the name of your saved game?\n")
+            folder_path = os.path.dirname(os.path.abspath(__file__))
+            saved_games_folder = os.path.join(folder_path, "saved games")
+            save_path = os.path.join(saved_games_folder, f"{name}.pickle")
             try:
-                with open(f"{name}.pickle", "rb") as savefile:
+                with open(save_path, "rb") as savefile:
                     game = pickle.load(savefile)
-                Functionalities.Save_game.update_player(game[0].player, save_game.player)
-                Functionalities.Save_game.update_cities(game[0].cities, save_game.cities)
-                return True
+                    game = game[0]
+                return game
             except FileNotFoundError:
                 print("There is not a file named {}.\n".format(name))
 
@@ -77,13 +90,11 @@ def load_or_new_game():
     option = input()
     option = Functionalities.Utilities.correct_values(1, 2, option)
     if option == 2:
-        player = Classes.Player.Player("player", 5000)
-        cities = Functionalities.Utilities.create_cities(player)
-        WHOLE_GAME = Classes.Game.Game(player, cities)
-        if not load_game(WHOLE_GAME):
+        saved_game = load_game()
+        if not saved_game:
             option = 1
         else:
-            return WHOLE_GAME
+            return saved_game
 
     if option == 1:
         player = Functionalities.Utilities.create_player()
@@ -133,19 +144,19 @@ def update_player(saved_player, current_player):
     current_player.name = saved_player.name
     current_player.coins = saved_player.coins
     current_player.level = saved_player.level
-    current_player.city = saved_player.city
+    current_player.city = saved_player.city #Ojo que puede dar error.
     current_player.experience = saved_player.experience
-    current_player.boats = saved_player.boats
+    current_player.boats = saved_player.boats #Ojo a estos dos tambien
     current_player.convoys = saved_player.convoys
     current_player.turn = saved_player.turn
-    current_player.all_cities_list = saved_player.all_cities_list
+    current_player.all_cities_list = saved_player.all_cities_list #esto puede irse a la mierda
 
     current_player.number_of_offices = saved_player.number_of_offices
     current_player.can_build_offices = saved_player.can_build_offices
     current_player.bill = saved_player.bill
 
 
-def update_cities(saved_cities, current_cities):
+def update_cities(saved_cities, current_cities, player):
     """
     Update every city, with every important attribute, for loading another game.
     :param saved_cities:
@@ -213,3 +224,11 @@ def update_cities(saved_cities, current_cities):
         current_cities[i].tavern = saved_cities[i].tavern
 
         current_cities[i].construction_queue = saved_cities[i].construction_queue
+
+        current_cities[i].money_lender.player = player
+        current_cities[i].money_lender.city = current_cities[i]
+
+        current_cities[i].commercial_office.city = current_cities[i]
+
+
+

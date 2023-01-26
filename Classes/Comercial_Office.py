@@ -35,7 +35,8 @@ class CommercialOffice:
         self.inventory_size = 500 + self.warehouse * 2500
 
     def set_inventory_size(self):
-        inventory = [self.skins, self.tools, self.beer, self.wine, self.cloth, self.grain * 10]
+        inventory = [self.skins, self.tools, self.beer, self.wine, self.cloth, self.grain * 10, self.dagger,
+                     self.cannon * 5, self.bombard * 5]
         self.inventory_size = sum(inventory)
 
     def show_menu(self):
@@ -77,12 +78,13 @@ class CommercialOffice:
               "{} beer at {} coins.\n"
               "{} wine at {} coins.\n"
               "{} cloth at {} coins.\n"
-              "{} grain at {} coins.\n"
+              "{} grain at {} coins.\n\n"
+              "There are {} daggers, {} cannons and {} bombards.\n"
               .format(self.city.name, self.skins, self.price_skins, self.tools, self.price_tools, self.beer,
                       self.price_beer, self.wine, self.price_wine, self.cloth, self.price_cloth, self.grain,
-                      self.price_grain))
-        print("There are {} units of space occupied and {} warehouses."
-              .format(self.inventory_size, self.warehouse))
+                      self.price_grain, self.dagger, self.cannon, self.bombard))
+        print("There are {} units of space occupied and {} warehouses. You can store another {} units before paying."
+              .format(self.inventory_size, self.warehouse, self.max_inventory_size - self.inventory_size))
         Functionalities.Utilities.text_separation()
 
     def set_prices_to_zero_if_no_items(self):

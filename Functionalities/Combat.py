@@ -232,7 +232,7 @@ def create_pirate_ship(pirate):
 def create_pirate_inventory(load):
     total_space = 100 - load
     each_product_max = round(total_space / 5) - 1
-    all_products = [random.randint(0, each_product_max) for _ in range(5)]
+    all_products = [random.randint(0, each_product_max) for _ in range(6)]
     return all_products
 
 
