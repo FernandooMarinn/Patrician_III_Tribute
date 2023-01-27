@@ -271,6 +271,13 @@ class City:
         if self.grain < 0:
             self.grain = 0
 
+    def population_growth(self):
+        if self.beer >= 20 and self.grain >= 20:
+            self.population += round(self.population / 15)
+        elif self.beer == 0 and self.grain == 0:
+            self.population -= round(self.population / 15)
+
+
     def random_items_fill(self):
         """
         This function works as a random trader that arrives in a city. It will sell a certain number of items, of a
@@ -288,28 +295,6 @@ class City:
                 setattr(self, product_to_fill, current_number + number_of_products_to_add[i])
                 all_products.remove(product_to_fill)
 
-    def change_turn(self):
-        """
-        Everything that have to happen everytime a turn passes.
-        :return:
-        """
-        self.create_houses()
-        self.get_taxes()
-        self.random_items_fill()
-        self.set_consumption()
-        self.city_consumption()
-        self.city_production()
-        self.factories_production()
-        self.avoid_minus_zero_items()
-        self.calculate_prices()
-        self.tavern.change_turn()
-        self.shipyard.change_turn()
-        self.money_lender.change_turn()
-        if not self.commercial_office:
-            pass
-        else:
-            self.commercial_office.change_turn()
-        self.decrease_turns_building_queue()
 
     def show_prices(self):
         """
@@ -722,3 +707,27 @@ class City:
             print("{} factories that are producing {} {} per turn."
                   .format(x, products_production[i][1] * x, products_production[i][0]))
         Functionalities.Utilities.text_separation()
+
+    def change_turn(self):
+        """
+        Everything that have to happen everytime a turn passes.
+        :return:
+        """
+        self.create_houses()
+        self.get_taxes()
+        self.random_items_fill()
+        self.set_consumption()
+        self.city_consumption()
+        self.city_production()
+        self.factories_production()
+        self.avoid_minus_zero_items()
+        self.calculate_prices()
+        self.tavern.change_turn()
+        self.shipyard.change_turn()
+        self.money_lender.change_turn()
+        if not self.commercial_office:
+            pass
+        else:
+            self.commercial_office.change_turn()
+        self.decrease_turns_building_queue()
+        self.population_growth()
