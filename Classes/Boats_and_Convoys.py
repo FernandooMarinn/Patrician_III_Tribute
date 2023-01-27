@@ -124,7 +124,7 @@ class Boat:
         Check everything that is important in a boat object. Load, empty space, captain, sailors and level.
         :return:
         """
-        print("-" * 60)
+        Functionalities.Utilities.text_separation()
         Functionalities.Utilities.set_price_to_zero(self)
         self.set_empty_space_and_max_load()
         print("Your boat {} have:\n"
@@ -149,7 +149,7 @@ class Boat:
                   .format(self.sailors, self.max_sailors))
         print("You are in {}. This ship's level is {}."
               .format(self.city.name, self.level))
-        print("-" * 60, "\n")
+        Functionalities.Utilities.text_separation()
 
     def check_if_can_become_convoy(self):
         """
