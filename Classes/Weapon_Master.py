@@ -55,15 +55,27 @@ class Weapon_master:
         how_many = input("How many do you want to buy? There are {} on sale. (if you don`t have a commercial office, "
                          "or enough space in your ship, you will lose the money!\n".format(names[option]))
         how_many = Functionalities.Utilities.correct_values(0, names[option], how_many)
-
-        can_afford = Functionalities.Utilities.how_many_can_afford(prices[option] * how_many, self.city.player.coins)
-        if can_afford >= how_many:
-            self.city.player.coins -= prices[option] * how_many
-            self.coins += prices[option] * how_many
-            self.move_items([option, how_many])
-            self.gain_experience(prices[option] * how_many)
+        if how_many == 0:
+            pass
         else:
-            print("You can't afford to buy those weapons.\n")
+            can_afford = Functionalities.Utilities.how_many_can_afford(prices[option] * how_many, self.city.player.coins)
+            if can_afford >= how_many:
+                self.city.player.coins -= prices[option] * how_many
+                self.coins += prices[option] * how_many
+                self.decrease_weapons(option, how_many)
+                self.move_items([option, how_many])
+                self.gain_experience(prices[option] * how_many)
+            else:
+                print("You can't afford to buy those weapons.\n")
+
+
+    def decrease_weapons(self, name, quantity):
+        if name == "dagger":
+            self.dagger -= quantity
+        elif name == "cannon":
+            self.cannon -= quantity
+        elif name == "bombard":
+            self.bombard -= quantity
 
     def create_weapons(self):
         while self.coins > 51:
