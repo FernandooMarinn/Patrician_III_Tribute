@@ -335,6 +335,7 @@ def select_item(object):
     Returns string with the name of the product that we want to create.
     :return:
     """
+    set_price_to_zero(object)
     print("What do you want to select?\n"
           "1- Skins. You have {} at {} coins.\n"
           "2- Tools. You have {} at {} coins.\n"

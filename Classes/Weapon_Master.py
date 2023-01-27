@@ -117,7 +117,7 @@ class Weapon_master:
                 print("You don't have a commercial office in {}!".format(self.city.name))
             else:
                 self.move_to_commercial_office(items)
-        elif option == 3:
+        elif option == 1:
             ship = Functionalities.Utilities.choose_boat_from_city(self.city)
             if not ship:
                 print("You dont have any ship in {}!".format(self.city.name))
