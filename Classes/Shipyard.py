@@ -193,7 +193,7 @@ class Shipyard:
         :return:
         """
         name = input("Witch name do you choose for your ship?")
-        new_boat = Classes.Boats_and_Convoys.Boat(100, 1, [0, 0, 0, 0, 0], 0, False, 0, name,
+        new_boat = Classes.Boats_and_Convoys.Boat(100, 1, [0, 0, 0, 0, 0, 0], 0, False, 0, name,
                                                   self.city, self.city.player)
         total_remaining_turns = self.calculate_remaining_turns()
         self.building_queue.append([new_boat, self.build_speed + total_remaining_turns])
