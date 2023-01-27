@@ -725,6 +725,7 @@ class City:
         self.tavern.change_turn()
         self.shipyard.change_turn()
         self.money_lender.change_turn()
+        self.weapon_master.change_turn()
         if not self.commercial_office:
             pass
         else:
