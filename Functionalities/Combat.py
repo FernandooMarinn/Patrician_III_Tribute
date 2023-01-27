@@ -3,11 +3,11 @@ import Functionalities.Utilities
 import Classes.Boats_and_Convoys
 import time
 
-time_to_wait = 2
+time_to_wait = 1.5
 
 
 def calculate_probability(ship_or_convoy):
-    number = random.randint(0, 10)
+    number = random.randint(5, 5)
     if number == 5:
         menu_battle(ship_or_convoy, ship_or_convoy.player.pirate)
 
@@ -67,6 +67,8 @@ def boat_vs_boat(ally_ship, pirate_ship):
         time.sleep(time_to_wait)
         if ally_ship.health < 1:
             print("Unfortunately, you have lost your ship.")
+            ally_ship.player.boats.remove(ally_ship)
+            del ally_ship
             return pirate_ship, treasure_player
         elif pirate_ship.health < 1:
             print("You've won! Pirate ship has sunk.")
@@ -211,7 +213,7 @@ def create_pirates(pirate):
 
 def create_pirate_convoy(numer_of_ships, pirate):
     pirate_boats = [create_pirate_ship(pirate) for _ in range(numer_of_ships)]
-    pirate_convoy = Classes.Boats_and_Convoys.Convoy("Pirate convoy", False, pirate_boats)
+    pirate_convoy = Classes.Boats_and_Convoys.Convoy("Pirate convoy", False, pirate_boats, pirate, False)
     pirate.convoys.append(pirate_convoy)
     return pirate_convoy
 
