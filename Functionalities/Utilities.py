@@ -405,7 +405,6 @@ def increase_product_number(object, products):
         object.bombard += quantity
 
 
-
 def choose_prices(name, object):
     if name == "skins":
         return object.price_skins
@@ -440,6 +439,7 @@ def choose_products(name, object):
         return object.cannon
     elif name == "bombard":
         return object.bombard
+
 
 def set_price_to_zero(object):
     """
@@ -547,6 +547,7 @@ def sell_to_city(ship_or_office):
     new_products = ship_or_office.city.how_many_sell(choosen_product, [inventory_product, product_price])
     # deleting sold products.
     decrease_product_number(ship_or_office, new_products)
+    increase_product_number(ship_or_office.city, new_products)
     if choose_products(choosen_product[3], ship_or_office) == 0:
         change_prices(choosen_product[3], 0, ship_or_office)
 
@@ -713,6 +714,7 @@ def moving_weapons(name, how_many, origin, destiny):
     decrease_product_number(origin, [how_many, name])
     increase_product_number(destiny, [how_many, name])
 
+
 def move_from_warehouse(object, name):
     """
     When moving from the warehouse to another object.
@@ -763,7 +765,7 @@ def check_distance_between_cities(object, option):
     :return:
     """
     cities = object.cities_list
-    distance = object.city.possition + cities[option].possition
+    distance = calculate_travel_turns(object.city.possition, cities[option].possition)
     if object.city == cities[option]:
         print("You are already in {}".format(object.city.name))
     else:
@@ -771,6 +773,14 @@ def check_distance_between_cities(object, option):
               .format(object.name, cities[option].name, distance))
         set_travel(object, distance, cities[option])
 
+
+def calculate_travel_turns(position_1, position_2):
+    if position_1 > position_2:
+        return (position_1 - position_2) + 2
+    elif position_2 > position_1:
+        return (position_2 - position_1) + 2
+    elif position_1 == position_2:
+        return 2
 
 def set_travel(object, distance, destination):
     """
@@ -858,4 +868,5 @@ def money_exchange(object_who_pays, object_who_get_paid, ammount):
         object_who_pays.coins -= ammount
         object_who_get_paid.coins += ammount
         return True
+
 

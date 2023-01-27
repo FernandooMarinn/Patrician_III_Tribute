@@ -65,7 +65,12 @@ def choose_options(option):
     elif option == 8:
         Functionalities.Save_game.choose_save_or_load_game(WHOLE_GAME)
     elif option == 9:
-        exit()
+        goodbye()
+
+
+def goodbye():
+    print("\n\n\nBye! See you next time!\n")
+    exit()
 
 
 def main():
