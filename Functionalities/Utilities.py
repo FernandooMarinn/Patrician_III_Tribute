@@ -321,6 +321,8 @@ def choose_boat_from_convoy(city):
 
 
 def choose_convoy(city):
+    if len(city.convoys) == 0:
+        return False
     counter = 1
     for convoy in city.convoys:
         print("{} {}".format(counter, convoy.name))
@@ -818,13 +820,14 @@ def while_traveling(object):
         object.travel_turns -= 1
     elif object.travel_turns == 1:
         object.city = object.destination
-        object.city.boats.append(object)
         object.traveling = False
         object.destination = 0
         if object.is_convoy:
+            object.city.convoys.append(object)
             print("Your convoy {} has arrived at {}"
                   .format(object.name, object.city.name))
         else:
+            object.city.boats.append(object)
             print("Your boat {} has arrived at {}."
                   .format(object.name, object.city.name))
     Functionalities.Combat.calculate_probability(object)
