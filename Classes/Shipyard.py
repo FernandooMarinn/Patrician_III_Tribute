@@ -141,8 +141,18 @@ class Shipyard:
         :param option:
         :return:
         """
+        type = input("Do you want to select a ship or a convoy?\n"
+                     "1- Ship.\n"
+                     "2- Convoy.\n"
+                     "3- Exit.\n")
+        type = Functionalities.Utilities.correct_values(1, 3, type)
+        if type == 1:
+            unit_to_select = Functionalities.Utilities.choose_boat(self.city)
+        elif type == 2:
+            unit_to_select = Functionalities.Utilities.choose_convoy(self.city)
+        else:
+            pass
         if option == 1:
-            unit_to_select = Functionalities.Utilities.choose_boat_from_city(self.city)
             if not unit_to_select:
                 print("There is no unit to select")
             elif not unit_to_select.is_convoy:
@@ -150,7 +160,6 @@ class Shipyard:
             elif unit_to_select.is_convoy:
                 self.repair_convoy(unit_to_select)
         elif option == 2:
-            unit_to_select = Functionalities.Utilities.choose_boat_from_city(self.city)
             if not unit_to_select:
                 print("There is no unit to select")
             elif not unit_to_select.is_convoy:

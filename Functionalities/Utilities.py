@@ -527,7 +527,10 @@ def buy_from_city(ship_or_office):
     average_price = calculate_average_price(product_prices,
                                             product, new_price, product + new_products[0])
     # Adding bought products and changing it`s mean price.
-    increase_product_number(ship_or_office, new_products)
+    if ship_or_office.is_convoy:
+        ship_or_office.distribute_items(new_products)
+    else:
+        increase_product_number(ship_or_office, new_products)
     change_prices(new_products[1], average_price, ship_or_office)
 
 
@@ -546,7 +549,10 @@ def sell_to_city(ship_or_office):
     # Selecting how many we want to sell, and returning it`s price.
     new_products = ship_or_office.city.how_many_sell(choosen_product, [inventory_product, product_price])
     # deleting sold products.
-    decrease_product_number(ship_or_office, new_products)
+    if ship_or_office.is_convoy:
+        ship_or_office.decrease_items_convoy(new_products)
+    else:
+        decrease_product_number(ship_or_office, new_products)
     increase_product_number(ship_or_office.city, new_products)
     if choose_products(choosen_product[3], ship_or_office) == 0:
         change_prices(choosen_product[3], 0, ship_or_office)
@@ -636,7 +642,7 @@ def ask_witch_direction_to_move(object):
     :param object:
     :return:
     """
-    if object.check_if_commercial_office():
+    if check_if_commercial_office(object):
         while True:
             print("What do you want to do?\n"
                   "1- Move from ship to warehouse.\n"
@@ -681,7 +687,8 @@ def move_from_ship_or_convoy(object, name):
             moving_weapons(name, option, object, object.city.commercial_office)
         else:
             moving_products(name, option, product_price, object, object.city.commercial_office)
-
+    if object.is_convoy():
+        object.decrease_items_convoy([option, name])
 
 def moving_products(name, how_many, price, origin, destiny):
     """
@@ -722,7 +729,6 @@ def move_from_warehouse(object, name):
     :param name:
     :return:
     """
-    is_weapon = 0
     product = choose_products(name, object.city.commercial_office)
     if name != "dagger" and name != "cannon" and "name" != "bombard":
         is_weapon = False
@@ -742,6 +748,8 @@ def move_from_warehouse(object, name):
             moving_weapons(name, option, object.city.commercial_office, object)
         else:
             moving_products(name, option, product_price, object.city.commercial_office, object)
+    if object.is_convoy:
+        object.distribute_items([option, name])
 
 
 def choose_city_to_travel(object, cities):
@@ -870,3 +878,9 @@ def money_exchange(object_who_pays, object_who_get_paid, ammount):
         return True
 
 
+def check_if_commercial_office(object):
+    if not object.city.commercial_office:
+        print("There is not a commercial office in this city.\n")
+        return False
+    else:
+        return True

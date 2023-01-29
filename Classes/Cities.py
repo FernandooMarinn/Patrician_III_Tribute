@@ -348,7 +348,7 @@ class City:
                 self.player.coins -= total_price
                 print("You have bought {} items at {} coins each."
                       .format(option, medium_price))
-                print("-" * 60)
+                Functionalities.Utilities.text_separation()
                 return option, choosen_product[3], medium_price
             else:
                 print("You cannot afford to buy {} {}".format(option, choosen_product[3]))

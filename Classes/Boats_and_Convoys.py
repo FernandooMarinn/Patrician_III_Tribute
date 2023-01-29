@@ -229,13 +229,6 @@ class Boat:
         elif option == 6:
             self.turn_into_convoy()
 
-    def check_if_commercial_office(self):
-        if not self.city.commercial_office:
-            print("There is not a commercial office in this city.\n")
-            return False
-        else:
-            return True
-
     def set_firepower(self):
         """
         Set firepower of a ship dependig on level.
@@ -291,7 +284,7 @@ class Convoy:
         self.city_before_travel = 0
 
         self.all_healths = []
-        self.medium_health = 0
+        self.health = 0
         self.min_health = 0
 
         self.is_convoy = True
@@ -442,7 +435,7 @@ class Convoy:
         self.all_healths = [boat.health for boat in self.boats]
 
     def set_medium_health(self):
-        self.medium_health = Functionalities.Utilities.calculate_list_mean(self.all_healths)
+        self.health = Functionalities.Utilities.calculate_list_mean(self.all_healths)
 
     def set_minimum_health(self):
         self.min_health = min(self.all_healths)
@@ -500,7 +493,7 @@ class Convoy:
         Adds a new boat to the convoy, if there is any in the town.
         :return:
         """
-        boat = Functionalities.Utilities.choose_boat_from_city(self.city)
+        boat = Functionalities.Utilities.choose_boat(self.city)
         if not boat:
             pass
         else:
@@ -535,7 +528,7 @@ class Convoy:
         """
         Functionalities.Utilities.text_separation()
         self.initialize_convoy()
-        print(f"""This is the {self.name} convoy. It has {len(self.boats)} ships in it. Current cargo is:
+        print(f"""This is the {self.name} convoy, currently in {self.city}. It has {len(self.boats)} ships in it. Current cargo is:
 
 -Skins: {self.skins} at {self.price_skins} coins.
 -Tools: {self.tools} at {self.price_tools} coins.
@@ -547,7 +540,7 @@ class Convoy:
 Maximum load is {self.max_load} units, and {self.current_cargo} are already full.
 It can take another {self.empty_space} units.
 
-Average health among all ships is {self.medium_health} while the minimum ship health is {self.min_health}.
+Average health among all ships is {self.health} while the minimum ship health is {self.min_health}.
 This convoy has a total of {self.sailors} sailors and {self.captains} captains.
 """)
         Functionalities.Utilities.text_separation()
@@ -558,3 +551,31 @@ This convoy has a total of {self.sailors} sailors and {self.captains} captains.
             Functionalities.Utilities.while_traveling(self)
         self.calculate_all_healths()
         Functionalities.Utilities.set_price_to_zero(self)
+
+
+    def distribute_items(self, items):
+        product = items[1]
+        quantity = items[0]
+
+        for boat in self.boats:
+            boat.set_empty_space_and_max_load()
+            if boat.empty_space >= quantity:
+                Functionalities.Utilities.increase_product_number(boat, [quantity, product])
+                break
+            else:
+                Functionalities.Utilities.increase_product_number(boat, [boat.empty_space, product])
+                quantity -= boat.empty_space
+
+
+    def decrease_items_convoy(self, items):
+        product = items[1]
+        quantity = items[0]
+
+        for boat in self.boats:
+            boat_items = Functionalities.Utilities.choose_products(product, boat)
+            if boat_items >= quantity:
+                Functionalities.Utilities.decrease_product_number(boat, [quantity, product])
+                break
+            else:
+                Functionalities.Utilities.decrease_product_number(boat, [boat_items, product])
+                quantity -= boat_items

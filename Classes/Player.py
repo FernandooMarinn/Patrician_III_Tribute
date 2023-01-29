@@ -363,3 +363,4 @@ class Player:
         self.change_turns_boats_and_convoys()
         self.check_if_have_to_move_city()
         self.pass_bill()
+        self.level_up()
