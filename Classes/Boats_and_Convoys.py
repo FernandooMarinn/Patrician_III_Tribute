@@ -528,7 +528,7 @@ class Convoy:
         """
         Functionalities.Utilities.text_separation()
         self.initialize_convoy()
-        print(f"""This is the {self.name} convoy, currently in {self.city}. It has {len(self.boats)} ships in it. Current cargo is:
+        print(f"""This is the {self.name} convoy, currently in {self.city.name}. It has {len(self.boats)} ships in it. Current cargo is:
 
 -Skins: {self.skins} at {self.price_skins} coins.
 -Tools: {self.tools} at {self.price_tools} coins.

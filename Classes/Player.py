@@ -37,15 +37,15 @@ class Player:
         :return:
         """
         if self.level == 1:
-            if self.coins > 50_000:
+            if self.coins > 100_000:
                 self.level += 1
                 self.print_level_up(1)
         elif self.level == 2:
-            if self.coins > 100_000:
+            if self.coins > 250_000:
                 self.level += 1
                 self.print_level_up(2)
         elif self.level == 3:
-            if self.coins > 200_000:
+            if self.coins > 500_000:
                 self.level += 1
                 self.print_level_up(3)
 
