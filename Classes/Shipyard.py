@@ -68,11 +68,15 @@ class Shipyard:
             total_cost += (boat.max_health - boat.health) * 50
         print("Do you want to repair your convoy {}? It will take {} and cost {} coins"
               .format(convoy.name, number_of_turns, total_cost))
-        if Functionalities.Utilities.money_exchange(convoy.player, self, total_cost):
-            self.reparation_queue.append([convoy, number_of_turns])
-            self.city.player.convoys.remove(convoy)
-            self.city.convoys.remove(convoy)
-            self.gain_experience(total_cost)
+        option = input("1- Yes.\n"
+                       "2- No.\n")
+        option = Functionalities.Utilities.correct_values(1, 2, option)
+        if option == 1:
+            if Functionalities.Utilities.money_exchange(convoy.player, self, total_cost):
+                self.reparation_queue.append([convoy, number_of_turns])
+                self.city.player.convoys.remove(convoy)
+                self.city.convoys.remove(convoy)
+                self.gain_experience(total_cost)
 
     def repair_boat(self, boat):
         """
