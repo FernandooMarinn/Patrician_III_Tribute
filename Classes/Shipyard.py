@@ -59,7 +59,7 @@ class Shipyard:
         :param convoy:
         :return:
         """
-        convoy.set_all_healths()
+        convoy.set_all_health()
 
         total_cost = 0
         number_of_turns = 1 + round((110 - convoy.min_health) / self.repair_speed)
