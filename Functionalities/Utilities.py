@@ -325,7 +325,7 @@ def choose_convoy(city):
         return False
     counter = 1
     for convoy in city.convoys:
-        print("{}- {}".format(counter, convoy.name))
+        print("{}- {}.".format(counter, convoy.name))
         counter += 1
     option = input()
     option = correct_values(1, len(city.convoys), option)
