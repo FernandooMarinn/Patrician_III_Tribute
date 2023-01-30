@@ -5,6 +5,7 @@ class CommercialOffice:
     def __init__(self, city):
         self.city = city
         self.trader = False
+        self.is_convoy = False
         self.warehouse = 0
         self.max_inventory_size = 500
         self.inventory_size = 0
