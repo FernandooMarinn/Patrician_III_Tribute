@@ -1,6 +1,7 @@
 import Functionalities.Utilities
 import Functionalities.Save_game
 
+
 WHOLE_GAME = Functionalities.Save_game.load_or_new_game()
 player = WHOLE_GAME.player
 Cities = WHOLE_GAME.cities

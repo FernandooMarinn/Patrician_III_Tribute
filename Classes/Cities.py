@@ -2,7 +2,7 @@ import random
 
 import Classes.Comercial_Office
 import Functionalities.Utilities
-
+import Functionalities.Easter_eggs
 
 class City:
     def __init__(self, name, skins_consumption_ratio, tools_consumption_ratio, beer_consumption_ratio,
@@ -596,6 +596,7 @@ class City:
                     if Functionalities.Utilities.check_if_affordable(50_000, 1, self.player.coins):
                         print("Perfect, it will be ready in 10 turns.\n")
                         self.add_building_to_queue(1, 10, "commercial_office", 50_000)
+                        Functionalities.Easter_eggs.all_commercial_offices(self.player.all_cities_list)
                     else:
                         print("Unfortunately, you can´t afford to pay 50.000 coins.\n")
             else:

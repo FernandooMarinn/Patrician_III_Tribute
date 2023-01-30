@@ -6,6 +6,7 @@ import Classes.Money_Lender
 import Classes.Cities
 import Classes.Comercial_Office
 import Functionalities.Combat
+import Functionalities.Easter_eggs
 import random
 
 
@@ -105,6 +106,7 @@ def create_player():
     :return:
     """
     name = input("What is your name?\n")
+    Functionalities.Easter_eggs.response_to_names(name)
     coins = ask_initial_money()
     player = Classes.Player.Player(name, coins)
     return player
