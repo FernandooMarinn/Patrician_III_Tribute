@@ -673,7 +673,7 @@ def move_from_ship_or_convoy(object, name):
     product = choose_products(name, object)
     if name != "dagger" and name != "cannon" and "name" != "bombard":
         is_weapon = False
-        product_price = choose_prices(name, object.city)
+        product_price = choose_prices(name, object)
         print("You have {} {} at {} coins. How many do you want to move?\n"
               .format(product, name, product_price))
     else:
@@ -734,7 +734,7 @@ def move_from_warehouse(object, name):
     product = choose_products(name, object.city.commercial_office)
     if name != "dagger" and name != "cannon" and "name" != "bombard":
         is_weapon = False
-        product_price = choose_prices(name, object.city)
+        product_price = choose_prices(name, object)
         print("You have {} {} at {} coins. How many do you want to move?\n"
               .format(product, name, product_price))
     else:

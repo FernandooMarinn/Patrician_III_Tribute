@@ -413,10 +413,11 @@ class City:
                   "4- Go to tavern.\n"
                   "5- Go to weapon master.\n"
                   "6- Construct buildings.\n"
-                  "7- Exit\n")
+                  "7- Check factory production.\n"
+                  "8- Exit\n")
             option = input()
-            option = Functionalities.Utilities.correct_values(1, 7, option)
-            if option == 7:
+            option = Functionalities.Utilities.correct_values(1, 8, option)
+            if option == 8:
                 break
             else:
                 self.choose_city_building(option)
@@ -448,7 +449,7 @@ class City:
         elif option == 6:
             self.menu_construct_buildings()
         elif option == 7:
-            pass
+            self.check_factory_production()
 
     def menu_construct_buildings(self):
         """
@@ -461,11 +462,10 @@ class City:
                   "2- Build factories.\n"
                   "3- Build commercial office.\n"
                   "4- Check building queue.\n"
-                  "5- Check factory production.\n"
-                  "6- Exit.\n")
+                  "5- Exit.\n")
             option = input()
-            option = Functionalities.Utilities.correct_values(1, 6, option)
-            if option == 6:
+            option = Functionalities.Utilities.correct_values(1, 5, option)
+            if option == 5:
                 break
             else:
                 self.choose_city_buildings(option)
@@ -484,8 +484,7 @@ class City:
             self.build_commercial_office()
         elif option == 4:
             self.check_building_queue()
-        elif option == 5:
-            self.check_factory_production()
+
 
     def create_factories_menu(self):
         """
