@@ -274,6 +274,10 @@ class Convoy:
         self.name = name
         self.city = city
 
+        self.dagger = 0
+        self.cannon = 0
+        self.bombard = 0
+
         self.player = player
         self.cities_list = cities_list
 
@@ -364,6 +368,11 @@ class Convoy:
         wine = 0
         cloth = 0
         grain = 0
+
+        dagger = 0
+        cannon = 0
+        bombard = 0
+
         for boat in self.boats:
             skins += boat.skins
             tools += boat.tools
@@ -371,13 +380,22 @@ class Convoy:
             wine += boat.wine
             cloth += boat.cloth
             grain += boat.grain
+            dagger += boat.dagger
+            cannon += boat.cannon
+            bombard += boat.bombard
+
         self.skins = skins
         self.tools = tools
         self.beer = beer
         self.wine = wine
         self.cloth = cloth
         self.grain = grain
-        self.current_cargo = skins + tools + beer + wine + cloth + self.sailors + self.grain * 10
+        self.dagger = dagger
+        self.cannon = cannon
+        self.bombard = bombard
+
+        self.current_cargo = self.skins + self.tools + self.beer + self.wine + self.cloth + self.sailors + \
+                             (self.grain * 10) + self.dagger + self.cannon * 3 + self.bombard * 3
 
     def set_sailors_and_captains(self):
         """
@@ -552,7 +570,6 @@ This convoy has a total of {self.sailors} sailors and {self.captains} captains.
         self.calculate_all_healths()
         Functionalities.Utilities.set_price_to_zero(self)
 
-
     def distribute_items(self, items):
         product = items[1]
         quantity = items[0]
@@ -565,7 +582,6 @@ This convoy has a total of {self.sailors} sailors and {self.captains} captains.
             else:
                 Functionalities.Utilities.increase_product_number(boat, [boat.empty_space, product])
                 quantity -= boat.empty_space
-
 
     def decrease_items_convoy(self, items):
         product = items[1]
