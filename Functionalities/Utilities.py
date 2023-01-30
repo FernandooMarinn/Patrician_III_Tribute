@@ -689,7 +689,7 @@ def move_from_ship_or_convoy(object, name):
             moving_weapons(name, option, object, object.city.commercial_office)
         else:
             moving_products(name, option, product_price, object, object.city.commercial_office)
-    if object.is_convoy():
+    if object.is_convoy:
         object.decrease_items_convoy([option, name])
 
 def moving_products(name, how_many, price, origin, destiny):
