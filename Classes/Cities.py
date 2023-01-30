@@ -274,7 +274,7 @@ class City:
     def population_growth(self):
         if self.beer >= 20 and self.grain >= 20:
             self.population += round(self.population / 15)
-        elif self.beer == 0 and self.grain == 0:
+        elif self.beer == 0 and self.grain == 0 and self.population >= 1000:
             self.population -= round(self.population / 15)
 
 
@@ -708,6 +708,13 @@ class City:
                   .format(x, products_production[i][1] * x, products_production[i][0]))
         Functionalities.Utilities.text_separation()
 
+    def control_overproduction(self):
+        items = (self.skins, self.tools, self.beer, self.wine, self.cloth, self.grain)
+        for item in items:
+            random_number = random.randint(20, 50)
+            if item > 200:
+                item -= random_number
+
     def change_turn(self):
         """
         Everything that have to happen everytime a turn passes.
@@ -732,3 +739,4 @@ class City:
             self.commercial_office.change_turn()
         self.decrease_turns_building_queue()
         self.population_growth()
+        self.control_overproduction()

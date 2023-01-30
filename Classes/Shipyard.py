@@ -65,8 +65,8 @@ class Shipyard:
         number_of_turns = 1 + round((110 - convoy.min_health) / self.repair_speed)
 
         for boat in convoy.boats:
-            total_cost += (boat.max_health - boat.health) * 50
-        print("Do you want to repair your convoy {}? It will take {} and cost {} coins"
+            total_cost += (boat.max_health - boat.health) * 100
+        print("Do you want to repair your convoy {}? It will take {} turns and cost {} coins."
               .format(convoy.name, number_of_turns, total_cost))
         option = input("1- Yes.\n"
                        "2- No.\n")
@@ -85,7 +85,7 @@ class Shipyard:
         :return:
         """
         number_of_turns = 1 + round((boat.max_health - boat.health) / self.repair_speed)
-        price = (boat.max_health - boat.health) * 50
+        price = (boat.max_health - boat.health) * 100
         confirmation = input("Do you want to repair your ship {}? It will take {} turns and cost {} coins.\n"
                              "1- Yes.\n"
                              "2- No. \n"
@@ -233,7 +233,9 @@ class Shipyard:
             ship = boat[0]
             remaining_turns = boat[1]
             if remaining_turns == 1:
+                Functionalities.Utilities.text_separation()
                 print("Your ship {} has been completed in {}".format(ship.name, self.city.name))
+                Functionalities.Utilities.text_separation()
                 self.city.player.boats.append(ship)
                 self.city.boats.append(ship)
                 boats_to_delete.append(boat)

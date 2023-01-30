@@ -78,14 +78,14 @@ class Weapon_master:
             self.bombard -= quantity
 
     def create_weapons(self):
-        while self.coins > 51:
+        while (self.coins > 51) and (self.dagger < 50 or self.cannon < 20 or self.bombard < 20):
             if self.dagger < 50:
                 self.dagger += 1
                 self.coins -= 50
-            if self.cannon < 20:
+            if self.cannon < 20 and self.coins >= 400:
                 self.cannon += 1
                 self.coins -= 400
-            if self.level > 2 and self.bombard < 20:
+            if self.level > 2 and self.bombard < 20 and self.coins >= 650:
                 self.bombard += 1
                 self.coins += 650
 
