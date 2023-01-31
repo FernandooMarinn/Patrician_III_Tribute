@@ -5,11 +5,12 @@ Not so secret if you can read the code!
 """
 
 
-def one_million(money):
-    if money >= 1_000_000:
+def one_million(player):
+    if player.coins >= 1_000_000 and not player.one_million:
         Functionalities.Utilities.text_separation()
         print("Congratulations!! You have arrived to 1.000.000 coins!")
         Functionalities.Utilities.text_separation()
+        player.one_million = True
 
 
 def response_to_names(name):
@@ -36,6 +37,5 @@ def all_commercial_offices(cities):
             counter += 1
     if counter == len(cities):
         print("Congratulations! You have build a commercial office in all the cities. You are great at this game!")
-
 
 

@@ -1,6 +1,5 @@
 import Functionalities.Utilities
-import Functionalities
-
+import Functionalities.Easter_eggs
 
 class Player:
     def __init__(self, name, coins):
@@ -20,6 +19,8 @@ class Player:
 
         self.pirate = 0
         self.pirate_city = 0
+
+        one_million = False
 
     def check_player(self):
         """
@@ -364,3 +365,4 @@ class Player:
         self.check_if_have_to_move_city()
         self.pass_bill()
         self.level_up()
+        Functionalities.Easter_eggs.one_million(self)
