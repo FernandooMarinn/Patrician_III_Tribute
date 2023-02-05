@@ -3,13 +3,15 @@ import random
 import Functionalities.Utilities
 
 
-class MoneyLender():
+class MoneyLender:
     def __init__(self, city):
         self.level = 1
         self.experience = 0
         self.city = city
         self.player = self.city.player
 
+        self.grant_loans_this_turn = []
+        self.ask_loans_this_turn = []
         self.current_loans = []
 
         self.level_increases = {
@@ -17,6 +19,8 @@ class MoneyLender():
             2: [random.randint(7000, 28_000), random.randint(20, 50), random.randint(3, 12)],
             3: [random.randint(10_000, 35_000), random.randint(20, 60), random.randint(2, 14)]
         }
+
+        self.change_turn()
 
     def gain_experience(self, experience):
         self.experience += experience
@@ -82,6 +86,7 @@ class MoneyLender():
                 loan_option.append("ask")
                 self.money_change(loan_option)
                 self.current_loans.append(loan_option)
+                self.ask_loans_this_turn.remove(loan_option)
 
     def granting_loan(self, loan_option):
         """
@@ -100,6 +105,7 @@ class MoneyLender():
                     loan_option.append("grant")
                     self.money_change(loan_option)
                     self.current_loans.append(loan_option)
+                    self.grant_loans_this_turn.remove(option)
                 else:
                     print("You dont have money to grant this loan.")
 
@@ -195,6 +201,16 @@ class MoneyLender():
             else:
                 self.choose_option(option)
 
+    def choose_option(self, option):
+        if option == 1:
+            self.print_loans(self.ask_loans_this_turn, "ask")
+        elif option == 2:
+            self.print_loans(self.grant_loans_this_turn, "grant")
+        elif option == 3:
+            self.check_loans()
+        elif option == 4:
+            self.return_loan()
+
     def check_loans(self):
         """
         Check every current loan, and prints out all the information.
@@ -214,16 +230,6 @@ class MoneyLender():
                 counter += 1
         Functionalities.Utilities.text_separation()
 
-    def choose_option(self, option):
-        if option == 1:
-            self.print_loans(self.generate_loans(), "ask")
-        elif option == 2:
-            self.print_loans(self.generate_loans(), "grant")
-        elif option == 3:
-            self.check_loans()
-        elif option == 4:
-            self.return_loan()
-
     def reboot_loans(self):
         """
         Depending on level, amount and interest of loans changes.
@@ -236,6 +242,10 @@ class MoneyLender():
         }
         return self.level_increases[self.level]
 
+    def change_loans_every_turn(self):
+        self.grant_loans_this_turn = self.generate_loans()
+        self.ask_loans_this_turn = self.generate_loans()
+
     def get_loan_options_depending_levels(self):
         return [self.reboot_loans() for _ in range(3)]
 
@@ -246,3 +256,4 @@ class MoneyLender():
         """
         self.level_up()
         self.pass_turn_loans_and_finish_them()
+        self.change_loans_every_turn()
