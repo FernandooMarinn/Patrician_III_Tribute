@@ -27,6 +27,7 @@ def menu_battle(ship_or_convoy, pirate_captain):
     if option == 2:
         print("Using the wind, you succeed getting away from the pirates.")
     elif option == 1:
+        ship_or_convoy.player.achievements.check_if_first_combat()
         choose_combat_mode(ship_or_convoy, pirates)
 
 

@@ -239,6 +239,7 @@ class Shipyard:
                 self.city.player.boats.append(ship)
                 self.city.boats.append(ship)
                 boats_to_delete.append(boat)
+                self.city.player.achievements.increase_ship_number()
             else:
                 boat[1] -= 1
         for to_be_deleted in boats_to_delete:

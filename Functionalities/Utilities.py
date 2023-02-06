@@ -6,7 +6,7 @@ import Classes.Money_Lender
 import Classes.Cities
 import Classes.Comercial_Office
 import Functionalities.Combat
-import Functionalities.Easter_eggs
+import Classes.Achievements
 import random
 
 
@@ -102,13 +102,16 @@ def ask_initial_city(cities):
 
 def create_player():
     """
-    returns object player
+    returns object player and creating object achievements
     :return:
     """
+    player_achievements = Classes.Achievements.Achievements()
     name = input("What is your name?\n")
-    Functionalities.Easter_eggs.response_to_names(name)
+    player_achievements.response_to_names(name)
     coins = ask_initial_money()
     player = Classes.Player.Player(name, coins)
+    player_achievements.player = player
+    player.achievements = player_achievements
     return player
 
 

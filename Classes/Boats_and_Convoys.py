@@ -184,6 +184,7 @@ class Boat:
             self.city.boats.remove(self)
             self.player.boats.remove(self)
             new_convoy.initialize_convoy()
+            self.player.achievements.check_when_first_convoy()
 
     def show_menu(self):
         """
@@ -438,6 +439,8 @@ class Convoy:
             self.destination = 0
             for boat in self.boats:
                 boat.traveling = False
+
+        self.player.achievements.visiting_city(self.city)
 
     def check_if_traveling(self):
         if self.traveling:

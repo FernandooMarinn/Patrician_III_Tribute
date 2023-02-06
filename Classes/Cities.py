@@ -556,6 +556,7 @@ class City:
         if how_many > 0:
             print("It will take 5 turns to build a factory.\n")
             self.add_building_to_queue(how_many, 5, type, 25_000)
+            self.player.achievements.build_factories(how_many)
 
     def build_warehouses(self):
         """
@@ -596,7 +597,7 @@ class City:
                     if Functionalities.Utilities.check_if_affordable(50_000, 1, self.player.coins):
                         print("Perfect, it will be ready in 10 turns.\n")
                         self.add_building_to_queue(1, 10, "commercial_office", 50_000)
-                        Functionalities.Easter_eggs.all_commercial_offices(self.player.all_cities_list)
+                        self.player.achievements.calculate_commercial_offices()
                     else:
                         print("Unfortunately, you can´t afford to pay 50.000 coins.\n")
             else:

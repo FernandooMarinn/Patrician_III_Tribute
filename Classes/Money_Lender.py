@@ -87,6 +87,7 @@ class MoneyLender:
                 self.money_change(loan_option)
                 self.current_loans.append(loan_option)
                 self.ask_loans_this_turn.remove(loan_option)
+                self.city.player.achievements.increase_loan_number("ask")
 
     def granting_loan(self, loan_option):
         """
@@ -106,6 +107,7 @@ class MoneyLender:
                     self.money_change(loan_option)
                     self.current_loans.append(loan_option)
                     self.grant_loans_this_turn.remove(option)
+                    self.city.player.achievements.increase_loan_number("grant")
                 else:
                     print("You dont have money to grant this loan.")
 

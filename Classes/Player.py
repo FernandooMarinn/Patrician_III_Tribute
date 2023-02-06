@@ -20,7 +20,7 @@ class Player:
         self.pirate = 0
         self.pirate_city = 0
 
-        one_million = False
+        self.achievements = 0
 
     def check_player(self):
         """
