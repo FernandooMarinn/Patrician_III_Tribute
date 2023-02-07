@@ -1,6 +1,7 @@
 import Functionalities.Utilities
 import Functionalities.Easter_eggs
 
+
 class Player:
     def __init__(self, name, coins):
         self.name = name
@@ -365,4 +366,4 @@ class Player:
         self.check_if_have_to_move_city()
         self.pass_bill()
         self.level_up()
-        Functionalities.Easter_eggs.one_million(self)
+        self.achievements.coins_achievements()
