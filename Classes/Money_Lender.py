@@ -83,10 +83,10 @@ class MoneyLender:
         option = Functionalities.Utilities.correct_values(1, 2, option)
         if option == 1:
             if self.check_if_less_than_three_loans():
+                self.ask_loans_this_turn.remove(loan_option)
                 loan_option.append("ask")
                 self.money_change(loan_option)
                 self.current_loans.append(loan_option)
-                self.ask_loans_this_turn.remove(loan_option)
                 self.city.player.achievements.increase_loan_number("ask")
 
     def granting_loan(self, loan_option):
@@ -103,10 +103,10 @@ class MoneyLender:
         if option == 1:
             if self.check_if_less_than_three_loans():
                 if self.player.coins >= loan_option[0]:
+                    self.grant_loans_this_turn.remove(loan_option)
                     loan_option.append("grant")
                     self.money_change(loan_option)
                     self.current_loans.append(loan_option)
-                    self.grant_loans_this_turn.remove(option)
                     self.city.player.achievements.increase_loan_number("grant")
                 else:
                     print("You dont have money to grant this loan.")
