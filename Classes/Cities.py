@@ -416,10 +416,11 @@ class City:
                   "5- Go to weapon master.\n"
                   "6- Construct buildings.\n"
                   "7- Check factory production.\n"
-                  "8- Exit\n")
+                  "8- Go to city hall.\n"
+                  "9- Exit.\n")
             option = input()
-            option = Functionalities.Utilities.correct_values(1, 8, option)
-            if option == 8:
+            option = Functionalities.Utilities.correct_values(1, 9, option)
+            if option == 9:
                 break
             else:
                 self.choose_city_building(option)
@@ -452,6 +453,8 @@ class City:
             self.menu_construct_buildings()
         elif option == 7:
             self.check_factory_production()
+        elif option == 8:
+            self.city_hall()
 
     def menu_construct_buildings(self):
         """
@@ -718,6 +721,22 @@ class City:
             if item > 200:
                 item -= random_number
 
+    def city_hall(self):
+        self.set_consumption()
+        print(f"""This is the city hall of the great city of {self.name}.
+        
+There are {self.population} people living in this city, and current consumption for turn is:
+        
+- {self.skins_consumption} units of skins.
+- {self.tools_consumption} units of tools.
+- {self.beer_consumption} units of beer.
+- {self.wine_consumption} units of wine.
+- {self.cloth_consumption} units of cloth.
+- {self.grain_consumption} units of grain.
+
+""")
+
+
     def change_turn(self):
         """
         Everything that have to happen everytime a turn passes.
@@ -736,9 +755,7 @@ class City:
         self.shipyard.change_turn()
         self.money_lender.change_turn()
         self.weapon_master.change_turn()
-        if not self.commercial_office:
-            pass
-        else:
+        if self.commercial_office:
             self.commercial_office.change_turn()
         self.decrease_turns_building_queue()
         self.population_growth()
