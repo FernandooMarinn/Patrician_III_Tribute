@@ -255,17 +255,24 @@ class Trader:
         print("Do you want to buy or sell {}?\n"
               "1- Buy.\n"
               "2- Sell.\n"
+              "3- Reset instruction.\n"
               .format(item_to_change[3]))
         option = input()
-        option = Functionalities.Utilities.correct_values(1, 2, option)
+        option = Functionalities.Utilities.correct_values(1, 3, option)
         if option == 1:
             item_to_change[0] = "Buy"
             print("How many items do you want to buy?\n")
             how_many = input()
             how_many = Functionalities.Utilities.correct_values(0, 99999, how_many)
             item_to_change[1] = how_many
-        else:
+
+        elif option == 2:
             item_to_change[0] = "Sell"
+
+        elif option == 3:
+            item_to_change[0] = 0
+            return True
+
         how_much = input("What price do you want to set?\n")
         how_much = Functionalities.Utilities.correct_values(0, 99999, how_much)
         item_to_change[2] = how_much
@@ -401,6 +408,7 @@ class Trader:
         former_price = Functionalities.Utilities.choose_prices(name, self.commercial_office)
         new_price = Functionalities.Utilities.calculate_average_price(former_price, product,
                                                                       mean_price, number_to_reach_goal)
+
         Functionalities.Utilities.change_prices(name, new_price, self.commercial_office)
         Functionalities.Utilities.decrease_product_number(self.city, [number_to_reach_goal, name])
         Functionalities.Utilities.increase_product_number(self.commercial_office, [number_to_reach_goal, name])

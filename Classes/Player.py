@@ -1,5 +1,4 @@
 import Functionalities.Utilities
-import Functionalities.Easter_eggs
 
 
 class Player:
@@ -242,6 +241,7 @@ class Player:
 
             return False
 
+    # noinspection PyTypeChecker
     def move_city(self):
         """
         Moves player automatically to a city with a commercial office.
@@ -310,6 +310,7 @@ class Player:
             sailors += convoy.sailors
         return sailors
 
+    # noinspection PyTypeChecker
     def warehouses_bill(self):
         total = 0
         for city in self.all_cities_list:

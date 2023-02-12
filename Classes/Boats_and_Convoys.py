@@ -90,10 +90,13 @@ class Boat:
         :return:
         """
         if self.traveling:
+
             self.health -= 1
+
             if self.health < 11:
                 print("Atention! Your ship {} is sinking."
                       .format(self.name))
+
             if self.health < 1:
                 print("Your ship {} has sinked."
                       .format(self.name))
@@ -121,10 +124,11 @@ class Boat:
 
     def check_boat(self):
         """
-        Check everything that is important in a boat object. Load, empty space, captain, sailors and level.
+        Check and print everything that is important in a boat object. Load, empty space, captain, sailors and level.
         :return:
         """
         Functionalities.Utilities.text_separation()
+
         Functionalities.Utilities.set_price_to_zero(self)
         self.set_empty_space_and_max_load()
         print("Your boat {} have:\n"
@@ -137,10 +141,12 @@ class Boat:
               .format(self.name, self.skins, self.price_skins, self.tools, self.price_tools, self.beer,
                       self.price_beer, self.wine, self.price_wine, self.cloth, self.price_cloth, self.grain,
                       self.price_grain))
+
         print("\nThis ship have a maximum cargo of {} units. Is currently loaded with {}. {} empty spaces remain.\n"
               .format(self.max_load, self.current_load, self.max_load - self.current_load))
         print("There are {} daggers, {} cannons and {} bombards in this ship.\n"
               .format(self.dagger, self.cannon, self.bombard))
+
         if self.captain:
             print("This ship has a captain. There are {} sailors.\n"
                   .format(self.sailors))
@@ -154,27 +160,32 @@ class Boat:
     def check_if_can_become_convoy(self):
         """
         Check if ship has everything to become a convoy.
-        :return:
+        :return: True if a new convoy should be created, False otherwise.
         """
-        if self.captain:
-            if self.sailors > 19:
-                self.set_firepower()
-                if self.firepower > 7:
-                    election = input("Do you want to create a new convoy, named {}?\n"
-                                     "1- Yes.\n"
-                                     "2- No.\n"
-                                     .format(self.name))
-                    election = Functionalities.Utilities.correct_values(1, 2, election)
-                    if election == 1:
-                        return True
-                    else:
-                        return False
-                else:
-                    print("Your boat has less than 8 firepower.")
-            else:
-                print("Your boat has less than 20 sailors.")
-        else:
+        if not self.captain:
             print("In order to create a convoy, you need a captain.")
+            return False
+
+        if self.sailors < 20:
+            print("Your boat has less than 20 sailors.")
+            return False
+
+        self.set_firepower()
+
+        if self.firepower < 8:
+            print("Your boat has less than 8 firepower.")
+            return False
+
+        election = input("Do you want to create a new convoy, named {}?\n"
+                         "1- Yes.\n"
+                         "2- No.\n"
+                         .format(self.name))
+        election = Functionalities.Utilities.correct_values(1, 2, election)
+
+        if election == 1:
+            return True
+        else:
+            return False
 
     def turn_into_convoy(self):
         if self.check_if_can_become_convoy():
@@ -201,8 +212,10 @@ class Boat:
                   "6- Create a convoy.\n"
                   "7- Exit.\n"
                   .format(self.name))
+
             option = input("")
             option = Functionalities.Utilities.correct_values(1, 7, option)
+
             if option == 7:
                 break
             elif option == 6:
@@ -213,22 +226,21 @@ class Boat:
 
     def choose_options(self, option):
         """
-        Depending on choosen option, uses it´s function.
+        Depending on chosen option, uses its function.
         :param option:
         :return:
         """
-        if option == 1:
-            Functionalities.Utilities.buy_from_city(self)
-        elif option == 2:
-            Functionalities.Utilities.sell_to_city(self)
-        elif option == 3:
-            Functionalities.Utilities.ask_witch_direction_to_move(self)
-        elif option == 4:
-            self.check_boat()
-        elif option == 5:
-            Functionalities.Utilities.choose_city_to_travel(self, self.player.all_cities_list)
-        elif option == 6:
-            self.turn_into_convoy()
+        options = {
+            1: Functionalities.Utilities.buy_from_city,
+            2: Functionalities.Utilities.sell_to_city,
+            3: Functionalities.Utilities.ask_witch_direction_to_move,
+            4: self.check_boat,
+            5: lambda: Functionalities.Utilities.choose_city_to_travel(self, self.player.all_cities_list),
+            6: self.turn_into_convoy
+        }
+
+        if option in options:
+            options[option]()
 
     def set_firepower(self):
         """

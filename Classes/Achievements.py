@@ -32,12 +32,19 @@ class Achievements:
 
         self.first_combat = False
 
+        self.travels = 0
+        self.travels_more_than_ten = False
+        self.travels_more_than_fifty = False
+        self.travels_more_than_hundred = False
+
+
     def coins_achievements(self):
         if self.player.coins >= 500_000 and not self.half_million:
             self.achiemevents_separation()
             print("Congratulations!! Your wealth is now 500_000 coins!")
             self.achiemevents_separation()
             self.half_million = True
+
         elif self.player.coins >= 1_000_000 and not self.one_million:
             self.achiemevents_separation()
             print("Congratulations!! You have arrived to 1.000.000 coins!")
@@ -49,10 +56,12 @@ class Achievements:
             self.achiemevents_separation()
             print("You are lying! There's only one FernandooMarinn, and its not you!")
             self.achiemevents_separation()
+
         elif name.lower() == "fernando":
             self.achiemevents_separation()
             print("You have a beautiful name!")
             self.achiemevents_separation()
+
         elif name.lower() == "beneke":
             self.achiemevents_separation()
             print("Ohhh, I see that you are a fan of Patrician III!")
@@ -61,6 +70,7 @@ class Achievements:
     def visiting_city(self, city):
         if city not in self.visited_cities:
             self.visited_cities.append(city)
+
         if len(self.visited_cities) == 10:
             self.achiemevents_separation()
             print("You have visited all cities in the hanseatic league!")
@@ -93,9 +103,10 @@ class Achievements:
             self.granted_loans += 1
             if self.granted_loans == 10:
                 self.achiemevents_separation()
-                print("You have granted ten loans. You are the master of charity! (for a price, of course)")
+                print("You have granted ten loans. You are the master of investment!")
                 self.achiemevents_separation()
                 self.granted_ten_loans = True
+
         elif type == "ask" and not self.asked_ten_loans:
             self.asked_loans += 1
             if self.asked_loans == 10:
@@ -115,9 +126,10 @@ class Achievements:
         self.factories += number
         if self.factories >= 5 and not self.five_factories:
             self.achiemevents_separation()
-            print("You have created five factories! You are really a business man!")
+            print("You have created five factories! You really are a business man!")
             self.achiemevents_separation()
             self.five_factories = True
+
         elif self.factories >= 20 and not self.twenty_factories:
             self.achiemevents_separation()
             print("You have made twenty factories! You are feeding lots of families that are grateful to you.")
@@ -131,4 +143,24 @@ class Achievements:
             self.achiemevents_separation()
             time.sleep(2.5)
             self.first_combat = True
+
+    def calculate_travels(self):
+        self.travels += 1
+        if self.travels >= 10 and not self.travels_more_than_ten:
+            self.travels_more_than_ten = True
+            self.achiemevents_separation()
+            print("You have made 10 travels between cities!")
+            self.achiemevents_separation()
+
+        elif self.travels >= 50 and not self.travels_more_than_fifty:
+            self.travels_more_than_fifty = True
+            self.achiemevents_separation()
+            print("You have made 50 travels between cities! You are such a sailor!")
+            self.achiemevents_separation()
+
+        elif self.travels >= 100 and not self.travels_more_than_hundred:
+            self.travels_more_than_hundred = True
+            self.achiemevents_separation()
+            print("You have made 100 travels between cities! You are becoming the king of the seas.")
+            self.achiemevents_separation()
 

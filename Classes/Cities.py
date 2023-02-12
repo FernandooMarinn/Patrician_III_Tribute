@@ -2,7 +2,7 @@ import random
 
 import Classes.Comercial_Office
 import Functionalities.Utilities
-import Functionalities.Easter_eggs
+
 
 class City:
     def __init__(self, name, skins_consumption_ratio, tools_consumption_ratio, beer_consumption_ratio,
@@ -272,8 +272,10 @@ class City:
             self.grain = 0
 
     def population_growth(self):
+        # Let population grow if there is beer and grain in the city.
         if self.beer >= 20 and self.grain >= 20:
             self.population += round(self.population / 15)
+        # It can also decrease the pupulation.
         elif self.beer == 0 and self.grain == 0 and self.population >= 1000:
             self.population -= round(self.population / 15)
 

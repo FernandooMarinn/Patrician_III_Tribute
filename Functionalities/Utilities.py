@@ -835,6 +835,7 @@ def while_traveling(object):
             object.city.boats.append(object)
             print("Your boat {} has arrived at {}."
                   .format(object.name, object.city.name))
+        object.player.achievements.calculate_travels()
     Functionalities.Combat.calculate_probability(object)
 
 
