@@ -31,8 +31,9 @@ class Player:
         :return:
         """
         Functionalities.Utilities.text_separation()
+        coins_with_dots = Functionalities.Utilities.add_dots(self.coins)
         print("You have {} coins, {} boats and {} convoys. Your level is {}."
-              .format(self.coins, len(self.boats), len(self.convoys), self.level))
+              .format(coins_with_dots, len(self.boats), len(self.convoys), self.level))
         Functionalities.Utilities.text_separation()
 
     def level_up(self):

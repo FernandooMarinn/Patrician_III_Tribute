@@ -883,6 +883,34 @@ def create_pirate_and_pirate_city():
     return pirate, pirate_city
 
 
+def add_dots(number):
+    """
+    Used to improve the experience when the numbers (coins) are high. It adds a dot every 3 digits of a number
+    :param number:
+    :return:
+    """
+    #  Changing the number to a reversed list
+    listed_number = list(reversed(str(number)))
+    #  Setting a counter and creating a final number variable.
+    counter = 0
+    final_number = []
+    #  Creating a loop for iterating the number.
+    for i in range(len(listed_number)):
+        # Every 3 digits we append a dot.
+        if counter == 3:
+            counter = 1
+            final_number.append(".")
+        else:
+            counter += 1
+        final_number.append(listed_number[i])
+
+    #  We make another reversed list, to get the original number, plus the dots.
+    final_number = list(reversed(final_number))
+    #  At last, we create a new str adding all digits of the final number
+    number_with_dots = "".join(final_number)
+    return number_with_dots
+
+
 def money_exchange(object_who_pays, object_who_get_paid, ammount):
     """
     Function to exchange money from two objects.
