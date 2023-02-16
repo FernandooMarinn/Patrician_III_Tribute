@@ -730,7 +730,10 @@ class City:
 
     def city_hall(self):
         self.set_consumption()
-
+        if not self.commercial_office:
+            office = "You dont have a commercial office in the city."
+        else:
+            office = "You have a commercial office in this town."
         Functionalities.Utilities.text_separation()
 
 
@@ -745,6 +748,9 @@ There are {self.population} people living in this city. Current consumption for 
 - {self.cloth_consumption} units of cloth.
 - {self.grain_consumption} units of grain.
 
+- Money lender is level {self.money_lender.level}. Shipyard is level {self.shipyard.level}. Weapon master is level {self.weapon_master.level}.
+- There are {self.tavern.sailors} sailors in the tavern.
+- {office}
 """)
         Functionalities.Utilities.text_separation()
 

@@ -25,6 +25,7 @@ class Player:
         self.turns_to_be_attacked = 0
 
 
+
     def check_player(self):
         """
         Prints out any important data.
