@@ -126,6 +126,9 @@ class Player:
         print("Your moving convoys are:\n")
         self.where_are_traveling(traveling_convoys)
 
+    def sort_by_arrival(self, boats_or_convoys):
+        return sorted(boats_or_convoys, key=lambda boat: boat.travel_turns)
+
     def where_are_traveling(self, moving_list):
         """
         Print out every traveling unit.
@@ -134,17 +137,20 @@ class Player:
         """
         Functionalities.Utilities.text_separation()
 
-
-
         if len(moving_list) == 0:
             print("You have no units traveling currently.")
         else:
+            moving_list = self.sort_by_arrival(moving_list)
             for moving_item in moving_list:
                 print("-{} moving from {} to {}. ({} turns remain) {}% health."
                       .format(moving_item.name, moving_item.city_before_travel.name,
                               moving_item.destination.name, moving_item.travel_turns, moving_item.health))
         Functionalities.Utilities.text_separation()
         print("\n")
+
+    def sort_by_arrival(self, boats_or_convoys):
+        return sorted(boats_or_convoys, key=lambda boat: boat.travel_turns)
+
 
     def check_convoys(self):
         """
