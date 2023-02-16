@@ -670,9 +670,6 @@ def ask_witch_direction_to_move(object):
                 move_everything(object)
 
 
-def move_everything(object):
-    pass
-
 def move_from_ship_or_convoy(object, name):
     """
     When moving to a warehouse from a ship/convoy.
@@ -702,6 +699,15 @@ def move_from_ship_or_convoy(object, name):
             moving_products(name, option, product_price, object, object.city.commercial_office)
     if object.is_convoy:
         object.decrease_items_convoy([option, name])
+
+
+def move_everything(object):
+    moving_products("skins", object.skins, object.price_skins, object, object.city.commercial_office)
+    moving_products("tools", object.tools, object.price_tools, object, object.city.commercial_office)
+    moving_products("beer", object.beer, object.price_beer, object, object.city.commercial_office)
+    moving_products("wine", object.wine, object.price_wine, object, object.city.commercial_office)
+    moving_products("cloth", object.cloth, object.price_cloth, object, object.city.commercial_office)
+    moving_products("grain", object.grain, object.price_grain, object, object.city.commercial_office)
 
 
 def moving_products(name, how_many, price, origin, destiny):
