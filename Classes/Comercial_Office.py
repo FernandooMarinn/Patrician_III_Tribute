@@ -84,7 +84,8 @@ class CommercialOffice:
               .format(self.city.name, self.skins, self.price_skins, self.tools, self.price_tools, self.beer,
                       self.price_beer, self.wine, self.price_wine, self.cloth, self.price_cloth, self.grain,
                       self.price_grain, self.dagger, self.cannon, self.bombard))
-        print("There are {} units of space occupied and {} warehouses. You can store another {} units before paying."
+        print("There are {} units of space occupied and {} warehouses. You can store another {} units before having "
+              "to rent space in a warehouse."
               .format(self.inventory_size, self.warehouse, self.max_inventory_size - self.inventory_size))
         Functionalities.Utilities.text_separation()
 

@@ -53,7 +53,7 @@ class Tavern:
             self.hire_captain(boat)
 
     def hire_sailors(self, boat):
-        print("How many sailors do you want to hire?\n")
+        print("How many sailors do you want to hire? You have space for {}.\n".format(boat.max_sailors - boat.sailors))
         option = input()
         option = Functionalities.Utilities.correct_values(0, self.sailors, option)
         if boat.sailors + option > boat.max_sailors:

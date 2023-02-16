@@ -20,7 +20,9 @@ class Weapon_master:
                        "2- Exit.\n")
         option = Functionalities.Utilities.correct_values(1, 2, option)
         if not self.city.commercial_office:
+            Functionalities.Utilities.text_separation()
             print("You don´t have a commercial office in this city!")
+            Functionalities.Utilities.text_separation()
         elif option == 1:
             self.buy_weapons()
 
@@ -28,12 +30,12 @@ class Weapon_master:
 
 
     def buy_weapons(self):
-        option = input("What do you want to buy?\n"
+        option = input("\nWhat do you want to buy?\n"
                        "1- Dagger. (100 coins)\n"
                        "2- Ship cannon. (800 coins)\n"
-                       "3- Bombard. (1600 coins)\n"
+                       "3- Bombard. (1600 coins)\n\n"
                        "4- Exit.\n")
-        option = Functionalities.Utilities.correct_values(1, 3, option)
+        option = Functionalities.Utilities.correct_values(1, 4, option)
         if option == 1:
             self.selling_weapons("dagger")
         elif option == 2:
@@ -77,6 +79,7 @@ class Weapon_master:
                 self.decrease_weapons(option, how_many)
                 self.move_to_commercial_office([option, how_many])
                 self.gain_experience(prices[option] * how_many)
+                print("\nYou have bought {} {}.\n\n".format(option, how_many))
             else:
                 print("You can't afford to buy those weapons.\n")
 
