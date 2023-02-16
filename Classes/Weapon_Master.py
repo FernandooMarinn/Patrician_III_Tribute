@@ -15,17 +15,31 @@ class Weapon_master:
         self.bombard = 0
 
     def show_menu(self):
+        option = input("What do you want to do?\n"
+                       "1- Buy weapons.\n"
+                       "2- Exit.\n")
+        option = Functionalities.Utilities.correct_values(1, 2, option)
+        if not self.city.commercial_office:
+            print("You don´t have a commercial office in this city!")
+        elif option == 1:
+            self.buy_weapons()
+
+
+
+
+    def buy_weapons(self):
         option = input("What do you want to buy?\n"
                        "1- Dagger. (100 coins)\n"
                        "2- Ship cannon. (800 coins)\n"
-                       "3- Bombard. (1600 coins)\n")
+                       "3- Bombard. (1600 coins)\n"
+                       "4- Exit.\n")
         option = Functionalities.Utilities.correct_values(1, 3, option)
         if option == 1:
-            self.sell_weapons("dagger")
+            self.selling_weapons("dagger")
         elif option == 2:
-            self.sell_weapons("cannon")
+            self.selling_weapons("cannon")
         elif option == 3:
-            self.sell_weapons("bombard")
+            self.selling_weapons("bombard")
 
     def gain_experience(self, experience):
         self.experience += experience
@@ -40,7 +54,7 @@ class Weapon_master:
                 self.experience = 0
                 self.level += 1
 
-    def sell_weapons(self, option):
+    def selling_weapons(self, option):
         names = {
             "dagger": self.dagger,
             "cannon": self.cannon,
@@ -52,18 +66,16 @@ class Weapon_master:
             "bombard": 1600
         }
 
-        how_many = input("How many do you want to buy? There are {} on sale. (if you don`t have a commercial office, "
-                         "or enough space in your ship, you will lose the money!\n".format(names[option]))
+        how_many = input("How many do you want to buy? There are {} on sale.\n".format(names[option]))
         how_many = Functionalities.Utilities.correct_values(0, names[option], how_many)
         if how_many == 0:
             pass
         else:
             can_afford = Functionalities.Utilities.how_many_can_afford(prices[option] * how_many, self.city.player.coins)
             if can_afford >= how_many:
-                self.city.player.coins -= prices[option] * how_many
-                self.coins += prices[option] * how_many
+                Functionalities.Utilities.money_exchange(self.city.player, self, prices[option] * how_many)
                 self.decrease_weapons(option, how_many)
-                self.move_items([option, how_many])
+                self.move_to_commercial_office([option, how_many])
                 self.gain_experience(prices[option] * how_many)
             else:
                 print("You can't afford to buy those weapons.\n")
@@ -103,36 +115,9 @@ class Weapon_master:
         }
         return item_weight[item_name] * item_quantity
 
-    def move_items(self, items):
-        print("Do you want to move the weapons to a ship or to the commercial office? (if there's one)\n"
-              "1- Ship.\n"
-              "2- Commercial office.\n"
-              "3- Exit.\n")
-        option = input()
-        option = Functionalities.Utilities.correct_values(1, 3, option)
-        if option == 3:
-            pass
-        elif option == 2:
-            if not self.city.commercial_office:
-                print("You don't have a commercial office in {}!".format(self.city.name))
-            else:
-                self.move_to_commercial_office(items)
-        elif option == 1:
-            ship = Functionalities.Utilities.choose_boat_from_city(self.city)
-            if not ship:
-                print("You dont have any ship in {}!".format(self.city.name))
-            else:
-                self.move_to_ship(items, ship)
+
 
     def move_to_commercial_office(self, items):
         current_weapons = getattr(self.commercial_office, items[0])
         setattr(self.commercial_office, items[0], current_weapons + items[1])
 
-    def move_to_ship(self, items, ship):
-        items_weight = self.calculate_item_weight(items)
-        ship.set_empty_space_and_max_load()
-        if items_weight > ship.empty_space:
-            print("You can't carry this weapons in your ship, it will be overloaded.")
-        else:
-            current_weapons = getattr(ship, items[0])
-            setattr(ship, items[0], current_weapons + items[1])

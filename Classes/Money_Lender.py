@@ -230,6 +230,7 @@ class MoneyLender:
                 elif loan[4] == "grant":
                     print("You have granted this loan, you will have the money returned to you.\n")
                 counter += 1
+                Functionalities.Utilities.text_separation()
         Functionalities.Utilities.text_separation()
 
     def reboot_loans(self):

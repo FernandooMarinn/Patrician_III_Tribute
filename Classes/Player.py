@@ -133,6 +133,9 @@ class Player:
         :return:
         """
         Functionalities.Utilities.text_separation()
+
+
+
         if len(moving_list) == 0:
             print("You have no units traveling currently.")
         else:

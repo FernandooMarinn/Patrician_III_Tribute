@@ -592,6 +592,7 @@ class City:
         Functionalities.Utilities.text_separation()
         if not self.commercial_office:
             self.player.check_if_can_build_office()
+
             if self.player.can_build_offices:
                 print("Do you want to build a commercial office in {}? It will cost 50.000 coins.\n"
                       "1- Yes.\n"
@@ -599,14 +600,18 @@ class City:
                 option = input()
                 option = Functionalities.Utilities.correct_values(1, 2, option)
                 if option == 1:
+
                     if Functionalities.Utilities.check_if_affordable(50_000, 1, self.player.coins):
                         print("Perfect, it will be ready in 10 turns.\n")
                         self.add_building_to_queue(1, 10, "commercial_office", 50_000)
                         self.player.achievements.calculate_commercial_offices()
+
                     else:
                         print("Unfortunately, you can´t afford to pay 50.000 coins.\n")
+
             else:
                 print("You are not famous enough to build this office. Win some more money and try again.\n")
+
         else:
             print("You already have an office in {}!".format(self.name))
         Functionalities.Utilities.text_separation()
@@ -657,9 +662,11 @@ class City:
         building_type = building[1]
         if building_type == "warehouse":
             self.commercial_office.warehouse += 1
+
         elif building_type == "commercial_office":
             new_commercial_office = Classes.Comercial_Office.CommercialOffice(self)
             self.commercial_office = new_commercial_office
+
         else:
             factory_name = Functionalities.Utilities.return_factory_name(building_type)
             if not factory_name:
@@ -723,9 +730,13 @@ class City:
 
     def city_hall(self):
         self.set_consumption()
+
+        Functionalities.Utilities.text_separation()
+
+
         print(f"""This is the city hall of the great city of {self.name}.
         
-There are {self.population} people living in this city, and current consumption for turn is:
+There are {self.population} people living in this city. Current consumption for turn is:
         
 - {self.skins_consumption} units of skins.
 - {self.tools_consumption} units of tools.
@@ -735,7 +746,7 @@ There are {self.population} people living in this city, and current consumption 
 - {self.grain_consumption} units of grain.
 
 """)
-
+        Functionalities.Utilities.text_separation()
 
     def change_turn(self):
         """

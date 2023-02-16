@@ -231,9 +231,9 @@ class Boat:
         :return:
         """
         options = {
-            1: Functionalities.Utilities.buy_from_city,
-            2: Functionalities.Utilities.sell_to_city,
-            3: Functionalities.Utilities.ask_witch_direction_to_move,
+            1: lambda: Functionalities.Utilities.buy_from_city(self),
+            2: lambda: Functionalities.Utilities.sell_to_city(self),
+            3: lambda: Functionalities.Utilities.ask_witch_direction_to_move(self),
             4: self.check_boat,
             5: lambda: Functionalities.Utilities.choose_city_to_travel(self, self.player.all_cities_list),
             6: self.turn_into_convoy
@@ -278,7 +278,7 @@ class Boat:
 # Convoys, to control ships together.
 class Convoy:
     """
-    Useful for mid/late game. It allows to create gropus of ships, and control them in a simple way.
+    Useful for mid/late game. It allows to create groups of ships, and control them in a simple way.
     """
 
     def __init__(self, name, city, boats, player, cities_list):

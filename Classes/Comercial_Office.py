@@ -42,7 +42,7 @@ class CommercialOffice:
 
     def show_menu(self):
         while True:
-            print("What do you wanto to do?\n"
+            print("What do you want to do?\n"
                   "1- Buy from city.\n"
                   "2- Sell to city.\n"
                   "3- Check warehouse.\n"
