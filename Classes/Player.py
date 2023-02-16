@@ -21,6 +21,9 @@ class Player:
         self.pirate_city = 0
 
         self.achievements = 0
+        self.can_be_attacked = True
+        self.turns_to_be_attacked = 0
+
 
     def check_player(self):
         """
@@ -366,6 +369,12 @@ class Player:
             factories += sum(city_factories)
         return factories
 
+    def calculate_if_can_be_attacked(self):
+        if self.turns_to_be_attacked == 0:
+            self.can_be_attacked = True
+        else:
+            self.turns_to_be_attacked -= 1
+
     def change_turn(self):
         """
         Every time a turn passes.
@@ -376,4 +385,5 @@ class Player:
         self.check_if_have_to_move_city()
         self.pass_bill()
         self.level_up()
+        self.calculate_if_can_be_attacked()
         self.achievements.coins_achievements()

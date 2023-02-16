@@ -7,9 +7,12 @@ time_to_wait = 1.5
 
 
 def calculate_probability(ship_or_convoy):
-    number = random.randint(1, 12)
-    if number == 5:
-        menu_battle(ship_or_convoy, ship_or_convoy.player.pirate)
+    if ship_or_convoy.player.can_be_attacked:
+        number = random.randint(1, 12)
+        if number == 5:
+            ship_or_convoy.player.turns_to_be_attacked += 5
+            ship_or_convoy.player.can_be_attacked = False
+            menu_battle(ship_or_convoy, ship_or_convoy.player.pirate)
 
 
 def menu_battle(ship_or_convoy, pirate_captain):
