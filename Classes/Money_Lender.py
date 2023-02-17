@@ -109,7 +109,9 @@ class MoneyLender:
                     self.current_loans.append(loan_option)
                     self.city.player.achievements.increase_loan_number("grant")
                 else:
+                    Functionalities.Utilities.text_separation()
                     print("You dont have money to grant this loan.")
+                    Functionalities.Utilities.text_separation()
 
     def money_change(self, loan_option):
         Functionalities.Utilities.text_separation()

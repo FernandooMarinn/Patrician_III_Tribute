@@ -33,7 +33,7 @@ class Weapon_master:
         option = input("\nWhat do you want to buy?\n"
                        "1- Dagger. (100 coins)\n"
                        "2- Ship cannon. (800 coins)\n"
-                       "3- Bombard. (1600 coins)\n\n"
+                       "3- Bombard. (1600 coins)\n"
                        "4- Exit.\n")
         option = Functionalities.Utilities.correct_values(1, 4, option)
         if option == 1:

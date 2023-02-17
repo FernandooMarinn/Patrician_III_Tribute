@@ -653,7 +653,7 @@ def ask_witch_direction_to_move(object):
         while True:
             print("What do you want to do?\n"
                   "1- Move from ship to warehouse.\n"
-                  "2- Move from warehouse to ship."
+                  "2- Move from warehouse to ship.\n"
                   "3- Move everything to warehouse.\n"
                   "4- Exit.\n")
             option = input("\n")
@@ -668,6 +668,7 @@ def ask_witch_direction_to_move(object):
                 move_from_warehouse(object, item_name)
             elif option == 3:
                 move_everything(object)
+                break
 
 
 def move_from_ship_or_convoy(object, name):
@@ -752,7 +753,7 @@ def move_from_warehouse(object, name):
     product = choose_products(name, object.city.commercial_office)
     if name != "dagger" and name != "cannon" and "name" != "bombard":
         is_weapon = False
-        product_price = choose_prices(name, object)
+        product_price = choose_prices(name, object.city.commercial_office)
         print("You have {} {} at {} coins. How many do you want to move?\n"
               .format(product, name, product_price))
     else:
