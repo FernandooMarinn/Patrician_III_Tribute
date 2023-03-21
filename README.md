@@ -16,7 +16,7 @@ It is a simplified game, written completely in python, that tries to emulate the
 
 -The number of ships can be increased in order to carry more goods at the same time.
 
-
+## Conclusion.
 
 It was made for practising programming, and in the proccess I fall in love with python and OOP. One day I will come back, and make it much better.
 
