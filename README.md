@@ -4,6 +4,8 @@ Patrician III game tribute in python.
 This is a tribute to one of my childhood games, Patrician III.
 It is a simplified game, written completely in python, that tries to emulate the original game.
 
+## About the game.
+
 -The original game is about naval trade between cities in the Hanseatic League, between 1300 and 1400.
 
 -It work with turns rather than days. This seems more fit for the terminal enviroment.
