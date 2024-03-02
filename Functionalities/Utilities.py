@@ -172,6 +172,7 @@ def create_taverns(cities):
         tavern = Classes.Tavern.Tavern(city)
         city.tavern = tavern
         cities_with_tavern.append(city)
+    set_new_captain(return_taverns(cities))
     return cities_with_tavern
 
 
@@ -248,7 +249,7 @@ def set_new_captain(taverns):
     random_tavern = random.choice(taverns)
     while random_tavern.captain:
         random_tavern = random.choice(taverns)
-    random_tavern.captain = True
+    random_tavern.add_captain()
 
 
 def text_separation():

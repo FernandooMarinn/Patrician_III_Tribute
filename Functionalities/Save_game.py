@@ -107,8 +107,10 @@ def load_or_new_game():
 
         boat1 = Classes.Boats_and_Convoys.Boat(100, 3, [0, 0, 0, 0, 0, 0], 20, True, 0, "Freedom", player.city, player)
         player.boats.append(boat1)
+        player.city.boats.append(boat1)
         boat2 = Classes.Boats_and_Convoys.Boat(100, 1, [0, 0, 0, 0, 0, 0], 8, False, 0, "Eagle", player.city, player)
         player.boats.append(boat2)
+        player.city.boats.append(boat2)
 
         create_pirates = Functionalities.Utilities.create_pirate_and_pirate_city()
         player.pirate = create_pirates[0]

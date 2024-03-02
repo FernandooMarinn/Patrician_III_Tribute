@@ -31,7 +31,6 @@ class Tavern:
               .format(self.sailors))
         Functionalities.Utilities.text_separation()
 
-
     def show_menu(self, boat):
         self.print_if_captain_and_sailors()
         print("What do you want to do?\n"
@@ -60,9 +59,9 @@ class Tavern:
             print("So many sailors won´t fit in your boat.")
         else:
             boat.sailors += option
+            self.sailors -= option
+            self.city.population -= option
             print("Your new sailors are already in your ship.")
-
-
 
     def hire_captain(self, boat):
         if not self.captain:
@@ -74,7 +73,9 @@ class Tavern:
                   .format(boat.name))
             option = input()
             option = Functionalities.Utilities.correct_values(1, 2, option)
-            if option == 1:
+            if option == 1 and boat.captain:
+                print("{} already has a captain!".format(boat.name))
+            elif option == 1:
                 boat.captain = True
                 print("Your captain has enrolled your ship, and is ready to sail.")
                 all_taverns = Functionalities.Utilities.return_taverns(self.city.player.all_cities_list)
