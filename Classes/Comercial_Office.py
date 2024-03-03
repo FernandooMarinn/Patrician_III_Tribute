@@ -238,7 +238,7 @@ class Trader:
         Menu for changing trading instructions given to a trader.
         :return:
         """
-        item_list = ["skins", "tools", "beer", "wine", "cloth", "grain"]
+        item_list = ("skins", "tools", "beer", "wine", "cloth", "grain")
         print("What do you want to change?\n\n")
         for i, x in enumerate(item_list):
             print(f"{i + 1}- {x}")

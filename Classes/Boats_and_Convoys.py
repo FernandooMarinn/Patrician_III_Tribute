@@ -274,6 +274,13 @@ class Boat:
         self.set_firepower()
         Functionalities.Utilities.set_price_to_zero(self)
 
+    def fire_captain(self):
+        if self.is_convoy:
+            print("You have to dissolve your convoy first")
+        else:
+            print("Your boat remains without a captain.")
+            self.captain = False
+
 
 # Convoys, to control ships together.
 class Convoy:
@@ -281,8 +288,9 @@ class Convoy:
     Useful for mid/late game. It allows to create groups of ships, and control them in a simple way.
     """
 
-    def __init__(self, name, city, boats, player, cities_list):
+    def __init__(self, name, city, boats, player, cities_list, main_boat):
         self.boats = boats
+        self.main_boat = main_boat
         self.min_level = 0
         self.name = name
         self.city = city

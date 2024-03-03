@@ -37,7 +37,6 @@ class Achievements:
         self.travels_more_than_fifty = False
         self.travels_more_than_hundred = False
 
-
     def coins_achievements(self):
         if self.player.coins >= 500_000 and not self.half_million:
             self.achiemevents_separation()

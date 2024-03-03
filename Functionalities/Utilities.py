@@ -812,6 +812,7 @@ def calculate_travel_turns(position_1, position_2):
     elif position_1 == position_2:
         return 2
 
+
 def set_travel(object, distance, destination):
     """
     Start moving to another city.
