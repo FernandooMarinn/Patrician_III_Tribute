@@ -4,7 +4,7 @@ import Classes.Game
 import Classes.Boats_and_Convoys
 import Classes.Player
 import Functionalities.Utilities
-
+import Classes.Captain
 
 def check_current_folder_files():
     # Get the path of the folder where the current script is located
@@ -105,7 +105,9 @@ def load_or_new_game():
 
         cities_list = Functionalities.Utilities.add_all_buildings(cities)
 
-        boat1 = Classes.Boats_and_Convoys.Boat(100, 3, [0, 0, 0, 0, 0, 0], 20, True, 0, "Freedom", player.city, player)
+        boat1 = Classes.Boats_and_Convoys.Boat(100, 3, [0, 0, 0, 0, 0, 0], 20, False, 0, "Freedom", player.city, player)
+        captain = Classes.Captain.Captain(boat1)
+        boat1.captain = captain
         player.boats.append(boat1)
         player.city.boats.append(boat1)
         boat2 = Classes.Boats_and_Convoys.Boat(100, 1, [0, 0, 0, 0, 0, 0], 8, False, 0, "Eagle", player.city, player)

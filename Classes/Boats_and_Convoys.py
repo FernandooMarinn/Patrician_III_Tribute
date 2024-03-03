@@ -210,17 +210,20 @@ class Boat:
                   "4- Check cargo.\n"
                   "5- Move to another city.\n"
                   "6- Create a convoy.\n"
-                  "7- Exit.\n"
+                  "7- Captain menu.\n"
+                  "8- Exit.\n"
                   .format(self.name))
 
             option = input("")
-            option = Functionalities.Utilities.correct_values(1, 7, option)
+            option = Functionalities.Utilities.correct_values(1, 8, option)
 
-            if option == 7:
+            if option == 8:
                 break
             elif option == 6:
                 self.turn_into_convoy()
                 break
+            elif option == 7 and not self.captain:
+                print("\nYou don't have a captain in this ship\n")
             else:
                 self.choose_options(option)
 
@@ -236,7 +239,8 @@ class Boat:
             3: lambda: Functionalities.Utilities.ask_witch_direction_to_move(self),
             4: self.check_boat,
             5: lambda: Functionalities.Utilities.choose_city_to_travel(self, self.player.all_cities_list),
-            6: self.turn_into_convoy
+            6: self.turn_into_convoy,
+            7: self.captain.show_menu
         }
 
         if option in options:

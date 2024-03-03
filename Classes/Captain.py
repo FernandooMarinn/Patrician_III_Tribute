@@ -1,10 +1,11 @@
 from Classes.Comercial_Office import Trader
 import Functionalities.Utilities
 
+
 class Captain(Trader):
-    def __init__(self, boat, player):
+    def __init__(self, boat):
         self.boat = boat
-        self.player = player
+        self.player = boat.player
 
         self.skins_instructions = [0, 0, 0, "skins"]
         self.tools_instructions = [0, 0, 0, "tools"]
@@ -37,7 +38,7 @@ class Captain(Trader):
                 self.choose_option(option)
 
     def get_all_route_cities(self):
-        return [city.name for city in self.route.keys()]
+        return [self.route[city]["name"] for city in self.route.keys()]
 
     def choose_option(self, option):
         """
@@ -56,11 +57,12 @@ class Captain(Trader):
         all_cities = self.get_all_route_cities()
 
         if len(all_cities) == 0:
-            print("Your route is still empty")
+            print("\nYour route is still empty\n")
             return False
         else:
             for num, city in enumerate(all_cities):
-                print("{}.- {}.\n".format(num, city))
+                print("{}.- {}.".format(num + 1, city))
+            print("\n\n")
             return True
 
     def modify_route(self):
@@ -85,26 +87,34 @@ class Captain(Trader):
         elif option == 1:
             cities = self.boat.player.all_cities_list
             print("Witch city do you want to add?\n")
-            for num, city in cities:
-                print("{}- {}.\n".format(num + 1, city.name))
+            for num, city in enumerate(cities):
+                print("{}- {}.".format(num + 1, city.name))
 
             option = input("\n")
             option = Functionalities.Utilities.correct_values(1, len(cities), option)
-            self.add_new_city_to_route(cities[option])
+            self.add_new_city_to_route(cities[option - 1])
 
     def adjust_route(self):
         keys = sorted(self.route.keys())
+        new_route = {}
         for i in range(len(self.route)):
-            self.route[keys[i]] = i + 1
+            new_route[i + 1] = self.route[keys[i]]
+
+        self.route = new_route
 
     def add_new_city_to_route(self, city):
-        new_number = max(self.route.keys()) + 1
+        if self.route == {}:
+            new_number = 1
+        else:
+            new_number = max(self.route.keys()) + 1
 
-        self.route[new_number] = {city.name: self.trading_instructions}
+        self.route[new_number] = {"city": city,
+                                  "name": city.name,
+                                  "instructions": self.trading_instructions}
 
     def modify_city(self):
         all_cities = self.get_all_route_cities()
         for num, city in enumerate(all_cities):
-            print("{}.- {}.\n".format(num, city))
+            print("{}.- {}.\n".format(num + 1, city))
 
         print("Witch city do you want do modify?")
