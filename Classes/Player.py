@@ -377,6 +377,11 @@ class Player:
         else:
             self.turns_to_be_attacked -= 1
 
+    def captain_change_turn(self):
+        for boat in self.boats:
+            if boat.captain:
+                boat.captain.automatic_route()
+
     def change_turn(self):
         """
         Every time a turn passes.
@@ -389,3 +394,4 @@ class Player:
         self.level_up()
         self.calculate_if_can_be_attacked()
         self.achievements.coins_achievements()
+        self.captain_change_turn()

@@ -217,7 +217,8 @@ def create_pirates(pirate):
 
 def create_pirate_convoy(numer_of_ships, pirate):
     pirate_boats = [create_pirate_ship(pirate) for _ in range(numer_of_ships)]
-    pirate_convoy = Classes.Boats_and_Convoys.Convoy("Pirate convoy", False, pirate_boats, pirate, False)
+    pirate_convoy = Classes.Boats_and_Convoys.Convoy("Pirate convoy", False, pirate_boats, pirate, False,
+                                                     main_boat=pirate_boats[0])
     pirate.convoys.append(pirate_convoy)
     return pirate_convoy
 

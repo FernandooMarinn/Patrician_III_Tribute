@@ -233,16 +233,25 @@ class Boat:
         :param option:
         :return:
         """
-        options = {
-            1: lambda: Functionalities.Utilities.buy_from_city(self),
-            2: lambda: Functionalities.Utilities.sell_to_city(self),
-            3: lambda: Functionalities.Utilities.ask_witch_direction_to_move(self),
-            4: self.check_boat,
-            5: lambda: Functionalities.Utilities.choose_city_to_travel(self, self.player.all_cities_list),
-            6: self.turn_into_convoy,
-            7: self.captain.show_menu
-        }
-
+        if self.captain:
+            options = {
+                1: lambda: Functionalities.Utilities.buy_from_city(self),
+                2: lambda: Functionalities.Utilities.sell_to_city(self),
+                3: lambda: Functionalities.Utilities.ask_witch_direction_to_move(self),
+                4: self.check_boat,
+                5: lambda: Functionalities.Utilities.choose_city_to_travel(self, self.player.all_cities_list),
+                6: self.turn_into_convoy,
+                7: self.captain.show_menu
+            }
+        else:
+            options = {
+                1: lambda: Functionalities.Utilities.buy_from_city(self),
+                2: lambda: Functionalities.Utilities.sell_to_city(self),
+                3: lambda: Functionalities.Utilities.ask_witch_direction_to_move(self),
+                4: self.check_boat,
+                5: lambda: Functionalities.Utilities.choose_city_to_travel(self, self.player.all_cities_list),
+                6: self.turn_into_convoy,
+            }
         if option in options:
             options[option]()
 

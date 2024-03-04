@@ -788,20 +788,29 @@ def choose_city_to_travel(object, cities):
     check_distance_between_cities(object, option - 1)
 
 
-def check_distance_between_cities(object, option):
+def check_distance_between_cities(object, option, **kwargs):
     """
     Check distance between cities. If they are close, will take fewer turns to move.
     :param option:
     :return:
     """
     cities = object.cities_list
-    distance = calculate_travel_turns(object.city.possition, cities[option].possition)
-    if object.city == cities[option]:
+    if kwargs.get('possition') is None:
+        possition = cities[option].possition
+    else:
+        possition = kwargs.get('possition')
+    distance = calculate_travel_turns(object.city.possition, possition)
+    if kwargs.get('city') is None:
+        city = cities[option]
+    else:
+        city = kwargs.get('city')
+
+    if object.city == city:
         print("You are already in {}".format(object.city.name))
     else:
         print("{} is now moving to {}. Will take {} turns."
-              .format(object.name, cities[option].name, distance))
-        set_travel(object, distance, cities[option])
+              .format(object.name, city.name, distance))
+        set_travel(object, distance, city)
 
 
 def calculate_travel_turns(position_1, position_2):
